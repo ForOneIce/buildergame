@@ -1,0 +1,10 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { capture } from '../server/github.mjs';
+import { publicBundle, cleanEvent } from '../src/bundle.mjs';
+const input = process.argv[2], output = process.argv[3];
+if (!input || !output || input === output) throw new Error('Usage: npm run snapshot -- config-or-backup.json new-backup.json (distinct paths)');
+const source = JSON.parse(await readFile(input, 'utf8'));
+const previous = source.format ? publicBundle(source) : null;
+const result = await capture(previous?.event || cleanEvent(source), previous?.history, process.env.GITHUB_TOKEN);
+await writeFile(output, JSON.stringify(result.bundle, null, 2), { flag: 'wx' });
+console.log(`Snapshot saved. ${result.failures.length} unavailable observations. No credentials exported.`);

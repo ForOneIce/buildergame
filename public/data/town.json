@@ -1,0 +1,948 @@
+{
+  "format": "buildergame/v1",
+  "event": {
+    "schemaVersion": 1,
+    "id": "sample-town",
+    "name": "The Builder Islands",
+    "subtitle": "Small steps. A world of possibilities.",
+    "url": "",
+    "sampleData": true,
+    "collectionType": "hackathon",
+    "mode": "static",
+    "refreshSeconds": 300,
+    "rule": {
+      "version": "linear-v1",
+      "mode": "weighted",
+      "weights": {
+        "commits": 1,
+        "stars": 3,
+        "forks": 6
+      },
+      "thresholds": [
+        0,
+        30,
+        100,
+        220,
+        450
+      ]
+    },
+    "projects": [
+      {
+        "id": "sample-0",
+        "name": "Open Orchard",
+        "repository": "https://github.com/example/sample-0",
+        "description": "A place to collect ideas and grow them together.",
+        "color": "#477eae",
+        "plot": {
+          "x": 0,
+          "z": 0
+        },
+        "builder": {
+          "name": "Maple",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-1",
+        "name": "Little Atlas",
+        "repository": "https://github.com/example/sample-1",
+        "description": "Small tools for a more curious internet.",
+        "color": "#508dc0",
+        "plot": {
+          "x": 1,
+          "z": 0
+        },
+        "builder": {
+          "name": "River",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-2",
+        "name": "Cloud Notes",
+        "repository": "https://github.com/example/sample-2",
+        "description": "An experiment becoming a little more real.",
+        "color": "#476b9b",
+        "plot": {
+          "x": 2,
+          "z": 0
+        },
+        "builder": {
+          "name": "Sunny",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-3",
+        "name": "Garden Kit",
+        "repository": "https://github.com/example/sample-3",
+        "description": "A place to collect ideas and grow them together.",
+        "color": "#477eae",
+        "plot": {
+          "x": 3,
+          "z": 0
+        },
+        "builder": {
+          "name": "Juniper",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-4",
+        "name": "Kindred",
+        "repository": "https://github.com/example/sample-4",
+        "description": "Small tools for a more curious internet.",
+        "color": "#508dc0",
+        "plot": {
+          "x": 0,
+          "z": 1
+        },
+        "builder": {
+          "name": "Maple",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-5",
+        "name": "Moon Studio",
+        "repository": "https://github.com/example/sample-5",
+        "description": "An experiment becoming a little more real.",
+        "color": "#476b9b",
+        "plot": {
+          "x": 1,
+          "z": 1
+        },
+        "builder": {
+          "name": "River",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-6",
+        "name": "Paper Trail",
+        "repository": "https://github.com/example/sample-6",
+        "description": "A place to collect ideas and grow them together.",
+        "color": "#477eae",
+        "plot": {
+          "x": 2,
+          "z": 1
+        },
+        "builder": {
+          "name": "Sunny",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      },
+      {
+        "id": "sample-7",
+        "name": "Seedling",
+        "repository": "https://github.com/example/sample-7",
+        "description": "Small tools for a more curious internet.",
+        "color": "#508dc0",
+        "plot": {
+          "x": 3,
+          "z": 1
+        },
+        "builder": {
+          "name": "Juniper",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
+      }
+    ]
+  },
+  "history": {
+    "schemaVersion": 1,
+    "eventId": "sample-town",
+    "sampleData": true,
+    "snapshots": [
+      {
+        "id": "sample-day-0",
+        "label": "First foundations",
+        "capturedAt": "2026-09-05T12:00:00.000Z",
+        "projects": [
+          {
+            "projectId": "sample-0",
+            "plot": {
+              "x": 0,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 0,
+              "stars": 0,
+              "forks": 0
+            },
+            "score": 0,
+            "stage": "land",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-1",
+            "plot": {
+              "x": 1,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 4,
+              "stars": 4,
+              "forks": 1
+            },
+            "score": 22,
+            "stage": "foundation",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-2",
+            "plot": {
+              "x": 2,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 22,
+              "stars": 8,
+              "forks": 3
+            },
+            "score": 64,
+            "stage": "frame",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-3",
+            "plot": {
+              "x": 3,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 42,
+              "stars": 12,
+              "forks": 4
+            },
+            "score": 102,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-4",
+            "plot": {
+              "x": 0,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 12,
+              "stars": 16,
+              "forks": 6
+            },
+            "score": 96,
+            "stage": "frame",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-5",
+            "plot": {
+              "x": 1,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 70,
+              "stars": 20,
+              "forks": 8
+            },
+            "score": 178,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-6",
+            "plot": {
+              "x": 2,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 0,
+              "stars": 0,
+              "forks": 0
+            },
+            "score": 0,
+            "stage": "land",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-7",
+            "plot": {
+              "x": 3,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 140,
+              "stars": 28,
+              "forks": 11
+            },
+            "score": 290,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "sample-day-1",
+        "label": "Finding our rhythm",
+        "capturedAt": "2026-09-07T12:00:00.000Z",
+        "projects": [
+          {
+            "projectId": "sample-0",
+            "plot": {
+              "x": 0,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 0,
+              "stars": 0,
+              "forks": 0
+            },
+            "score": 0,
+            "stage": "land",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-1",
+            "plot": {
+              "x": 1,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 16,
+              "stars": 9,
+              "forks": 3
+            },
+            "score": 61,
+            "stage": "frame",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-2",
+            "plot": {
+              "x": 2,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 35,
+              "stars": 13,
+              "forks": 6
+            },
+            "score": 110,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-3",
+            "plot": {
+              "x": 3,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 65,
+              "stars": 17,
+              "forks": 9
+            },
+            "score": 170,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-4",
+            "plot": {
+              "x": 0,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 50,
+              "stars": 21,
+              "forks": 12
+            },
+            "score": 185,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-5",
+            "plot": {
+              "x": 1,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 100,
+              "stars": 25,
+              "forks": 16
+            },
+            "score": 271,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-6",
+            "plot": {
+              "x": 2,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 8,
+              "stars": 29,
+              "forks": 19
+            },
+            "score": 209,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-7",
+            "plot": {
+              "x": 3,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 200,
+              "stars": 33,
+              "forks": 22
+            },
+            "score": 431,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "sample-day-2",
+        "label": "A neighborhood in bloom",
+        "capturedAt": "2026-09-09T12:00:00.000Z",
+        "projects": [
+          {
+            "projectId": "sample-0",
+            "plot": {
+              "x": 0,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 0,
+              "stars": 0,
+              "forks": 0
+            },
+            "score": 0,
+            "stage": "land",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-1",
+            "plot": {
+              "x": 1,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 22,
+              "stars": 14,
+              "forks": 4
+            },
+            "score": 88,
+            "stage": "frame",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-2",
+            "plot": {
+              "x": 2,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 45,
+              "stars": 18,
+              "forks": 9
+            },
+            "score": 153,
+            "stage": "cottage",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-3",
+            "plot": {
+              "x": 3,
+              "z": 0
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 120,
+              "stars": 22,
+              "forks": 14
+            },
+            "score": 270,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-4",
+            "plot": {
+              "x": 0,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 75,
+              "stars": 26,
+              "forks": 19
+            },
+            "score": 267,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-5",
+            "plot": {
+              "x": 1,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 150,
+              "stars": 30,
+              "forks": 24
+            },
+            "score": 384,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-6",
+            "plot": {
+              "x": 2,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 20,
+              "stars": 34,
+              "forks": 28
+            },
+            "score": 290,
+            "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-7",
+            "plot": {
+              "x": 3,
+              "z": 1
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 230,
+              "stars": 38,
+              "forks": 33
+            },
+            "score": 542,
+            "stage": "decorated",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "my-hackathon",
+  "name": "My Hackathon Town",
+  "subtitle": "A neighborhood for our builders",
+  "url": "",
+  "sampleData": false,
+  "collectionType": "hackathon",
+  "mode": "static",
+  "refreshSeconds": 300,
+  "rule": { "version": "linear-v1", "mode": "weighted", "weights": { "commits": 1, "stars": 3, "forks": 6 }, "thresholds": [0, 30, 100, 220, 450] },
+  "projects": [
+    { "id": "threejs", "name": "three.js", "repository": "https://github.com/mrdoob/three.js", "description": "Public example repository, not an event submission.", "color": "#477eae", "plot": { "x": 0, "z": 0 }, "builder": { "name": "Three.js contributors", "url": "https://github.com/mrdoob/three.js/graphs/contributors" } },
+    { "id": "vite", "name": "Vite", "repository": "https://github.com/vitejs/vite", "description": "Public example repository, not an event submission.", "color": "#477eae", "plot": { "x": 1, "z": 0 }, "builder": { "name": "Vite team", "url": "https://github.com/vitejs" } }
+  ]
+}

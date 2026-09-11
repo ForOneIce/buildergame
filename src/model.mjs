@@ -21,7 +21,7 @@ export function validateRule(rule) {
   assert(rule && typeof rule.version === 'string' && rule.version.length, 'Rule version is required');
   assert(['weighted', 'commits', 'stars', 'custom'].includes(rule.mode), 'Unknown rule mode');
   assert(Array.isArray(rule.thresholds) && rule.thresholds.length === 5 && rule.thresholds[0] === 0 && rule.thresholds.every((n, i, a) => Number.isFinite(n) && n >= 0 && (!i || n > a[i - 1])), 'Provide five increasing thresholds starting at zero');
-  if (rule.mode === 'weighted') assert(rule.weights && ['commits', 'stars', 'forks'].every(k => Number.isFinite(rule.weights[k]) && rule.weights[k] >= 0) && Object.values(rule.weights).some(n => n > 0), 'Invalid metric weights');
+  if (rule.mode === 'weighted') assert(rule.weights && Object.keys(rule.weights).length === 3 && ['commits', 'stars', 'forks'].every(k => Number.isFinite(rule.weights[k]) && rule.weights[k] >= 0) && Object.values(rule.weights).some(n => n > 0), 'Invalid metric weights');
 }
 export function validateManifest(event) {
   assert(event && event.schemaVersion === 1 && typeof event.id === 'string' && event.id.length && typeof event.name === 'string' && event.name.length, 'Event id, name and schemaVersion 1 are required');
@@ -30,6 +30,7 @@ export function validateManifest(event) {
   assert(Array.isArray(event.projects) && event.projects.length > 0 && event.projects.length <= 200, 'Provide 1–200 projects');
   assert(Number.isFinite(event.refreshSeconds) && event.refreshSeconds >= 30, 'refreshSeconds must be at least 30');
   validateRule(event.rule);
+  assert(!event.collectionType || ['personal', 'hackathon'].includes(event.collectionType), 'Invalid collection type');
   const ids = new Set(), repos = new Set(), plots = new Set();
   for (const p of event.projects) {
     assert(typeof p.id === 'string' && /^[a-z0-9-]+$/.test(p.id) && !ids.has(p.id), `Invalid/duplicate project id: ${p.id}`);
