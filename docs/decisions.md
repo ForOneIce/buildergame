@@ -1,5 +1,20 @@
 # Decision log
 
+## D-009 — Separate product onboarding and hackathon review
+
+- Human direction: a conventional user-facing root README and a dedicated directory for judges.
+- Implementation: hackathon/ contains the reviewer overview, rules, checklist and video outline. Root README explains the experience and usage workflow, with explicit incomplete status.
+- Development records stay at their existing paths and are linked from the reviewer guide.
+- Reference: [Project prompt](../prompts/0011-user-readme.md).
+
+## D-008 — Extend the audience to individual developers
+
+- Date: 2026-09-11.
+- Human proposal: developer-owned towns for showcasing and interacting with public GitHub repositories, alongside event towns.
+- AI recommendation: reuse the same engine and curated manifest, generalize branding, and retain the current ETHOnline pilot. Automated imports and account systems are deferred recommendations, not user-requested features.
+- Evidence boundary: exponential repository growth, stronger product fit and adoption remain unverified hypotheses.
+- References: [Project prompt](../prompts/0010-developer-towns.md), [scope](../specs/0004-developer-towns.md).
+
 Record dates, decisions, attribution, rationale, impact, and references. Unconfirmed AI proposals belong in the brief.
 
 ## D-000 — Create a separate workspace

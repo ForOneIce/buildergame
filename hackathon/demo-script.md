@@ -1,6 +1,6 @@
 # Demo script draft
 
-Status: topic undecided; not recorded. Target approximately three minutes. Final video must be 2–4 minutes, at least 720p, with human narration. Use English as the primary narration language.
+Status: Buildergame selected; video not recorded. Target approximately three minutes. Final video must be 2–4 minutes, at least 720p, with human narration. Use English as the primary narration language.
 
 | Time | Content | Status |
 | --- | --- | --- |

@@ -1,4 +1,4 @@
-# Competition rules
+# ETHOnline 2026 competition rules
 
 Event: ETHOnline 2026. Based on official pages read in this conversation on 2026-09-10; recorded on 2026-09-11. Recheck updates and personal Dashboard status before submission.
 

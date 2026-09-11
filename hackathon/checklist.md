@@ -1,6 +1,6 @@
 # Submission checklist
 
-Check items only with evidence. No project has been submitted; personal participation status remains unverified.
+Check items only with evidence. Final submission status has not been verified.
 
 ## Eligibility and process
 

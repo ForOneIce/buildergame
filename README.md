@@ -1,74 +1,85 @@
-# buildergame
+# Buildergame 🏡
 
-An organizer-deployed 3D hackathon town where GitHub projects become houses that evolve with their recorded history. Intended pilot: ETHOnline 2026. Basic viewing requires no wallet; ENS integration is deferred.
+**Your repos. Your town. A place for everything you build.**
 
-Human–AI collaboration is recorded from workspace preparation onward. Demo implementation is in progress; user requirements and AI proposals are recorded separately.
+Turn a collection of GitHub projects into a little 3D neighborhood. Each repository gets a house, each builder gets a sign, and recorded snapshots let visitors travel through the town's history.
 
-The current checkout is **not yet a complete runnable Demo**. The initial renderer, interface and data contract have been written. Event/sample JSON, snapshot capture/validation scripts, tests, dependency installation and build verification remain pending. Some package scripts refer to files not yet implemented. Actual event projects and final visual references are also pending. No adoption or deployment is claimed.
+Build a home for your public portfolio, or bring a whole hackathon community together on one map.
 
-The organizer controls growth. This pilot uses cumulative commits, stars and forks, with provisional AI-selected weights of 1, 3 and 6 respectively. These are not official ETHGlobal criteria. Inactivity does not reduce accumulated commit progress. The town is intended to support both fixed showcases and newly published snapshots. See the [Demo specification](specs/0003-web2-demo.md).
+[Explore the idea](#a-town-you-can-explore) · [Make-it-yours workflow](#make-it-yours) · [Development status](#development-status) · [Hackathon review](hackathon/README.md)
 
-## Directory map
+> **Under construction.** The first Demo is in development. The current checkout is not yet a complete runnable app; the experiences below describe the intended product, with implementation status listed below.
 
-```text
-buildergame/
-├── AGENTS.md                 # Collaboration policy
-├── README.md                 # Project entry point
-├── docs/
-│   ├── brief.md              # Problems, candidates, and assumptions
-│   ├── rules.md              # Official sources, deadlines, and eligibility
-│   ├── decisions.md          # Decisions and rationale
-│   └── ideation/             # Proposals and feasibility reviews
-├── specs/
-│   ├── README.md             # Specifications and acceptance criteria
-│   ├── 0001-town-timeline.md  # Draft timeline interaction
-│   └── 0002-organizer-growth-rules.md
-├── prompts/
-│   ├── README.md             # Prompt recording conventions
-│   ├── 0000-workspace-setup.md
-│   ├── 0002-hackathon-town.md
-│   ├── 0003-town-deployment-modes.md
-│   ├── 0004-town-timeline.md
-│   ├── 0005-organizer-growth-rules.md
-│   └── 0006-cumulative-commit-growth.md
-├── collaboration/
-│   ├── log.md                # Inputs, contributions, outputs, verification
-│   ├── AI_USAGE.md           # AI disclosure by file or module
-│   └── baseline.md           # Pre-existing work and event additions
-├── src/                      # Implementation after scope selection
-├── tests/                    # Meaningful acceptance verification
-└── submission/
-    ├── checklist.md          # Submission and partner requirements
-    └── demo-script.md        # 2–4 minute, human-narrated demo
-```
+## A town you can explore
 
-## Current status
+**Give every project an address.** Repositories keep their own plots. A small experiment and a long-running project can sit side by side, each with a door into what its builder made.
 
-- Phase: initial implementation of the Web2-first Demo authorized in prompt 0007.
-- Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots.
-- Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle; Classic/Continuity route and partners are undecided.
-- Outputs: collaboration records, feasibility review and initial product code. No passing build, product test results or user validation yet.
+**Watch the neighborhood change.** Move between recorded snapshots while the town stays in place. A timber frame becomes a cottage. A familiar house gains another storey. Return to an earlier snapshot to see how it looked then.
 
-## Workflow
+**Meet the people behind the houses.** Select a wooden sign to discover a project and its builder. Visit the demo, explore the code, or head to GitHub to star a repository or follow its author.
 
-1. Save actual instructions in `prompts/` and update the problem brief.
-2. Keep proposals and confirmed decisions distinct; preserve relevant reasons for changes.
-3. Before implementation, write small specifications with observable acceptance criteria.
-4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
-5. Commit meaningful work units. Never invent or backdate development history.
+| In the town | What it represents |
+| --- | --- |
+| 🏡 A house | A GitHub repository |
+| 📍 A permanent plot | The project's place across snapshots |
+| 🪧 A wooden sign | Project details and builder profile |
+| ⏳ The town timeline | Previously recorded versions of the neighborhood |
+| 🌱 A changing building | Progress under the town owner's chosen rules |
 
-Project prompt records 0002–0007 preserve the concept, product decisions and Demo scope.
+The building palette runs from **open land → foundation → timber frame → cottage → townhouse → garden house**. Owners choose how data maps to those appearances. Buildings are a visual expression of those rules, not a universal quality rating.
 
-## Entry points
+## What will your town be?
 
-- [Problem brief](docs/brief.md)
-- [Hackathon Town feasibility review](docs/ideation/0002-hackathon-town-review.md)
-- [Timeline interaction draft](specs/0001-town-timeline.md)
-- [Organizer-defined growth rules](specs/0002-organizer-growth-rules.md)
-- [Competition rules](docs/rules.md)
-- [Collaboration log](collaboration/log.md)
-- [AI disclosure](collaboration/AI_USAGE.md)
-- [Submission checklist](submission/checklist.md)
+**A developer's portfolio.** Choose the public repositories you want to share. Give visitors a place to explore your experiments, tools and ongoing work—and a reason to come back.
 
-Final submission: **2026-09-13 16:00 UTC**.
-Second check-in: **2026-09-11 03:59 UTC**.
+**A hackathon neighborhood.** Put participating projects on a shared map. Publish a snapshot after demo day, or keep adding observations so people can follow what happens next.
+
+Both use the same core idea: a curated collection, fixed plots, project links and visible history.
+
+## Make it yours
+
+The planned setup is a small configuration workflow:
+
+1. **Name your town.** Add a title and introduction for your portfolio or event.
+2. **Choose your neighbors.** Supply a curated list of public GitHub repositories, builder profiles and optional demo links.
+3. **Choose what shapes the houses.** Use cumulative commits, stars, a weighted mix of commits/stars/forks, or your own complete score table.
+4. **Record a moment.** Capture repository observations as a snapshot. Earlier snapshots keep their recorded appearance.
+5. **Share the town.** Self-host a fixed showcase, or publish new snapshots to keep the timeline growing.
+
+The basic experience is designed to work without wallets. Star and follow links take visitors to GitHub, where they choose whether to perform the action.
+
+### Growth at your pace
+
+- **You choose the rules.** A portfolio and an event can express different priorities.
+- **Taking a break does not erase construction.** With the same cumulative commit total and mapping, a house stays the same.
+- **Missing data is not empty land.** Failed observations retain the last known state or show that data is unavailable.
+- **History starts when it is recorded.** Today's star count cannot reconstruct what a repository had last month.
+
+## Development status
+
+| Area | Current state |
+| --- | --- |
+| Three.js town and procedural houses | Initial code written; browser verification pending |
+| Timeline, project directory and detail cards | Initial code written; end-to-end verification pending |
+| Growth rules and snapshot validation | Shared data contract written; tests pending |
+| Sample town data and GitHub snapshot capture | Pending |
+| Developer-specific branding | Planned; current interface still contains event-oriented copy |
+| Final artwork and hosted Demo | Pending |
+
+**Running locally:** setup is not ready yet. Required sample data and capture/validation scripts are missing, and installation/build have not been verified. A working quick start will be added with the first complete Demo.
+
+## For builders
+
+Built with **TypeScript, Three.js and Vite**. The implementation keeps repository data, growth rules and house models separate so the town can change its look without rewriting its history.
+
+| File | Start here to… |
+| --- | --- |
+| [src/town.ts](src/town.ts) | Explore the 3D scene and replace procedural house models |
+| [src/model.mjs](src/model.mjs) | Understand growth rules and snapshot validation |
+| [src/main.ts](src/main.ts) | Explore the timeline, directory and project interactions |
+| [src/types.ts](src/types.ts) | Inspect the configuration and snapshot data shapes |
+| [src/links.ts](src/links.ts) | Understand project destinations |
+
+Feedback on project discovery, town visuals and the portfolio workflow is welcome in [Issues](https://github.com/ForOneIce/buildergame/issues).
+
+Competition materials, development provenance and AI disclosure are collected in the [hackathon review guide](hackathon/README.md).

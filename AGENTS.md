@@ -12,6 +12,8 @@
 
 ## Public project documentation
 
+- Keep the root README focused on the user experience, features, usage and accurate availability. Keep event-specific review materials in hackathon/ and link to development evidence from there.
+
 - Use English for public product copy, documentation, code identifiers and commit messages.
 - Publish only project ideation, requirements, architecture, implementation, tests, design prompts and necessary AI/reuse disclosure.
 - Do not publish personal preferences, language/timezone setup, unrelated interests, account or Git troubleshooting, or conversations about documentation privacy. Do not create public prompt/log records for those conversations.
@@ -48,6 +50,6 @@ Record project facts, plans and artifacts. Exclude personal administration and s
 
 ## Competition reminders
 
-- Sources are in `docs/rules.md`. Check partner eligibility against the final product and Classic/Continuity route.
+- Sources are in `hackathon/rules.md`. Check partner eligibility against the final product and Classic/Continuity route.
 - Disclose AI assistance and actual human contributions. Preserve specs, prompts, and planning artifacts used in spec-driven development.
 - Video: 2–4 minutes, at least 720p, human narration. Product TTS does not authorize AI narration of the submission video.

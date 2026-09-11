@@ -1,5 +1,20 @@
 # Human–AI collaboration log
 
+## 0011 — Product README and reviewer guide
+
+- Date: 2026-09-11.
+- Human contribution: specified a user-facing project homepage and separate hackathon presentation directory.
+- AI contribution: moved reviewer materials into hackathon/, wrote the root README around the town experience and usage, and updated links and documentation policy.
+- Verification: relative-link and whitespace checks. Application tests not applicable to this documentation change; existing implementation limitations remain disclosed.
+
+## 0010 — Developer portfolio use case
+
+- Date: 2026-09-11.
+- Human contribution: expanded the target audience to individual developers exhibiting public repositories.
+- AI contribution: compared event/developer workflows, reviewed the existing data contract, drafted a shared-engine scope, and updated product positioning. Preserved the project-related prompt excerpt with a labeled translation.
+- Outputs: prompt 0010, spec 0004, README, brief, decisions and AI disclosure.
+- Verification: reviewed types and documentation links; no application code changed or new product acceptance tests performed. Developer-mode behavior remains unverified.
+
 ## 0007 — Demo scaffold
 
 - Date: 2026-09-11.

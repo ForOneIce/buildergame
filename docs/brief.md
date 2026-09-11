@@ -10,7 +10,7 @@ Status: initial implementation of the Web2-first Demo authorized in prompt 0007.
 
 ## Fill during ideation
 
-- Target users: organizers and visitors seeking continued project discovery after a hackathon.
+- Target users: event organizers, individual developers curating public portfolios, and visitors discovering their projects.
 - Current alternatives and limitations: unvalidated.
 - User versus payer: unvalidated.
 - First potential test participant: unidentified.

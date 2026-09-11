@@ -18,8 +18,12 @@ Codex assisted with project planning, research, English translations, specificat
 | src/ | TypeScript/Three.js town, procedural models, timeline/directory UI, styling, data contract and link boundary | Initial code only; build and application tests pending |
 | package.json, tsconfig.json, vite.config.ts, index.html | Dependency and build setup | Installation and complete build unverified |
 | README.md and collaboration/ | Project status, contribution and reuse documentation | Does not establish adoption or production readiness |
-| submission/ and submission copy | Checklist, demo outline and English project description | Final video, human narration and submission verification pending |
+| hackathon/ and submission copy | Reviewer guide, rules, checklist, demo outline and English project description | Final video, human narration and submission verification pending |
 
 ## Development trace
+
+Session 0011: Codex wrote the user-facing root README and relocated reviewer materials to hackathon/ at the human's direction. The README identifies planned and unverified functionality; no product code changed.
+
+Session 0010: the human proposed developer portfolio towns. Codex assessed reuse of the existing data contract, wrote the scope and translated the project-related prompt excerpt, and updated positioning documents. No developer-mode implementation or adoption is claimed.
 
 Project prompt records 0002–0007 and linked specifications preserve human requirements and AI proposals. Earlier recommendations conflicting with organizer-controlled growth were corrected after human feedback. See [collaboration log](log.md) for outputs and checks, and [reuse baseline](baseline.md) for dependencies and related prior work. No prior project code or art has been imported.

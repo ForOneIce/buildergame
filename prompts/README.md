@@ -9,5 +9,7 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0005 — Organizer growth rules](0005-organizer-growth-rules.md)
 - [0006 — Cumulative commit growth](0006-cumulative-commit-growth.md)
 - [0007 — Web2-first Demo](0007-web2-demo.md)
+- [0010 — Developer towns](0010-developer-towns.md)
+- [0011 — User README and reviewer guide](0011-user-readme.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

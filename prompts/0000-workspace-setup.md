@@ -24,6 +24,8 @@ None.
 - `collaboration/`: human/AI contributions, verification, and reuse boundaries.
 - `src/` and `tests/`: implementation and meaningful verification after topic selection.
 - `submission/`: checklist and human-narrated demo outline.
+
+Subsequent layout update: these submission files now live in [hackathon/](../hackathon/README.md); the list above records the original setup.
 - `AGENTS.md`: future recordkeeping conventions.
 
 See [README](../README.md). Product, stack, and partners remain undecided. Initial commit: `0b573c4`.
