@@ -1,6 +1,6 @@
 # Prompt records
 
-Record 0000 covers setup, 0001 the language preference, 0002 the town concept, and 0003 organizer deployment modes. The next record is **0004**.
+Records 0000–0001 cover setup/language; 0002 the town concept; 0003 deployment modes; 0004 the timeline interaction. The next record is **0005**.
 
 > 中文提示：用户原话原样保留，英文翻译单独标注。
 

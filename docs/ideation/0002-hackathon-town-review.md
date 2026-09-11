@@ -307,3 +307,7 @@ The user-facing city should explain an activity-based representation, not certif
 - Does one organizer choose to publish a second edition or keep live refresh enabled?
 
 No deployment, implementation, or user test has yet been performed.
+
+## 14. User refinement: timeline transitions
+
+The user added a whole-town timeline with fixed project plots and visible transitions between versions. This makes historical comparison an explicit interaction. See [prompt 0004](../../prompts/0004-town-timeline.md) and the [draft specification](../../specs/0001-town-timeline.md). The proposed implementation distinguishes recorded data changes from changes in organizer weights, layout, or artwork.

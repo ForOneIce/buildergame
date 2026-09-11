@@ -42,3 +42,10 @@ For later work, identify actual code, assets, prompts, human revisions, and veri
 - AI contribution: translated the input, assessed mode-specific architecture/costs, and proposed snapshot/version separation and comparison behavior.
 - Files: prompt 0003, section 13 of the feasibility review, and linked project/decision/collaboration records.
 - Status: no product implementation, deployment, or user test. Recommendations remain proposals.
+
+## Session 0004: timeline interaction
+
+- Human contribution: proposed fixed plot locations and a whole-town timeline with rendered transitions between historical versions.
+- AI contribution: translated the prompt, drafted interaction/data/verification proposals, and recorded versioning and missing-data boundaries.
+- Files: prompt 0004, specs/0001-town-timeline.md, and linked project/decision/collaboration records.
+- Status: no renderer, assets, implementation, performance measurement, or passing acceptance test.

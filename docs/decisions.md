@@ -24,7 +24,7 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - Impact: no product, stack, or competition-track change.
 - Reference: [Language instruction](../prompts/0001-language-policy.md).
 
-Next decision: D-004.
+Next decision: D-005.
 
 ## D-002 — Assess the user-originated town proposal
 
@@ -44,3 +44,11 @@ Next decision: D-004.
 - AI proposals: separate data timestamp, stable plots, persisted snapshots, last-visit comparison, and skippable opening.
 - Sponsor and competition route: still undecided.
 - Reference: [Input](../prompts/0003-town-deployment-modes.md).
+
+## D-004 — Fixed plots and timeline transitions
+
+- Date: 2026-09-11 (UTC+8).
+- User-defined direction: stable land positions per project, whole-town timeline selection, and visible scene transitions between versions.
+- AI elaboration: snapshot semantics, stable camera, missing-data behavior, display-policy consistency, and accessible transition options.
+- Status: interaction direction supplied by the user; implementation details remain a draft.
+- References: [Input](../prompts/0004-town-timeline.md), [draft](../specs/0001-town-timeline.md).

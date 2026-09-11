@@ -18,13 +18,15 @@ buildergame/
 │   ├── decisions.md          # Decisions and rationale
 │   └── ideation/             # Proposals and feasibility reviews
 ├── specs/
-│   └── README.md             # Specifications and acceptance criteria
+│   ├── README.md             # Specifications and acceptance criteria
+│   └── 0001-town-timeline.md  # Draft timeline interaction
 ├── prompts/
 │   ├── README.md             # Prompt recording conventions
 │   ├── 0000-workspace-setup.md
 │   ├── 0001-language-policy.md
 │   ├── 0002-hackathon-town.md
-│   └── 0003-town-deployment-modes.md
+│   ├── 0003-town-deployment-modes.md
+│   └── 0004-town-timeline.md
 ├── collaboration/
 │   ├── log.md                # Inputs, contributions, outputs, verification
 │   ├── AI_USAGE.md           # AI disclosure by file or module
@@ -54,12 +56,13 @@ buildergame/
 4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
 5. Commit meaningful work units. Never invent or backdate development history.
 
-The next collaboration record is **0004**; records 0002–0003 capture the town idea, feasibility review, and organizer-deployed snapshot/live modes. The directory structure supports the work and does not prescribe product features.
+The next collaboration record is **0005**; records 0002–0004 capture the town concept, deployment modes, and timeline interaction. The directory structure supports the work and does not prescribe product features.
 
 ## Entry points
 
 - [Problem brief](docs/brief.md)
 - [Hackathon Town feasibility review](docs/ideation/0002-hackathon-town-review.md)
+- [Timeline interaction draft](specs/0001-town-timeline.md)
 - [Competition rules](docs/rules.md)
 - [Collaboration log](collaboration/log.md)
 - [AI disclosure](collaboration/AI_USAGE.md)

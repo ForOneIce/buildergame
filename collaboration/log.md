@@ -28,7 +28,7 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Version record: preserve the setup commit and save this change separately.
 - Input: [0001-language-policy](../prompts/0001-language-policy.md).
 
-Next collaboration record: **0004**.
+Next collaboration record: **0005**.
 
 ## 0002 — Review Hackathon Town
 
@@ -51,3 +51,12 @@ Next collaboration record: **0004**.
 - Outputs: prompt 0003, review section 13, and updated status/decision/AI records.
 - Verification: local links in all 17 Markdown files resolved and git diff --check passed. No product code, deployment, or user validation.
 - Input: [0003-town-deployment-modes](../prompts/0003-town-deployment-modes.md).
+
+## 0004 — Fixed plots and timeline transitions
+
+- Date: 2026-09-11 (UTC+8).
+- Human contribution: specified permanent project plots and town-wide timeline transitions to make changes visible.
+- AI contribution: drafted snapshot/version semantics, transitions, stable identity, policy consistency, accessibility, and proposed acceptance criteria.
+- Outputs: original prompt with English translation, draft timeline specification, and updated cross-references.
+- Verification: local links in all 19 Markdown files resolved and git diff --check passed. Product acceptance criteria remain untested.
+- References: [Input](../prompts/0004-town-timeline.md), [draft](../specs/0001-town-timeline.md).

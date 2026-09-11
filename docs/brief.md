@@ -52,3 +52,7 @@ A Three.js town maps hackathon repositories to houses. Structured event manifest
 The user specified organizer self-deployment with event-name branding in the opening animation, a deployment-time game version, a fixed post-event showcase mode, and a continuously updated town mode. Evolving project buildings form the cityscape and should make change visible to returning visitors.
 
 Reference: [prompt 0003](../prompts/0003-town-deployment-modes.md). AI proposes separate deployment/data timestamps and persistent snapshot comparison; these technical details remain unapproved.
+
+## User refinement: visible town history
+
+The user specified fixed project land positions and a town-wide update timeline. Switching versions should produce a visible transition between historical scenes. See [prompt 0004](../prompts/0004-town-timeline.md) and the [draft interaction specification](../specs/0001-town-timeline.md). Snapshot persistence and animation details are AI proposals; no implementation is authorized.
