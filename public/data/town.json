@@ -146,6 +146,21 @@
           "name": "Juniper",
           "bio": "Fictional builder in the sample neighborhood."
         }
+      },
+      {
+        "id": "sample-8",
+        "name": "First Bricks",
+        "repository": "https://github.com/example/sample-8",
+        "description": "An experiment becoming a little more real.",
+        "color": "#476b9b",
+        "plot": {
+          "x": 0,
+          "z": 2
+        },
+        "builder": {
+          "name": "Maple",
+          "bio": "Fictional builder in the sample neighborhood."
+        }
       }
     ]
   },
@@ -398,6 +413,38 @@
             },
             "score": 290,
             "stage": "townhouse",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-8",
+            "plot": {
+              "x": 0,
+              "z": 2
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-05T12:00:00.000Z",
+            "metrics": {
+              "commits": 2,
+              "stars": 0,
+              "forks": 0
+            },
+            "score": 2,
+            "stage": "foundation",
             "rule": {
               "version": "linear-v1",
               "mode": "weighted",
@@ -677,6 +724,38 @@
                 450
               ]
             }
+          },
+          {
+            "projectId": "sample-8",
+            "plot": {
+              "x": 0,
+              "z": 2
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-07T12:00:00.000Z",
+            "metrics": {
+              "commits": 5,
+              "stars": 1,
+              "forks": 0
+            },
+            "score": 8,
+            "stage": "foundation",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
           }
         ]
       },
@@ -924,6 +1003,38 @@
             },
             "score": 542,
             "stage": "decorated",
+            "rule": {
+              "version": "linear-v1",
+              "mode": "weighted",
+              "weights": {
+                "commits": 1,
+                "stars": 3,
+                "forks": 6
+              },
+              "thresholds": [
+                0,
+                30,
+                100,
+                220,
+                450
+              ]
+            }
+          },
+          {
+            "projectId": "sample-8",
+            "plot": {
+              "x": 0,
+              "z": 2
+            },
+            "status": "fresh",
+            "observedAt": "2026-09-09T12:00:00.000Z",
+            "metrics": {
+              "commits": 8,
+              "stars": 2,
+              "forks": 0
+            },
+            "score": 14,
+            "stage": "foundation",
             "rule": {
               "version": "linear-v1",
               "mode": "weighted",
