@@ -15,13 +15,15 @@ buildergame/
 ├── docs/
 │   ├── brief.md              # Problems, candidates, and assumptions
 │   ├── rules.md              # Official sources, deadlines, and eligibility
-│   └── decisions.md          # Decisions and rationale
+│   ├── decisions.md          # Decisions and rationale
+│   └── ideation/             # Proposals and feasibility reviews
 ├── specs/
 │   └── README.md             # Specifications and acceptance criteria
 ├── prompts/
 │   ├── README.md             # Prompt recording conventions
 │   ├── 0000-workspace-setup.md
-│   └── 0001-language-policy.md
+│   ├── 0001-language-policy.md
+│   └── 0002-hackathon-town.md
 ├── collaboration/
 │   ├── log.md                # Inputs, contributions, outputs, verification
 │   ├── AI_USAGE.md           # AI disclosure by file or module
@@ -35,10 +37,10 @@ buildergame/
 
 ## Current status
 
-- Phase: preparation; waiting for the first product ideation session.
-- Candidate interests: small-event formation and refunds; voice and accessible coding-AI interaction; Web3 vulnerability reproduction tools.
+- Phase: ideation; reviewing the user's Hackathon Town concept. No implementation scope has been approved.
+- Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots. Earlier candidate interests remain in the brief.
 - Product, Classic/Continuity route, and partners: undecided.
-- Outputs: collaboration scaffolding only; no product code, test results, or user validation.
+- Outputs: collaboration scaffolding and a feasibility review; no product code, product test results, or user validation.
 - Participation: acceptance and check-ins have not been verified in the Dashboard.
 - Language: English first with brief Chinese notes. Original user prompts retain their language and receive separately labeled English translations.
 - History: local Git initialized; setup commit `0b573c4`. No remote publication.
@@ -51,11 +53,12 @@ buildergame/
 4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
 5. Commit meaningful work units. Never invent or backdate development history.
 
-The next collaboration record is **0002**; record 0001 covers the language preference. The directory structure supports the work and does not prescribe product features.
+The next collaboration record is **0003**; record 0002 captures the user's town idea and its feasibility review. The directory structure supports the work and does not prescribe product features.
 
 ## Entry points
 
 - [Problem brief](docs/brief.md)
+- [Hackathon Town feasibility review](docs/ideation/0002-hackathon-town-review.md)
 - [Competition rules](docs/rules.md)
 - [Collaboration log](collaboration/log.md)
 - [AI disclosure](collaboration/AI_USAGE.md)

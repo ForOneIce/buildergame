@@ -23,3 +23,13 @@ Recorded on 2026-09-11 (UTC+8). This is a workspace baseline, not the official e
 Record source URL/repository, exact version/commit, files, license, pre-event functionality, event additions, human/AI involvement, and selected track for each imported item.
 
 Current imported items: none.
+
+## Session 0002: related prior showcase
+
+- Source reviewed: [HackathonGalacticShowcase](https://github.com/ForOneIce/HackathonGalacticShowcase), README retrieved 2026-09-11.
+- Described prior scope: immersive hackathon project discovery, project details, demo links, previews, bilingual React UI.
+- Declared stack: React/TypeScript, Tailwind, Motion, Vite. Existing Three.js capability was not established.
+- README license declaration: CC BY-NC-SA 4.0; verify rights and applicable licenses before any reuse.
+- Relationship: relevant previous work to disclose if reused. Only its public README was read; no code or assets were imported.
+- Proposed additions: periodic snapshots, visible activity over time, configurable displays, optional event/project registry.
+- Competition route: still undecided; a fresh folder does not establish From Scratch eligibility.

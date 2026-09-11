@@ -25,3 +25,13 @@ This evolving factual record supports final submission. Do not mark content revi
 AI translated 13 existing Markdown files and added `prompts/0001-language-policy.md`. The user made the language decision; AI performed translation and editing. Original Chinese prompts remain intact. No product functionality changed.
 
 For later work, identify actual code, assets, prompts, human revisions, and verification. Do not attribute all AI output to humans or invent participation to satisfy eligibility.
+
+## Session 0002: ideation review
+
+- Human contribution: originated the 3D town concept, maintenance/attention problem, event–repository association, house stages, organizer metric priorities, and sign/demo interactions.
+- AI contribution: evaluated feasibility, incentives, GitHub constraints, chain boundaries, sponsor fit, costs, and validation; proposed a smaller MVP without treating it as approved.
+- Main generated file: `docs/ideation/0002-hackathon-town-review.md`.
+- Prompt record: `prompts/0002-hackathon-town.md` preserves the actual Chinese input and an AI-produced English translation.
+- Updated records: README, prompt conventions, brief, decisions, collaboration log, and baseline.
+- Research: read-only public GitHub API and official documentation requests; no additional AI tool and no automatic social actions.
+- Review status: user has not approved the assessment or implementation scope. No product code, 3D assets, or user-validation results were generated.

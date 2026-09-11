@@ -1,6 +1,6 @@
 # Problem brief
 
-Status: awaiting ideation; no topic selected. This summarizes earlier discussion and is neither a verbatim transcript nor an approved feature specification.
+Status: ideation in progress. The user proposed Hackathon Town on 2026-09-11 and requested an assessment. No implementation scope or competition track is approved. Earlier candidates below remain background.
 
 > 中文提示：区分用户需求、AI 建议与待验证假设。
 
@@ -34,3 +34,15 @@ Community admission was discussed but has not been included in a selected propos
 - From Scratch versus Continuity, including reuse scope: undecided.
 - Dependencies, timing risks, and alternatives: to assess.
 - User validation results: none.
+
+## Current user proposal: Hackathon Town
+
+A Three.js town maps hackathon repositories to houses. Structured event manifests, periodically fetched GitHub metrics, organizer-selected display priorities, builder signs, and demo/repository links make projects discoverable after the event. An optional on-chain record preserves the asserted event/project association.
+
+- Origin: the user's own concept, recorded in [prompt 0002](../prompts/0002-hackathon-town.md).
+- User-requested assessment: feasibility, preparation, appropriate sponsors, cost, and acceptance.
+- Evidence of potential reuse: the existing HackathonGalacticShowcase README describes an immersive React project showcase; no source or assets have been copied.
+- AI recommendations, not confirmed: one event, 20–50 projects, cached daily snapshots, three house stages, attention/development signals separated, a list fallback, wallet-free viewing, and conditional ENSv2 integration.
+- Important assumptions: the town creates repeat visits; builders welcome metric-based appearance; organizers will curate and may pay. None has been tested.
+- Full review: [Hackathon Town](ideation/0002-hackathon-town-review.md).
+- Next decisions: pilot event, initial data set, metric definitions, reuse/track choice, and whether ENS namespace delegation solves a real need.

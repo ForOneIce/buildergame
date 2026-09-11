@@ -28,4 +28,17 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Version record: preserve the setup commit and save this change separately.
 - Input: [0001-language-policy](../prompts/0001-language-policy.md).
 
-Next collaboration record: **0002**, expected to cover ideation.
+Next collaboration record: **0003**.
+
+## 0002 — Review Hackathon Town
+
+- Date: 2026-09-11 (UTC+8).
+- Phase: ideation and assessment.
+- Human contribution: conceived a Three.js town linking events, repositories, builder profiles, activity-driven house models, and viewer interactions.
+- AI contribution: researched the existing showcase and GitHub REST limits; assessed feasibility, incentive risks, costs, chain boundaries, sponsor fit, and validation; produced English review materials with short Chinese notes.
+- Sources: existing HackathonGalacticShowcase README and official GitHub rate-limit page retrieved today; partner pages reviewed earlier in this conversation.
+- Execution: browser tool unavailable; sandbox network access denied. Public read-only requests succeeded after elevated execution. No accounts were modified or messages sent.
+- Outputs: prompt 0002, feasibility review, and updated project/AI/reuse/decision records.
+- Verification: all local links in 16 Markdown files resolved and git diff --check passed. No implementation, performance test, pilot interview, or user retention measurement performed.
+- Open questions: pilot, data mapping, display policy, reuse/track, assets, and partner choice.
+- References: [Input](../prompts/0002-hackathon-town.md), [review](../docs/ideation/0002-hackathon-town-review.md).

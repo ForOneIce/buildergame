@@ -24,4 +24,14 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - Impact: no product, stack, or competition-track change.
 - Reference: [Language instruction](../prompts/0001-language-policy.md).
 
-Next decision: D-002.
+Next decision: D-003.
+
+## D-002 — Assess the user-originated town proposal
+
+- Date: 2026-09-11 (UTC+8).
+- User instruction: assess a Three.js hackathon town, preparation, partner fit, costs, and user acceptance.
+- Confirmed scope of this session: research and assessment only.
+- Attribution: the user originated the town, house-growth, metric-selection, and sign interaction concept; AI supplied technical/product critique and recorded proposals.
+- No confirmation: the suggested MVP size, metric policy, blockchain layer, ENS integration, and competition route are not implementation decisions.
+- Evidence: existing showcase README and GitHub REST limits retrieved on September 11; partner rules from earlier official-page reading.
+- References: [Original idea](../prompts/0002-hackathon-town.md), [review](ideation/0002-hackathon-town-review.md).
