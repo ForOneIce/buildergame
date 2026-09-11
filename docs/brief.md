@@ -42,7 +42,7 @@ A Three.js town maps hackathon repositories to houses. Structured event manifest
 - Origin: the user's own concept, recorded in [prompt 0002](../prompts/0002-hackathon-town.md).
 - User-requested assessment: feasibility, preparation, appropriate sponsors, cost, and acceptance.
 - Evidence of potential reuse: the existing HackathonGalacticShowcase README describes an immersive React project showcase; no source or assets have been copied.
-- AI recommendations, not confirmed: one event, 20–50 projects, cached daily snapshots, three house stages, attention/development signals separated, a list fallback, wallet-free viewing, and conditional ENSv2 integration.
+- AI recommendations, not confirmed: one event, 20–50 projects, cached daily snapshots, three house stages, a list fallback, wallet-free viewing, and conditional ENSv2 integration. The earlier metric-separation proposal was superseded by the user's organizer-defined growth requirement in session 0005.
 - Important assumptions: the town creates repeat visits; builders welcome metric-based appearance; organizers will curate and may pay. None has been tested.
 - Full review: [Hackathon Town](ideation/0002-hackathon-town-review.md).
 - Next decisions: pilot event, initial data set, metric definitions, reuse/track choice, and whether ENS namespace delegation solves a real need.
@@ -56,3 +56,9 @@ Reference: [prompt 0003](../prompts/0003-town-deployment-modes.md). AI proposes 
 ## User refinement: visible town history
 
 The user specified fixed project land positions and a town-wide update timeline. Switching versions should produce a visible transition between historical scenes. See [prompt 0004](../prompts/0004-town-timeline.md) and the [draft interaction specification](../specs/0001-town-timeline.md). Snapshot persistence and animation details are AI proposals; no implementation is authorized.
+
+## Current clarification: organizer authority over growth
+
+The user explicitly assigns growth criteria to each organizer. Commits or stars can directly drive house stages. A custom scoring system requires a complete repository-to-score mapping supplied before deployment. Earlier AI proposals for mandatory separation or adjustment of metrics are superseded.
+
+See [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [the current specification](../specs/0002-organizer-growth-rules.md). Technical configuration and implementation remain pending.

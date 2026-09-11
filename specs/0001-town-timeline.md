@@ -66,7 +66,9 @@ If an organizer changes those settings, identify a new display-policy version an
 
 A future replay lens may apply one chosen policy consistently to stored raw snapshots, but must label that policy and preserve the original published states. It is outside the first version.
 
-Keep data, display policy, and layout versions identifiable; these can be compact internal metadata with a simple public legend.
+Keep data, display policy, and layout versions identifiable as internal metadata; an optional organizer-authored explanation may be shown. Scores need not be exposed.
+
+Growth follows the organizer's chosen commits, stars, or complete custom-score table; see [growth rules](0002-organizer-growth-rules.md). Historical comparison preserves the selected configuration without imposing another scoring philosophy.
 
 ## Suggested stored data
 

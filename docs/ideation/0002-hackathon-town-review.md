@@ -82,7 +82,7 @@ Use stable repository IDs alongside owner/name to handle renames where possible.
 
 Record source identity, fetch timestamp, window, and calculation version. Store an initial observation snapshot. Historical star growth cannot be derived from a current star count alone; do not invent a pre-event baseline.
 
-Limit forked/imported repositories to the declared event additions when interpreting development activity. Do not use account follower counts in building progression: they measure existing personal reach and disadvantage new builders.
+Limit forked/imported repositories to the declared event additions when interpreting development activity. The current built-in growth sources are commits and stars; a custom table may encode the organizer's own system. See section 6.
 
 ### API limits and request budget
 
@@ -97,27 +97,22 @@ Illustrative budget, not a measured implementation: 100 repositories at roughly 
 
 Do not fetch all repositories independently for every visitor. Use a backend/scheduled job, bounded concurrency, conditional requests where applicable, and shared snapshots. Keep credentials server-side and out of manifests, browser bundles, and Git history.
 
-## 6. Visual progression and fairness
+## 6. Organizer-defined progression
 
-The user's proposal hides the numerical score while expressing organizer priorities visually. Keep a score-free default display, but disclose metric definitions, time windows, and the organizer's selected profile/weights in an accessible legend. Hiding a number does not make the display neutral or eliminate ranking effects.
+**Updated after the user's clarification in [prompt 0005](../../prompts/0005-organizer-growth-rules.md).** Earlier AI recommendations about mandatory separation of development and attention, normalization, or universal progression are superseded.
 
-Recommended separation:
+The organizer chooses the values represented by the town:
+- Commit-count growth uses the configured commit count.
+- Star-based growth uses GitHub stars.
+- A custom scoring system supplies a complete repository-to-score table before deployment.
 
-| Signal | Visual role | Interpretation |
-| --- | --- | --- |
-| First listing, repository documentation, demo/release evidence | Foundation or house stage | Observable milestones, not proof of quality |
-| Recent active development days | Workshop light, garden activity, construction detail | Recent public activity |
-| Star growth since first observation | Visitors, flowers, flags, or decoration | Attention, separate from construction |
-| Fork count | Optional detail card or decoration | Reuse interest is not proven by a fork |
-| Follower count | Optional representative detail only | Never part of project progression |
+The platform maps the selected values to the organizer's configured house stages. It does not impose another scoring philosophy or reinterpret commit count as active days.
 
-- Start valid imported projects with a welcoming base house; reserve empty plots for actual unclaimed spaces.
-- Avoid visual decay or punishment for inactivity. Preserve achieved milestones and show recent activity separately.
-- Keep plot positions stable when metrics change.
-- Use capped/log-scaled counts and active-day caps if composite profiles are introduced; raw counts reward spam and existing popularity.
-- Keep project metrics distinct from individual/team contribution attribution.
-- Do not describe the system as an objective measure of effort, quality, or commercial success.
-- Organizer-specific emphasis is a configurable display lens, not official judging or a cross-event leaderboard.
+Scores can remain hidden; model appearance is the chosen presentation. An optional description can explain the organizer's emphasis, but no separate score dashboard is required.
+
+Custom-table validation checks repository coverage, duplicates, numeric validity, and model mapping. It does not judge the organizer's criteria. For dynamic custom-score history, each new score-table version produces a snapshot.
+
+See [the current growth-rule specification](../../specs/0002-organizer-growth-rules.md). Stable plots and saved historical versions remain part of the timeline interaction.
 
 ## 7. Optional on-chain layer
 
@@ -189,7 +184,7 @@ Stars/follows occur on GitHub and are not blockchain transactions. The primary c
 4. Short project taglines, demos, categories, and rules for missing/broken URLs.
 5. A simple structured import format (JSON/CSV); fields are listed below.
 6. A visual reference and asset licenses; settle on an original low-poly style rather than copying Stardew Valley assets.
-7. One display profile: evidence of ongoing development versus attention, including windows and visible explanations.
+7. One organizer-selected growth mode: commits, stars, or a complete custom-score table, plus house-stage boundaries.
 8. A decision on reuse of the older showcase and the competition route.
 9. One organizer and several builders/viewers willing to try a pilot; no actual interviews have happened.
 10. A decision on whether organizer-controlled portable namespaces are valuable enough to justify ENS.
@@ -197,8 +192,8 @@ Stars/follows occur on GitHub and are not blockchain transactions. The primary c
 Suggested manifest fields:
 - Event: id, title, canonicalUrl, startsAt, endsAt, curator, authorityStatus.
 - Project: id, repositoryUrl, submissionUrl, titleOverride, tagline, demoOverride, representativeLogin, memberLogins, category.
-- Display: profileId, version, windowDays, public metric definitions.
-- Separate generated snapshot: repositoryId, counts, activeDays, capturedAt, dataStatus, sourceWindow.
+- Display: profileId, version, scoreSource, commitScope where applicable, customTable reference where applicable, and house-stage boundaries.
+- Separate generated snapshot: repositoryId, counts, effectiveScore, visualStage, capturedAt, dataStatus, sourceWindow, and scoring configuration version.
 
 The event definition is an input. Metrics are generated data; keep them out of hand-edited fields.
 
@@ -215,7 +210,7 @@ No checks below have been performed.
 - If using ENS, demonstrate actual delegation, resolution, and revoked-write failure on Sepolia.
 - Test whether an organizer can import/edit a manifest without developer intervention.
 - Observe whether viewers find a relevant project quickly; measure clicks and return visits only with an appropriate, minimal analytics setup.
-- Ask builders whether the model feels informative or unfair; use that feedback to adjust the display.
+- Collect feedback on how clearly the visualization communicates the organizer's selected criteria. Any scoring changes remain the organizer's decision.
 
 Suggested demand test: one organizer, three builders, and five viewers. These are proposed participants, not users already acquired.
 
@@ -225,7 +220,7 @@ With roughly two and a half days until submission as of this review:
 1. Confirm pilot data, product sentence, track, and reuse boundary.
 2. Build import → cached snapshot → list/card → outbound demo flow.
 3. Add a lightweight town with a stable layout and minimal assets.
-4. Add a prior-snapshot change view and honest metric legend.
+4. Add a prior-snapshot change view and optional organizer-authored description.
 5. Add ENS only if namespace delegation is a confirmed product need and the technical spike succeeds.
 6. Reserve time for phone/keyboard checks, README, partner evidence, and the human-narrated video.
 
@@ -276,12 +271,12 @@ Proposed interaction:
 2. Keep each project on a stable plot across snapshots.
 3. Show a subtle change marker on buildings that crossed a milestone or changed visual state.
 4. Provide a 'Since your last visit' summary with the period shown explicitly.
-5. Let viewers inspect the underlying evidence, such as a release or an increase in observed active days.
+5. Let viewers inspect project details; scores can remain hidden. Building changes follow the configured commits, stars, or custom scores.
 6. Offer previous/current snapshot comparison when a meaningful visual transition would otherwise be missed.
 
 A first-time visitor has no personal prior snapshot. Show a clearly dated town-wide comparison instead of claiming they previously visited. Persist an anonymous last-seen snapshot reference locally, while retaining the actual comparison snapshots server-side. If either baseline is unavailable, state that limitation. Do not fabricate past growth.
 
-Use staged geometry changes for milestones and separate decorations for attention. Avoid rebuilding the street layout as scores change, because viewers then lose the location of familiar projects. Fixed plot envelopes can support different house sizes without collisions.
+Use the organizer's selected score source and house-stage mapping. Metric separation is optional rather than mandatory. Avoid rebuilding the street layout as scores change, because viewers then lose the location of familiar projects. Fixed plot envelopes can support different house sizes without collisions.
 
 ### Organizer preparation and operating costs
 
@@ -290,7 +285,7 @@ Proposed configuration additions:
 - `mode: snapshot | live`.
 - `deploymentVersion` generated at deployment.
 - Snapshot source and, for live mode, refresh cadence and persistence configuration.
-- Display profile and public legend.
+- Organizer-selected growth source and house-stage mapping, with an optional description.
 - Opening animation enabled/skippable settings.
 
 Snapshot mode can be served as static assets with a bundled snapshot and has no required periodic API job. Live mode adds a scheduler, server-side credentials, persistent snapshots, error handling, and monitoring. Provide deployment instructions for each mode rather than assuming that every organizer can configure a backend.

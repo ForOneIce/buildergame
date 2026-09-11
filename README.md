@@ -1,10 +1,10 @@
 # buildergame
 
-Workspace for ETHOnline 2026. The product name, topic, technical stack, and competition track remain undecided.
+Workspace for ETHOnline 2026. Current concept: an organizer-deployed Hackathon Town. Branding, implementation details, and competition track remain undecided.
 
-Created on 2026-09-11 (Asia/Shanghai, UTC+8). Human–AI collaboration is recorded from workspace preparation onward. Product ideation has not started in this workspace.
+Created on 2026-09-11 (Asia/Shanghai, UTC+8). Human–AI collaboration is recorded from workspace preparation onward. Product ideation is in progress; user requirements and AI proposals are recorded separately.
 
-> 中文提示：英文为主，中文仅作辅助说明；选题尚未确定。
+> 中文提示：英文为主，中文辅助；当前构思为活动小镇，尚未开始实现。
 
 ## Directory map
 
@@ -19,14 +19,16 @@ buildergame/
 │   └── ideation/             # Proposals and feasibility reviews
 ├── specs/
 │   ├── README.md             # Specifications and acceptance criteria
-│   └── 0001-town-timeline.md  # Draft timeline interaction
+│   ├── 0001-town-timeline.md  # Draft timeline interaction
+│   └── 0002-organizer-growth-rules.md
 ├── prompts/
 │   ├── README.md             # Prompt recording conventions
 │   ├── 0000-workspace-setup.md
 │   ├── 0001-language-policy.md
 │   ├── 0002-hackathon-town.md
 │   ├── 0003-town-deployment-modes.md
-│   └── 0004-town-timeline.md
+│   ├── 0004-town-timeline.md
+│   └── 0005-organizer-growth-rules.md
 ├── collaboration/
 │   ├── log.md                # Inputs, contributions, outputs, verification
 │   ├── AI_USAGE.md           # AI disclosure by file or module
@@ -42,7 +44,7 @@ buildergame/
 
 - Phase: ideation; reviewing the user's Hackathon Town concept. No implementation scope has been approved.
 - Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots. Earlier candidate interests remain in the brief.
-- Product, Classic/Continuity route, and partners: undecided.
+- Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle; Classic/Continuity route and partners are undecided.
 - Outputs: collaboration scaffolding and a feasibility review; no product code, product test results, or user validation.
 - Participation: acceptance and check-ins have not been verified in the Dashboard.
 - Language: English first with brief Chinese notes. Original user prompts retain their language and receive separately labeled English translations.
@@ -56,13 +58,14 @@ buildergame/
 4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
 5. Commit meaningful work units. Never invent or backdate development history.
 
-The next collaboration record is **0005**; records 0002–0004 capture the town concept, deployment modes, and timeline interaction. The directory structure supports the work and does not prescribe product features.
+The next collaboration record is **0006**; records 0002–0005 capture the town concept, deployment modes, timeline, and organizer-defined growth. The directory structure supports the work and does not prescribe product features.
 
 ## Entry points
 
 - [Problem brief](docs/brief.md)
 - [Hackathon Town feasibility review](docs/ideation/0002-hackathon-town-review.md)
 - [Timeline interaction draft](specs/0001-town-timeline.md)
+- [Organizer-defined growth rules](specs/0002-organizer-growth-rules.md)
 - [Competition rules](docs/rules.md)
 - [Collaboration log](collaboration/log.md)
 - [AI disclosure](collaboration/AI_USAGE.md)

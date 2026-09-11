@@ -28,7 +28,7 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Version record: preserve the setup commit and save this change separately.
 - Input: [0001-language-policy](../prompts/0001-language-policy.md).
 
-Next collaboration record: **0005**.
+Next collaboration record: **0006**.
 
 ## 0002 — Review Hackathon Town
 
@@ -60,3 +60,12 @@ Next collaboration record: **0005**.
 - Outputs: original prompt with English translation, draft timeline specification, and updated cross-references.
 - Verification: local links in all 19 Markdown files resolved and git diff --check passed. Product acceptance criteria remain untested.
 - References: [Input](../prompts/0004-town-timeline.md), [draft](../specs/0001-town-timeline.md).
+
+## 0005 — Organizer-defined growth rules
+
+- Date: 2026-09-11 (UTC+8).
+- Human contribution: clarified that each organizer's values determine growth; custom scores require complete repository mapping before deployment.
+- AI contribution: corrected prior assumptions, specified commits/stars/custom sources and validation, and removed conflicting current recommendations.
+- Outputs: prompt 0005, growth-rule specification, reconciled review/timeline, and updated records.
+- Verification: all local links in 21 Markdown files resolved; git diff --check passed; conflicting current metric-separation recommendations were reconciled. No product code or acceptance tests.
+- References: [Input](../prompts/0005-organizer-growth-rules.md), [specification](../specs/0002-organizer-growth-rules.md).

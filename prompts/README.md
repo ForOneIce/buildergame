@@ -1,6 +1,6 @@
 # Prompt records
 
-Records 0000–0001 cover setup/language; 0002 the town concept; 0003 deployment modes; 0004 the timeline interaction. The next record is **0005**.
+Records 0000–0001 cover setup/language; 0002 the town concept; 0003 deployment modes; 0004 the timeline; 0005 organizer growth rules. The next record is **0006**.
 
 > 中文提示：用户原话原样保留，英文翻译单独标注。
 

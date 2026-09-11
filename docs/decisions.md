@@ -24,7 +24,7 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - Impact: no product, stack, or competition-track change.
 - Reference: [Language instruction](../prompts/0001-language-policy.md).
 
-Next decision: D-005.
+Next decision: D-006.
 
 ## D-002 — Assess the user-originated town proposal
 
@@ -52,3 +52,12 @@ Next decision: D-005.
 - AI elaboration: snapshot semantics, stable camera, missing-data behavior, display-policy consistency, and accessible transition options.
 - Status: interaction direction supplied by the user; implementation details remain a draft.
 - References: [Input](../prompts/0004-town-timeline.md), [draft](../specs/0001-town-timeline.md).
+
+## D-005 — Organizer-selected scoring governs house growth
+
+- Date: 2026-09-11 (UTC+8).
+- User decision: organizers choose commits, stars, or their own complete repository-to-score table; the app renders according to that choice.
+- Supersedes: AI recommendations to mandate attention/development separation or additional platform-selected adjustments.
+- AI work: document configurable sources, direct score-to-stage mapping, complete-table validation, and snapshot behavior.
+- Scope: accepted product principle; no implementation or deployment authorization.
+- References: [Input](../prompts/0005-organizer-growth-rules.md), [specification](../specs/0002-organizer-growth-rules.md).

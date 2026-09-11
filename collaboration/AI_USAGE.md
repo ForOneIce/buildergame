@@ -49,3 +49,10 @@ For later work, identify actual code, assets, prompts, human revisions, and veri
 - AI contribution: translated the prompt, drafted interaction/data/verification proposals, and recorded versioning and missing-data boundaries.
 - Files: prompt 0004, specs/0001-town-timeline.md, and linked project/decision/collaboration records.
 - Status: no renderer, assets, implementation, performance measurement, or passing acceptance test.
+
+## Session 0005: correction of growth-rule authority
+
+- Human contribution: corrected the AI framing and specified organizer-defined commits/stars/custom-score growth with a complete pre-deployment custom table.
+- AI contribution: withdrew conflicting recommendations, drafted the source/mapping/import contract, and reconciled current documentation.
+- Files: prompt 0005, specs/0002-organizer-growth-rules.md, updated review, timeline, project status, and collaboration records.
+- No product implementation, scoring evaluation, or user testing performed.
