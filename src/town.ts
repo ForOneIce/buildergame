@@ -1,134 +1,186 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import type { Project, Snapshot, Stage } from './types';
-import { houseModel } from './models';
-
-const colors = { grass: '#a8c875', plot: '#c9cd8b', road: '#ddcf9e', wood: '#8a5942', trunk: '#896545', leaf: '#729d4d' };
-const material = (color: THREE.ColorRepresentation) => new THREE.MeshStandardMaterial({ color, roughness: 0.92 });
-function box(group: THREE.Group, w: number, h: number, d: number, x: number, y: number, z: number, color: THREE.ColorRepresentation) {
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material(color));
-  mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh); return mesh;
-}
-function tree(group: THREE.Group, x: number, z: number, size = 1) {
-  box(group, .15, .8 * size, .15, x, .4 * size, z, colors.trunk);
-  for(let i=0;i<3;i++) { const crown = new THREE.Mesh(new THREE.IcosahedronGeometry((.5-i*.045) * size, 1), material(i%2?'#8aab52':colors.leaf));
-  crown.position.set(x+Math.sin(i*2)*.3*size, (1.12+i*.15)*size, z+Math.cos(i*2)*.24*size); crown.castShadow = true; group.add(crown); }
-}
-function disposeGroup(group: THREE.Group) {
-  group.traverse(obj => { if (obj instanceof THREE.Mesh) { obj.geometry.dispose(); const mats = Array.isArray(obj.material) ? obj.material : [obj.material]; mats.forEach(m => { if ('map' in m) (m as THREE.MeshBasicMaterial).map?.dispose(); m.dispose(); }); } });
-}
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { appearance, PLOT_SPACING, release, townAssets } from './town-assets';
+import type { Project, Snapshot } from './types';
+import './town.css';
 
 export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void) {
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#86bcd0'); scene.fog = new THREE.Fog('#add9e4', 75, 160);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
-  host.append(renderer.domElement); renderer.domElement.setAttribute('aria-label', 'Interactive 3D town. Use the project directory for keyboard access.');
-  const camera = new THREE.PerspectiveCamera(36, 1, .1, 500);
-  const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.enablePan = true;
-  controls.minPolarAngle = .25; controls.maxPolarAngle = Math.PI / 2.35;
-  scene.add(new THREE.HemisphereLight('#fff7df', '#93a986', 2.5));
-  const sun = new THREE.DirectionalLight('#fff6de', 3.1); sun.position.set(-12, 25, 16); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.left = -40; sun.shadow.camera.right = 40; sun.shadow.camera.top = 40; sun.shadow.camera.bottom = -40;
-  sun.shadow.normalBias = .04; scene.add(sun);
-  const xs = projects.map(p => p.plot.x * 4), zs = projects.map(p => p.plot.z * 4);
-  const center = new THREE.Vector3((Math.min(...xs) + Math.max(...xs)) / 2, 0, (Math.min(...zs) + Math.max(...zs)) / 2);
-  const width = Math.max(...xs) - Math.min(...xs) + 7, depth = Math.max(...zs) - Math.min(...zs) + 7;
+  const zh = document.documentElement.lang.startsWith('zh');
+  const t = (en: string, cn: string) => zh ? cn : en;
+  let disposed = false, dirty = true;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#e9eedc');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1; host.append(renderer.domElement);
+  renderer.domElement.setAttribute('aria-label', t('Interactive town. Drag to orbit, right-drag to pan, scroll to zoom. Projects are also available in the directory.', '交互小镇：拖动旋转，右键平移，滚轮缩放。也可使用项目列表。'));
+  const status = document.createElement('div'); status.className = 'town-load'; status.setAttribute('role', 'status');
+  const copy = document.createElement('span'), retry = document.createElement('button'); retry.textContent = t('Retry', '重试');
+  status.append(copy, retry); host.append(status);
+  const camera = new THREE.PerspectiveCamera(36, 1, .2, 3000);
+  const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+  controls.minPolarAngle = .08; controls.maxPolarAngle = Math.PI * .475; controls.minDistance = 8;
+  controls.addEventListener('change', () => { dirty = true; });
+  scene.add(new THREE.HemisphereLight('#fff8e5', '#b5ae87', 1.25));
+  const sun = new THREE.DirectionalLight('#ffeaca', 3.2); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.normalBias = .025; sun.shadow.bias = -.00015;
+  scene.add(sun, sun.target);
+  const fill = new THREE.DirectionalLight('#e2ebff', 1.1); fill.position.set(6, 5, -4); scene.add(fill);
+  const room = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer), environment = pmrem.fromScene(room, .06);
+  scene.environment = environment.texture; scene.environmentIntensity = .28; room.dispose(); pmrem.dispose();
+  const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
+  const ao = new GTAOPass(scene, camera, Math.max(1, host.clientWidth), Math.max(1, host.clientHeight));
+  ao.updateGtaoMaterial({ radius: .35, thickness: 1, distanceExponent: 1.6, distanceFallOff: .9, samples: 8 });
+  ao.blendIntensity = .78; composer.addPass(ao); const output = new OutputPass(); composer.addPass(output);
+  const assets = townAssets(scene, projects.length, () => { dirty = true; }); retry.onclick = () => assets.retry();
+  const xs = projects.length ? projects.map(p => p.plot.x * PLOT_SPACING) : [0];
+  const zs = projects.length ? projects.map(p => p.plot.z * PLOT_SPACING) : [0];
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minZ = Math.min(...zs), maxZ = Math.max(...zs);
+  const center = new THREE.Vector3((minX + maxX) / 2, 0, (minZ + maxZ) / 2);
+  const width = maxX - minX + 18, depth = maxZ - minZ + 18;
   const terrain = new THREE.Group(); scene.add(terrain);
-  box(terrain, width, 1.8, depth, center.x, -1, center.z, '#a19f8a');
-  // Irregular cliff skirt, with a soft sea underneath the island.
-  for (let i=0;i<36;i++) { const angle=i/36*Math.PI*2;const cliff=new THREE.Mesh(new THREE.IcosahedronGeometry(1.45+(i%3)*.2,0),material(i%2?'#b2ae96':'#979c8a'));cliff.position.set(center.x+Math.cos(angle)*(width/2-.5),-2.8-(i%3)*.22,center.z+Math.sin(angle)*(depth/2-.5));cliff.scale.y=1.25;cliff.castShadow=true;terrain.add(cliff); }
-  const sea=new THREE.Mesh(new THREE.PlaneGeometry(600,600),material('#68b5c9'));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
-  const scenery=new THREE.Group();scene.add(scenery);
-  for(let i=0;i<18;i++) {const ripple=box(scenery,1.2+(i%3),.008,.05,center.x+Math.sin(i*2.4)*(width/2+3+i*.6),-4.98,center.z+Math.cos(i*2.4)*(depth/2+3+i*.5),'#acd5dd');ripple.rotation.y=i*.6;}
-  // A small landing dock connects the town to the open water.
-  for(let i=0;i<8;i++)box(scenery,1,.07,.23,center.x-2,.02,center.z+depth/2+i*.26,'#b89765');
-  for(const x of [-2.55,-1.45])for(const z of [depth/2,depth/2+1.7]){box(scenery,.09,1.5,.09,center.x+x,-.3,center.z+z,'#8b7350');}
-  for(let i=0;i<5;i++){const cloud=new THREE.Group();for(let j=0;j<4;j++){const puff=new THREE.Mesh(new THREE.IcosahedronGeometry(1.3-j*.13,1),new THREE.MeshStandardMaterial({color:'#eaf2e6',transparent:true,opacity:.68,roughness:1}));puff.position.set(j*1.1,Math.sin(j)*.3,0);cloud.add(puff);}cloud.position.set(center.x+(i%2?1:-1)*(width/2+7+i*2),-1.5,center.z+(i-2)*9);scenery.add(cloud);}
-  box(terrain, width, .12, depth, center.x, -.095, center.z, colors.grass);
-  for (const z of new Set(zs)) box(terrain, width - .5, .035, .72, center.x, 0, z + 1.85, colors.road);
-  for (const x of new Set(xs)) box(terrain, .55, .035, depth - .5, x + 1.9, .006, center.z, colors.road);
-  for (let x = center.x - width / 2 + .8; x < center.x + width / 2; x += 2.5) {
-    tree(terrain, x, center.z - depth / 2 + .8, .85); tree(terrain, x, center.z + depth / 2 - .65, .65);
+  const mats = new Map<string, THREE.MeshStandardMaterial>();
+  function box(w: number, h: number, d: number, x: number, y: number, z: number, color: string) {
+    if (!mats.has(color)) mats.set(color, new THREE.MeshStandardMaterial({ color, roughness: 1 }));
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mats.get(color));
+    mesh.position.set(x, y, z); mesh.receiveShadow = true; terrain.add(mesh); return mesh;
   }
-  const buildings = new Map<string, { root: THREE.Group; house: THREE.Group; stage: Stage | null | undefined; progress: number }>();
-  const hitTargets: THREE.Object3D[] = [];
+  // Continuous planted ground; fixed plots have room for the largest courtyard.
+  box(width + 18, .12, depth + 18, center.x, -.29, center.z, '#b1bd82');
+  box(width, .10, depth, center.x, -.20, center.z, '#9fae72');
+  for (const z of new Set(zs.map(z => z + 6))) {
+    box(width, .04, 2.3, center.x, -.13, z, '#baa77d');
+    box(width, .04, 1.85, center.x, -.10, z, '#d6c6a1');
+  }
+  for (const x of new Set(xs.map(x => x + 6))) {
+    box(2.3, .04, depth, x, -.13, center.z, '#baa77d');
+    box(1.85, .04, depth, x, -.09, center.z, '#d6c6a1');
+  }
+  const signGeometry = new THREE.PlaneGeometry(1, 1), hitGeometry = new THREE.BoxGeometry(4.8, 5.6, 4.6);
+  const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
+  const hitTargets: THREE.Object3D[] = [], avatars: HTMLImageElement[] = [];
+  const buildings = new Map<string, { root: THREE.Group; sign: THREE.Mesh; marker: THREE.Mesh; stage: number; progress: number }>();
   for (const p of projects) {
-    const root = new THREE.Group(); root.position.set(p.plot.x * 4, 0, p.plot.z * 4); scene.add(root);
-    box(root, 3.25, .065, 3.05, 0, .015, 0, colors.plot);
-    box(root, .45, .025, .85, 0, .06, 1.18, colors.road);
-    for (const x of [-1.45, 1.45]) { for(const z of [-1.2,0,1.2])box(root,.09,.48,.09,x,.3,z,'#ab8651');for(const y of [.24,.43])box(root,.055,.06,2.65,x,y,-.12,'#b49461'); }
-    tree(root,-1.07,-.97,.58); tree(root,1.1,-.92,.45);
-    for(let i=0;i<6;i++){const petal=new THREE.Mesh(new THREE.IcosahedronGeometry(.06,0),material(i%2?'#f8d576':'#f4e5b5'));petal.position.set(-1.25+(i%3)*.18,.14,-.55+Math.floor(i/3)*.18);root.add(petal);}
-    const sign = new THREE.Group(); sign.position.set(-.83, 0, 1.27); root.add(sign);
-    box(sign, .07, .65, .07, 0, .34, 0, colors.wood);
-    box(sign, 1.15, .5, .08, 0, .66, 0, colors.wood);
-    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 224;
-    const ctx = canvas.getContext('2d')!;
+    const root = new THREE.Group(); root.position.set(p.plot.x * PLOT_SPACING, 0, p.plot.z * PLOT_SPACING); scene.add(root);
+    box(1.2, .04, 2.75, root.position.x - 1.25, -.08, root.position.z + 4.6, '#d6c6a1');
+    const canvas = document.createElement('canvas'); canvas.width = 768; canvas.height = 320;
+    const ctx = canvas.getContext('2d')!, texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
     const drawSign = (avatar?: HTMLImageElement) => {
-      ctx.fillStyle = '#805a40'; ctx.fillRect(0, 0, 512, 224);
-      ctx.fillStyle = '#f6e9cb'; ctx.font = 'bold 76px sans-serif';
-      if (avatar) ctx.drawImage(avatar, 22, 48, 118, 118);
-      else { ctx.fillStyle = p.color || '#63857b'; ctx.fillRect(22, 48, 118, 118); ctx.fillStyle = '#fff'; ctx.fillText(p.builder.name.slice(0, 1).toUpperCase(), 54, 135); }
-      ctx.fillStyle = '#fff1d8'; ctx.font = 'bold 39px sans-serif'; ctx.fillText(p.name.slice(0, 13), 160, 98);
-      ctx.font = '29px sans-serif'; ctx.fillText(p.builder.name.slice(0, 18), 160, 150);
+      ctx.clearRect(0, 0, 768, 320); ctx.fillStyle = '#6c7d49'; ctx.beginPath(); ctx.arc(76, 84, 49, 0, Math.PI * 2); ctx.fill();
+      if (avatar) { ctx.save(); ctx.clip(); ctx.drawImage(avatar, 27, 35, 98, 98); ctx.restore(); }
+      else { ctx.fillStyle = '#fff6de'; ctx.font = 'bold 44px sans-serif'; ctx.fillText(p.builder.name.slice(0, 1).toUpperCase(), 60, 99); }
+      ctx.fillStyle = '#513c25'; ctx.font = 'bold 47px Georgia'; ctx.fillText(p.name.slice(0, 21), 148, 84, 590);
+      ctx.font = '27px sans-serif'; ctx.fillText(p.builder.name.slice(0, 32), 150, 126, 584);
+      ctx.fillRect(28, 160, 710, 2); ctx.font = '26px sans-serif';
+      const description = p.description || t('A place for something new.', '在这里创造新的可能。');
+      ctx.fillText(description.slice(0, 48), 28, 212, 710); ctx.fillText(description.slice(48, 96), 28, 249, 710);
+      ctx.font = '21px sans-serif'; ctx.fillText(t('MEET THE BUILDER  →', '认识开发者  →'), 28, 297); texture.needsUpdate = true;
     };
-    drawSign(); const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(1.08, .46), new THREE.MeshBasicMaterial({ map: texture }));
-    face.position.set(0, .66, .046); sign.add(face); sign.userData = { id: p.id, action: 'details' }; hitTargets.push(sign);
-    if (p.builder.avatar) { const avatar = new Image(); avatar.crossOrigin = 'anonymous'; avatar.onload = () => { drawSign(avatar); texture.needsUpdate = true; }; avatar.src = p.builder.avatar; }
-    const hit = new THREE.Mesh(new THREE.BoxGeometry(2.1, 3.8, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
-    hit.position.y = 1.7; hit.userData = { id: p.id, action: 'visit' }; root.add(hit); hitTargets.push(hit);
-    const house = new THREE.Group(); root.add(house); buildings.set(p.id, { root, house, stage: undefined, progress: 1 });
+    drawSign();
+    const sign = new THREE.Mesh(signGeometry, new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false }));
+    sign.userData = { id: p.id, action: 'details' }; root.add(sign); hitTargets.push(sign);
+    if (p.builder.avatar) { const avatar = new Image(); avatar.crossOrigin = 'anonymous'; avatar.onload = () => { if (!disposed) drawSign(avatar); }; avatar.src = p.builder.avatar; avatars.push(avatar); }
+    const hit = new THREE.Mesh(hitGeometry, hitMaterial); hit.position.set(-.5, 2.4, -.3);
+    // Ray-only proxies stay outside the rendered scene (including AO overrides).
+    hit.position.add(root.position); hit.updateMatrixWorld();
+    hit.userData = { id: p.id, action: 'visit' }; hitTargets.push(hit);
+    const marker = new THREE.Mesh(new THREE.BoxGeometry(7, .15, 6.7), new THREE.MeshStandardMaterial({ color: '#adb8b4', roughness: 1 }));
+    marker.position.y = -.08; root.add(marker);
+    buildings.set(p.id, { root, sign, marker, stage: 0, progress: 1 });
   }
-  const ring = new THREE.Mesh(new THREE.RingGeometry(1.48, 1.57, 4), new THREE.MeshBasicMaterial({ color: '#f5fcdd', side: THREE.DoubleSide }));
-  ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); ring.position.y = .07; ring.visible = false; scene.add(ring);
-  let highlighted: string | null = null;
-  const ray = new THREE.Raycaster(); const pointer = new THREE.Vector2(); let down = { x: 0, y: 0 }; let dragged = false;
-  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY }; dragged = false; });
+  const ring = new THREE.Mesh(new THREE.RingGeometry(6.6, 6.72, 4), new THREE.MeshBasicMaterial({ color: '#fff4c2', side: THREE.DoubleSide }));
+  ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); ring.position.y = -.025; ring.visible = false; scene.add(ring);
+  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down = { x: 0, y: 0 }, dragged = false;
   const pick = (e: PointerEvent) => {
-    const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1); ray.setFromCamera(pointer, camera);
-    const result = ray.intersectObjects(hitTargets, true)[0]; if (!result) return null;
-    let object: THREE.Object3D | null = result.object;
-    while (object && !object.userData.id) object = object.parent;
-    return object?.userData;
+    const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1);
+    ray.setFromCamera(pointer, camera); return ray.intersectObjects(hitTargets.filter(o => o.visible), false)[0]?.object.userData;
   };
+  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY }; dragged = false; });
   renderer.domElement.addEventListener('pointermove', e => { if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) dragged = true; renderer.domElement.style.cursor = pick(e) ? 'pointer' : 'grab'; });
   renderer.domElement.addEventListener('pointerup', e => { if (dragged || e.button !== 0) return; const hit = pick(e); if (hit) select(hit.id, hit.action === 'visit'); });
-  let distance = 25;
+
   function reset() {
-    camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();
-    distance = Math.max(width, depth) / (2 * Math.tan(THREE.MathUtils.degToRad(18)) * Math.min(camera.aspect,1)) * 1.15;
-    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.66,.82,1).normalize().multiplyScalar(distance));
-    controls.minDistance = 5; controls.maxDistance = distance * 3; controls.update();
+    camera.aspect = Math.max(1, host.clientWidth) / Math.max(1, host.clientHeight); camera.updateProjectionMatrix();
+    const distance = Math.max((width + depth * .45) / camera.aspect, depth + width * .42) / (2 * Math.tan(THREE.MathUtils.degToRad(18))) * 1.05;
+    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.6, .88, 1).normalize().multiplyScalar(distance));
+    controls.maxDistance = Math.max(80, distance * 2); controls.update(); dirty = true;
   }
-  const resize = new ResizeObserver(() => { const w = host.clientWidth, h = host.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }); resize.observe(host); reset();
-  let last = performance.now();
-  renderer.setAnimationLoop(now => {
-    const delta = Math.min((now - last) / 1000, .06); last = now;
-    if (document.hidden) return;
-    for (const item of buildings.values()) {
-      item.progress = Math.min(1, item.progress + delta * 1.8);
-      item.house.scale.y = reducedMotion.matches ? 1 : Math.max(.015, 1 - Math.pow(1 - item.progress, 3));
+  function resize() {
+    const w = Math.max(1, host.clientWidth), h = Math.max(1, host.clientHeight);
+    renderer.setSize(w, h); composer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
+  }
+  const observer = new ResizeObserver(resize); observer.observe(host); resize(); reset();
+  const matrix = new THREE.Matrix4(), transform = new THREE.Matrix4();
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let last = performance.now(), lastBatch = 0;
+  function batches() {
+    dirty = false;
+    const near = new Set([...buildings.values()].filter(b => camera.position.distanceTo(b.root.position) < 38)
+      .sort((a, b) => camera.position.distanceToSquared(a.root.position) - camera.position.distanceToSquared(b.root.position)).slice(0, 6));
+    for (const a of assets.ready.values()) for (const p of a.parts) p.mesh.count = 0;
+    let unknown = 0, highCount = 0;
+    const wanted = new Set<string>();
+    for (const b of buildings.values()) {
+      if (b.stage) { wanted.add(`${b.stage}-low`); assets.request(b.stage, 'low'); }
+      if (b.stage && near.has(b)) { wanted.add(`${b.stage}-high`); assets.request(b.stage, 'high'); }
+      const high = near.has(b) && assets.ready.get(`${b.stage}-high`);
+      const asset = high || assets.ready.get(`${b.stage}-low`);
+      b.marker.visible = !asset; if (!b.stage) unknown++; if (high) highCount++;
+      b.sign.visible = !!asset;
+      if (!asset) continue;
+      b.sign.position.fromArray(asset.sign.position); b.sign.scale.set(asset.sign.size[0], asset.sign.size[1], 1);
+      const scale = reducedMotion.matches ? 1 : .88 + .12 * b.progress;
+      transform.makeScale(1, scale, 1); transform.setPosition(b.root.position);
+      for (const part of asset.parts) { matrix.multiplyMatrices(transform, part.local); part.mesh.setMatrixAt(part.mesh.count++, matrix); }
     }
-    controls.update(); renderer.render(scene, camera);
+    for (const a of assets.ready.values()) for (const p of a.parts) { p.mesh.visible = p.mesh.count > 0; p.mesh.instanceMatrix.needsUpdate = true; if (p.mesh.count) p.mesh.computeBoundingSphere(); }
+    const failed = [...wanted].some(k => assets.failed.has(k)), loading = [...wanted].some(k => assets.pending.has(k));
+    status.hidden = !failed && !loading && !unknown; retry.hidden = !failed;
+    copy.textContent = failed ? t('Some buildings could not load.', '部分建筑加载失败。') : loading ? t('Building the neighborhood…', '正在搭建街区…') : t(`${unknown} plots awaiting data`, `${unknown} 个地块等待数据`);
+    host.dataset.townReady = failed ? 'error' : loading ? 'loading' : 'true';
+    host.dataset.highDetail = String(highCount); host.dataset.stages = [...buildings.values()].map(b => b.stage).join(',');
+    // Keep shadow texels useful between the whole town and one yard.
+    const extent = Math.min(65, Math.max(12, camera.position.distanceTo(controls.target) * .45));
+    sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(new THREE.Vector3(-30, 100, 70));
+    Object.assign(sun.shadow.camera, { left: -extent, right: extent, top: extent, bottom: -extent, near: 1, far: 250 });
+    sun.shadow.camera.updateProjectionMatrix(); ao.enabled = camera.position.distanceTo(controls.target) < 110;
+  }
+  renderer.setAnimationLoop(now => {
+    const delta = Math.min((now - last) / 1000, .06); last = now; if (document.hidden) return;
+    for (const b of buildings.values()) if (b.progress < 1) { b.progress = Math.min(1, b.progress + delta * 2); dirty = true; }
+    controls.update(); if (dirty && now - lastBatch > 80) { batches(); lastBatch = now; }
+    renderer.info.autoReset = false; renderer.info.reset(); composer.render();
+    host.dataset.drawCalls = String(renderer.info.render.calls); host.dataset.triangles = String(renderer.info.render.triangles);
   });
   return {
     reset,
-    focus(id: string) { highlighted = id; const item = buildings.get(id); if (item) { ring.visible = true; ring.position.x = item.root.position.x; ring.position.z = item.root.position.z; } },
-    update(snapshot: Snapshot) {
-      for (const record of snapshot.projects) {
-        const item = buildings.get(record.projectId)!;
-        if (item.stage === record.stage) continue;
-        item.root.remove(item.house); disposeGroup(item.house);
-        item.house = houseModel(record.stage, projects.find(p => p.id === record.projectId)!.color || '#477eae');
-        item.root.add(item.house); item.stage = record.stage; item.progress = 0;
-      }
-      if (highlighted) this.focus(highlighted);
+    focus(id: string) {
+      const b = buildings.get(id); if (!b) return;
+      ring.visible = true; ring.position.x = b.root.position.x; ring.position.z = b.root.position.z;
+      controls.target.copy(b.root.position).add(new THREE.Vector3(0, 1.4, 0));
+      camera.position.copy(controls.target).add(new THREE.Vector3(10, 11, 16)); controls.update(); dirty = true;
     },
-    zoom(direction: number) { camera.position.sub(controls.target).multiplyScalar(direction > 0 ? .8 : 1.25).add(controls.target);controls.update(); },
-    dispose() { renderer.setAnimationLoop(null);resize.disconnect();controls.dispose();disposeGroup(terrain);disposeGroup(scenery);for(const item of buildings.values())disposeGroup(item.root);ring.geometry.dispose();ring.material.dispose();sea.geometry.dispose();(sea.material as THREE.Material).dispose();sun.shadow.dispose();renderer.dispose();renderer.domElement.remove(); },
+    update(snapshot: Snapshot) {
+      const states = new Map(snapshot.projects.map(r => [r.projectId, appearance(r.stage)]));
+      for (const [id, b] of buildings) { const next = states.get(id) ?? 0; if (next !== b.stage) { b.stage = next; b.progress = 0; } }
+      host.dataset.snapshot = snapshot.id; dirty = true;
+    },
+    zoom(direction: number) {
+      const offset = camera.position.clone().sub(controls.target);
+      offset.setLength(THREE.MathUtils.clamp(offset.length() * (direction > 0 ? .8 : 1.25), controls.minDistance, controls.maxDistance));
+      camera.position.copy(controls.target).add(offset); controls.update(); dirty = true;
+    },
+    dispose() {
+      disposed = true; renderer.setAnimationLoop(null); observer.disconnect(); controls.dispose();
+      avatars.forEach(a => { a.onload = null; a.onerror = null; }); assets.dispose();
+      release([terrain, ring, ...[...buildings.values()].map(b => b.root)]);
+      signGeometry.dispose(); hitGeometry.dispose(); hitMaterial.dispose(); sun.shadow.dispose();
+      ao.dispose(); output.dispose(); composer.dispose(); environment.dispose(); renderer.dispose(); renderer.domElement.remove(); status.remove();
+    },
   };
 }

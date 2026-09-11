@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const assert = require('node:assert/strict');
 (async()=>{
   fs.mkdirSync('private/qa',{recursive:true});
-  const browser = await chromium.launch({ headless:true, ...(process.env.BROWSER_BIN?{executablePath:process.env.BROWSER_BIN}:{channel:'chrome'}), args:['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader'] });
+  const browser = await chromium.launch({ headless:true, ...(process.env.BROWSER_BIN?{executablePath:process.env.BROWSER_BIN}:{channel:'chrome'}), args:process.env.BROWSER_RENDERER==='software'?['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']:[] });
   const page=await browser.newPage({viewport:{width:1440,height:1000}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:5173/',{waitUntil:'networkidle'});
