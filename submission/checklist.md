@@ -2,11 +2,9 @@
 
 Check items only with evidence. No project has been submitted; personal participation status remains unverified.
 
-> 中文提示：按实际完成情况勾选，英文材料面向国际评委。
-
 ## Eligibility and process
 
-- [ ] Verify acceptance and check-ins; second check-in due 2026-09-11 03:59 UTC / 11:59 Beijing.
+- [ ] Verify acceptance and check-ins; second check-in due 2026-09-11 03:59 UTC.
 - [ ] Confirm members and the 1–5 person team limit.
 - [ ] Select Classic/Continuity and disclose pre-existing project-specific work.
 - [ ] Verify partner eligibility for that route; select at most three partners.
@@ -24,7 +22,7 @@ Check items only with evidence. No project has been submitted; personal particip
 - [ ] Complete required feedback files/forms, testnet deployment, and contract verification.
 - [ ] Record a 2–4 minute video at 720p or higher with human narration; English is the project default.
 - [ ] Check for no AI voiceover, speeding up to fit the limit, or phone recording.
-- [ ] Submit and confirm success before 2026-09-13 16:00 UTC / 2026-09-14 00:00 Beijing.
+- [ ] Submit and confirm success before 2026-09-13 16:00 UTC.
 - [ ] If seeking Finalist consideration, check the individual assignment and prepare a four-minute demo plus three-minute Q&A.
 
 ## Partner-specific register

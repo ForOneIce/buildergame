@@ -5,7 +5,9 @@
 *.pem
 *.key
 .secrets/
-private/
+
+# Necessary local project material; all future children are ignored.
+/private/
 
 # Dependencies and generated output
 node_modules/

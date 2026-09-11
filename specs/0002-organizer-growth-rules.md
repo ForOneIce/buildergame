@@ -4,8 +4,6 @@ Status: user-confirmed product principle; configuration details and acceptance c
 
 Sources: [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [cumulative-count clarification](../prompts/0006-cumulative-commit-growth.md).
 
-> 中文提示：活动方选择价值导向；程序按既定数值映射房屋，不另行修正评分。
-
 ## Authority
 
 The event organizer owns the growth criteria. The platform is a configurable visualization tool, not a universal evaluator.
@@ -27,8 +25,6 @@ Earlier discussion allowed multiple dimensions. The organizer can combine them e
 The repository/reference counting definition and house-stage boundaries still need to be specified before implementation. Count full available history under that definition, not a recent time window. Do not substitute active days, recent commit counts, event-only additions, or star growth.
 
 ## Cumulative commit behavior
-
-> 中文提示：累计成果保留；停止提交不会让房屋荒废。
 
 - A repository's recorded historical commit total is the input.
 - If the total and mapping remain unchanged, its building stays unchanged regardless of elapsed time.

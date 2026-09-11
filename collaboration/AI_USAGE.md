@@ -1,67 +1,25 @@
 # AI usage disclosure
 
-This evolving factual record supports final submission. Do not mark content reviewed or verified without evidence.
+Codex assisted with project planning, research, English translations, specifications and initial implementation. No other AI tool use is recorded. Generated code is incomplete and has not passed a build or full human review.
 
-> 中文提示：按文件记录 AI 参与和人的实际贡献。
+## Human contributions
 
-## Tools used
+- Originated the hackathon town concept and the problem of projects losing visibility after events.
+- Specified organizer deployments, event branding, permanent plots and whole-town history navigation.
+- Defined organizer authority over growth, cumulative commits without inactivity decay, and complete custom score imports.
+- Selected the ETHOnline 2026 pilot, commits/stars/forks weight ordering, Web2 portability and deferred ENS integration.
 
-Current update (sessions 0007–0008): Codex generated the initial TypeScript/Three.js application, shared JavaScript data contract, CSS/procedural visuals, package/build configuration, Demo specification, prompt translations and submission copy. The human selected ETHOnline, metric priority and the Web2-first Demo scope and supplied the remote repository. Code is incomplete and has not passed a build or human review. Earlier session statuses below describe their historical state.
+## AI contributions
 
-- Codex: workspace structure, competition-rule organization, documentation, templates, and English translation.
-- Other AI tools: none recorded.
+| Scope | Actual assistance | Verification status |
+| --- | --- | --- |
+| docs/ | Feasibility, GitHub API research, competition-source summaries and decisions | Sources recorded; product assumptions not user-validated |
+| specs/ and prompts/ | Requirements, original project instructions, labeled translations and implementation plan | Historical documentation checks recorded in collaboration log |
+| src/ | TypeScript/Three.js town, procedural models, timeline/directory UI, styling, data contract and link boundary | Initial code only; build and application tests pending |
+| package.json, tsconfig.json, vite.config.ts, index.html | Dependency and build setup | Installation and complete build unverified |
+| README.md and collaboration/ | Project status, contribution and reuse documentation | Does not establish adoption or production readiness |
+| submission/ and submission copy | Checklist, demo outline and English project description | Final video, human narration and submission verification pending |
 
-## Contribution scopes
+## Development trace
 
-| Files/module | Actual AI involvement | Actual human contribution | Review/verification |
-| --- | --- | --- | --- |
-| README.md, AGENTS.md, .gitignore | Generated structure and conventions; translated Markdown and added language policy | Workspace name, recording objective, and language preference | Structural checks in log; full user review not recorded |
-| docs/* | Summarized context/rules/decisions and translated records | Interests, requirements, prior-project context, language choice | Topic unapproved; recheck rules before submission |
-| specs/README.md, prompts/* | Generated conventions, saved instructions, labeled translations | Original user inputs retained | No product specification yet |
-| collaboration/* | Created and translated contribution, reuse, and verification records | Requested continuous recording and English-first artifacts | Preparation only |
-| submission/* | Generated and translated checklist and blank demo outline | No demo contribution yet | Not completed or submitted |
-| src/ and tests/ placeholders | Created empty placeholders | No implementation contribution to attribute | No product code or tests |
-
-## Session 0001
-
-AI translated 13 existing Markdown files and added `prompts/0001-language-policy.md`. The user made the language decision; AI performed translation and editing. Original Chinese prompts remain intact. No product functionality changed.
-
-For later work, identify actual code, assets, prompts, human revisions, and verification. Do not attribute all AI output to humans or invent participation to satisfy eligibility.
-
-## Session 0002: ideation review
-
-- Human contribution: originated the 3D town concept, maintenance/attention problem, event–repository association, house stages, organizer metric priorities, and sign/demo interactions.
-- AI contribution: evaluated feasibility, incentives, GitHub constraints, chain boundaries, sponsor fit, costs, and validation; proposed a smaller MVP without treating it as approved.
-- Main generated file: `docs/ideation/0002-hackathon-town-review.md`.
-- Prompt record: `prompts/0002-hackathon-town.md` preserves the actual Chinese input and an AI-produced English translation.
-- Updated records: README, prompt conventions, brief, decisions, collaboration log, and baseline.
-- Research: read-only public GitHub API and official documentation requests; no additional AI tool and no automatic social actions.
-- Review status: user has not approved the assessment or implementation scope. No product code, 3D assets, or user-validation results were generated.
-
-## Session 0003: deployment-mode refinement
-
-- Human contribution: specified event branding, organizer self-deployment, deployment-time versioning, fixed and live modes, and visibly evolving cityscapes.
-- AI contribution: translated the input, assessed mode-specific architecture/costs, and proposed snapshot/version separation and comparison behavior.
-- Files: prompt 0003, section 13 of the feasibility review, and linked project/decision/collaboration records.
-- Status: no product implementation, deployment, or user test. Recommendations remain proposals.
-
-## Session 0004: timeline interaction
-
-- Human contribution: proposed fixed plot locations and a whole-town timeline with rendered transitions between historical versions.
-- AI contribution: translated the prompt, drafted interaction/data/verification proposals, and recorded versioning and missing-data boundaries.
-- Files: prompt 0004, specs/0001-town-timeline.md, and linked project/decision/collaboration records.
-- Status: no renderer, assets, implementation, performance measurement, or passing acceptance test.
-
-## Session 0005: correction of growth-rule authority
-
-- Human contribution: corrected the AI framing and specified organizer-defined commits/stars/custom-score growth with a complete pre-deployment custom table.
-- AI contribution: withdrew conflicting recommendations, drafted the source/mapping/import contract, and reconciled current documentation.
-- Files: prompt 0005, specs/0002-organizer-growth-rules.md, updated review, timeline, project status, and collaboration records.
-- No product implementation, scoring evaluation, or user testing performed.
-
-## Session 0006: cumulative commits
-
-- Human contribution: corrected the AI's recent-activity interpretation; cumulative historical commits preserve the existing building.
-- AI contribution: documented unchanged-building behavior, zero-versus-unavailable data, timeline implications, and reconciled conflicting current text.
-- Files: prompt 0006, growth/timeline specs, review, project policy/status, and collaboration records.
-- No product implementation or acceptance testing performed.
+Project prompt records 0002–0007 and linked specifications preserve human requirements and AI proposals. Earlier recommendations conflicting with organizer-controlled growth were corrected after human feedback. See [collaboration log](log.md) for outputs and checks, and [reuse baseline](baseline.md) for dependencies and related prior work. No prior project code or art has been imported.

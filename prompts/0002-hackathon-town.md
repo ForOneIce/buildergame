@@ -1,11 +1,9 @@
 # 0002 — Hackathon Town idea and feasibility review
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Phase: ideation and assessment.
 - AI tool: Codex, this conversation.
 - Status: user-originated concept under review; implementation and partner selection are not approved.
-
-> 中文提示：保留用户原始创意；英文为翻译与整理。
 
 ## Original user input
 

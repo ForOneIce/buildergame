@@ -1,11 +1,9 @@
 # Hackathon Town — feasibility and product review
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Status: AI assessment of a user-originated idea; not an approved specification or implementation plan.
 - Working title: Hackathon Town. Neither branding nor competition track is confirmed.
 - Input: [Original idea and translation](../../prompts/0002-hackathon-town.md).
-
-> 中文提示：创意来自用户；本文件为 AI 评审建议，尚未确认实施。
 
 ## 1. Assessment
 
@@ -63,8 +61,6 @@ Proposed first deployment: one event, 20–50 curated public repositories, one n
 - Multiplayer, first-person movement, procedural world generation, user-uploaded 3D models.
 - Arbitrary screenshot services, embedded third-party demo pages, and automatic scraping of every hackathon platform.
 - Scoring code quality, security, revenue, or verified maintenance effort from public activity counts.
-
-> 中文提示：先做可更新的项目小镇，保留普通列表入口，不增加浏览钱包门槛。
 
 ## 5. GitHub data model and limitations
 

@@ -2,8 +2,6 @@
 
 Event: ETHOnline 2026. Based on official pages read in this conversation on 2026-09-10; recorded on 2026-09-11. Recheck updates and personal Dashboard status before submission.
 
-> 中文提示：规则以官网为准；北京时间为 UTC+8。
-
 ## Official sources
 
 - [Event details and submission rules](https://ethglobal.com/events/ethonline2026/info/details)
@@ -14,13 +12,13 @@ Event: ETHOnline 2026. Based on official pages read in this conversation on 2026
 
 ## Schedule
 
-| Milestone | UTC | Beijing (UTC+8) |
-| --- | --- | --- |
-| Hacking begins | 2026-09-04 16:00 | 2026-09-05 00:00 |
-| Second project check-in due | 2026-09-11 03:59 | 2026-09-11 11:59 |
-| Final submission due | 2026-09-13 16:00 | 2026-09-14 00:00 |
-| Round 1 asynchronous judging | 2026-09-13 19:00 | 2026-09-14 03:00 |
-| Round 2 live judging window | 2026-09-14 16:00–18:00 | 2026-09-15 00:00–02:00 |
+| Milestone | UTC |
+| --- | --- |
+| Hacking begins | 2026-09-04 16:00 |
+| Second project check-in due | 2026-09-11 03:59 |
+| Final submission due | 2026-09-13 16:00 |
+| Round 1 asynchronous judging | 2026-09-13 19:00 |
+| Round 2 live judging window | 2026-09-14 16:00–18:00 |
 
 Final deadline: September 13 at 12:00 pm EDT. Individual judging assignments appear in the Dashboard.
 

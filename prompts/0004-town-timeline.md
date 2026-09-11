@@ -1,10 +1,8 @@
 # 0004 — Fixed plots and town-wide timeline transitions
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Phase: interaction design.
 - AI tool: Codex, this conversation.
-
-> 中文提示：固定地块与时间线过渡由用户提出。
 
 ## Original user input
 

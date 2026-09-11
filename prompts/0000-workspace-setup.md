@@ -1,10 +1,8 @@
 # 0000 — Workspace setup
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Phase: preparation; no product selection or implementation completed.
 - AI tool: Codex, this conversation.
-
-> 中文提示：保留原始指令，英文为翻译。
 
 ## Original user input
 

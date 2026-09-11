@@ -1,31 +1,13 @@
-# Prompt records
+# Project prompt records
 
-Records 0000–0001 cover setup/language; 0002 the town concept; 0003 deployment modes; 0004 the timeline; 0005 organizer growth rules; 0006 cumulative commit behavior. The next record is **0007**.
+This directory contains instructions used to define and develop Buildergame. Administrative conversations and personal settings are excluded. Numbering gaps are intentional.
 
-> 中文提示：用户原话原样保留，英文翻译单独标注。
+- [0000 — Project workspace](0000-workspace-setup.md)
+- [0002 — Hackathon town concept](0002-hackathon-town.md)
+- [0003 — Organizer deployment modes](0003-town-deployment-modes.md)
+- [0004 — Fixed plots and timeline](0004-town-timeline.md)
+- [0005 — Organizer growth rules](0005-organizer-growth-rules.md)
+- [0006 — Cumulative commit growth](0006-cumulative-commit-growth.md)
+- [0007 — Web2-first Demo](0007-web2-demo.md)
 
-Use English for structure and reviewer-facing explanations. Preserve original inputs in their original language.
-
-Suggested format:
-
-```markdown
-# NNNN — Topic
-- Date and timezone:
-- Phase: ideation / planning / implementation / verification / submission
-- AI tools used:
-
-## Original user input
-Preserve actual input. Replace sensitive content with placeholders and label redactions.
-
-## English translation
-Provide a labeled translation of non-English input for reviewers.
-
-## Prompts submitted to other AI tools
-Save actual prompts and tool names; write "None" if not applicable.
-
-## Proposals, outputs, and feedback
-Include actual proposals or links to complete specs/plans.
-Identify user feedback, decisions, and open questions.
-```
-
-Do not fabricate earlier verbatim history. Background is summarized in `docs/brief.md`. Track these files without publishing sensitive material.
+Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

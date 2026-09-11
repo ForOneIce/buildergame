@@ -1,10 +1,8 @@
 # 0006 — Cumulative commits preserve existing buildings
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Phase: requirements correction.
 - AI tool: Codex, this conversation.
-
-> 中文提示：累计提交总数决定房屋；没有新提交就保持原状。
 
 ## Original user input
 

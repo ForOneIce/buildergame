@@ -1,17 +1,15 @@
 # Human–AI collaboration log
 
-## Sessions 0007–0008 — Demo scaffold and upload preparation
+## 0007 — Demo scaffold
 
-- Date: 2026-09-11 (Asia/Shanghai).
-- Human: chose ETHOnline 2026, commits/stars/forks weight ordering, deferred ENS, reusable Web2 base; requested urgent submission text and safe-upload instructions for the supplied GitHub repository.
+- Date: 2026-09-11.
+- Human: chose ETHOnline 2026, commits/stars/forks weight ordering, deferred ENS, reusable Web2 base.
 - AI: wrote Demo spec before initial code; generated Three.js renderer, timeline/directory UI, data validation, styling, configuration and English submission text. Updated README to disclose incomplete status.
-- Verification: read-only `git ls-remote` returned no refs for the supplied remote. Common credential-pattern scan of 37 current files and seven historical commit diffs returned no findings; no tracked sensitive/build paths matched. This is a limited pattern scan, not a guarantee that all content is appropriate to publish.
+- Verification: implementation tests and build remain pending.
 - Pending: complete sample data and scripts, install dependencies, test/build and visual verification, actual event list/art, human review. No push, deployment or user validation performed.
 - Tools: Codex shell and apply_patch. No other AI design tools used.
 
-Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verification; planned work is not completed work.
-
-> 中文提示：保留真实过程，未验证项明确注明。
+Record actual inputs, contributions, and verification; planned work is not completed work.
 
 ## 0000 — Create the workspace
 
@@ -25,28 +23,13 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Open questions: topic, roles, track, partners, acceptance criteria, and user validation.
 - Input: [0000-workspace-setup](../prompts/0000-workspace-setup.md).
 
-## 0001 — Apply the language preference
-
-- Date: 2026-09-11.
-- Human contribution: selected English as the primary language with simple Chinese notes.
-- AI contribution: translated documentation, preserved original prompts, added labeled English translations, and updated the collaboration policy.
-- Outputs: 13 translated Markdown files and one new language-instruction record.
-- Scope: preparation only; no product, stack, or track decision.
-- Verification: local links in all 14 Markdown files resolved; git diff --check passed. No product code changed, so product tests were not applicable.
-- Execution note: the sandbox denied document writes; the write command required elevated execution.
-- Version record: preserve the setup commit and save this change separately.
-- Input: [0001-language-policy](../prompts/0001-language-policy.md).
-
-Next collaboration record: **0007**.
-
 ## 0002 — Review Hackathon Town
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Phase: ideation and assessment.
 - Human contribution: conceived a Three.js town linking events, repositories, builder profiles, activity-driven house models, and viewer interactions.
-- AI contribution: researched the existing showcase and GitHub REST limits; assessed feasibility, incentive risks, costs, chain boundaries, sponsor fit, and validation; produced English review materials with short Chinese notes.
+- AI contribution: researched the existing showcase and GitHub REST limits; assessed feasibility, incentive risks, costs, chain boundaries, sponsor fit, and validation; produced a feasibility review.
 - Sources: existing HackathonGalacticShowcase README and official GitHub rate-limit page retrieved today; partner pages reviewed earlier in this conversation.
-- Execution: browser tool unavailable; sandbox network access denied. Public read-only requests succeeded after elevated execution. No accounts were modified or messages sent.
 - Outputs: prompt 0002, feasibility review, and updated project/AI/reuse/decision records.
 - Verification: all local links in 16 Markdown files resolved and git diff --check passed. No implementation, performance test, pilot interview, or user retention measurement performed.
 - Open questions: pilot, data mapping, display policy, reuse/track, assets, and partner choice.
@@ -54,7 +37,7 @@ Next collaboration record: **0007**.
 
 ## 0003 — Refine organizer deployments and presentation modes
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Human contribution: specified self-deployed, event-branded towns, deployment-time game versions, fixed editions and live monitoring, and visual building evolution.
 - AI contribution: recorded and translated the refinement; separated deployment versions from data snapshots; proposed persistence, stable plots, and clear change comparisons.
 - Outputs: prompt 0003, review section 13, and updated status/decision/AI records.
@@ -63,7 +46,7 @@ Next collaboration record: **0007**.
 
 ## 0004 — Fixed plots and timeline transitions
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Human contribution: specified permanent project plots and town-wide timeline transitions to make changes visible.
 - AI contribution: drafted snapshot/version semantics, transitions, stable identity, policy consistency, accessibility, and proposed acceptance criteria.
 - Outputs: original prompt with English translation, draft timeline specification, and updated cross-references.
@@ -72,7 +55,7 @@ Next collaboration record: **0007**.
 
 ## 0005 — Organizer-defined growth rules
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Human contribution: clarified that each organizer's values determine growth; custom scores require complete repository mapping before deployment.
 - AI contribution: corrected prior assumptions, specified commits/stars/custom sources and validation, and removed conflicting current recommendations.
 - Outputs: prompt 0005, growth-rule specification, reconciled review/timeline, and updated records.
@@ -81,7 +64,7 @@ Next collaboration record: **0007**.
 
 ## 0006 — Cumulative commits preserve buildings
 
-- Date: 2026-09-11 (UTC+8).
+- Date: 2026-09-11.
 - Human contribution: clarified historical total commits and rejected the implied inactivity/abandonment mechanic.
 - AI contribution: corrected recent-window wording and recorded persistent cumulative growth with empty-versus-unavailable data handling.
 - Outputs: prompt 0006 and updated specs, review, policy, and project records.

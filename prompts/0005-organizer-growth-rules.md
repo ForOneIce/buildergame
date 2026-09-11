@@ -1,10 +1,8 @@
 # 0005 — Organizer-defined growth rules
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Phase: requirements clarification.
 - AI tool: Codex, this conversation.
-
-> 中文提示：成长标准由活动方决定；撤回 AI 强制拆分指标的建议。
 
 ## Original user input
 

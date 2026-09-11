@@ -4,8 +4,6 @@ Status: draft. The user specified the core interaction; technical choices and ac
 
 Source: [prompt 0004](../prompts/0004-town-timeline.md).
 
-> 中文提示：地块固定，切换整城快照；过渡动画帮助识别变化。
-
 ## User-defined interaction
 
 - Every project keeps the same plot across versions.
@@ -45,8 +43,6 @@ Suggested transition duration: approximately 0.4–0.8 seconds, subject to devic
 - Treat animation frames as a presentation transition, not measurements of intermediate historical activity.
 - In reduced-motion mode, switch directly and retain textual change indicators.
 - Provide keyboard-operable timeline controls and equivalent list/card information.
-
-> 中文提示：第一版无需复杂模型变形，短暂淡入淡出即可表达变化。
 
 ## Stable identity and layout
 

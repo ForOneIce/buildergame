@@ -1,6 +1,6 @@
 # Session 0007 — Pilot and Demo scope
 
-Date: 2026-09-11 (Asia/Shanghai). Source: user conversation.
+Date: 2026-09-11. Source: user conversation.
 
 ## Original user prompt (verbatim)
 

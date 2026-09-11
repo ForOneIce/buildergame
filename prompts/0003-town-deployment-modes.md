@@ -1,10 +1,8 @@
 # 0003 — Organizer deployment and snapshot/live modes
 
-- Date: 2026-09-11 (Asia/Shanghai, UTC+8).
+- Date: 2026-09-11.
 - Phase: ideation refinement.
 - AI tool: Codex, this conversation.
-
-> 中文提示：用户补充了自行部署、活动冠名、静态与动态两种模式。
 
 ## Original user input
 

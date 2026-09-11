@@ -1,8 +1,6 @@
 # Web2-first town Demo
 
-Date: 2026-09-11 (Asia/Shanghai). Implementation authorized by prompt 0007.
-
-> 中文提示：先跑通演示；真实名单、视觉素材后换，ENS 后续接入。
+Date: 2026-09-11. Implementation authorized by prompt 0007.
 
 ## User requirements
 
