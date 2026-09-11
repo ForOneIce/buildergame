@@ -24,7 +24,7 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - Impact: no product, stack, or competition-track change.
 - Reference: [Language instruction](../prompts/0001-language-policy.md).
 
-Next decision: D-003.
+Next decision: D-004.
 
 ## D-002 — Assess the user-originated town proposal
 
@@ -35,3 +35,12 @@ Next decision: D-003.
 - No confirmation: the suggested MVP size, metric policy, blockchain layer, ENS integration, and competition route are not implementation decisions.
 - Evidence: existing showcase README and GitHub REST limits retrieved on September 11; partner rules from earlier official-page reading.
 - References: [Original idea](../prompts/0002-hackathon-town.md), [review](ideation/0002-hackathon-town-review.md).
+
+## D-003 — Record organizer deployment and two presentation modes
+
+- Date: 2026-09-11 (UTC+8).
+- User-specified direction: event-branded organizer deployments; deployment-time game version; static snapshot or live monitoring; visually recognizable building evolution.
+- Scope: conceptual refinement, not authorization to build or deploy.
+- AI proposals: separate data timestamp, stable plots, persisted snapshots, last-visit comparison, and skippable opening.
+- Sponsor and competition route: still undecided.
+- Reference: [Input](../prompts/0003-town-deployment-modes.md).

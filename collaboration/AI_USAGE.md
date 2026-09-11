@@ -35,3 +35,10 @@ For later work, identify actual code, assets, prompts, human revisions, and veri
 - Updated records: README, prompt conventions, brief, decisions, collaboration log, and baseline.
 - Research: read-only public GitHub API and official documentation requests; no additional AI tool and no automatic social actions.
 - Review status: user has not approved the assessment or implementation scope. No product code, 3D assets, or user-validation results were generated.
+
+## Session 0003: deployment-mode refinement
+
+- Human contribution: specified event branding, organizer self-deployment, deployment-time versioning, fixed and live modes, and visibly evolving cityscapes.
+- AI contribution: translated the input, assessed mode-specific architecture/costs, and proposed snapshot/version separation and comparison behavior.
+- Files: prompt 0003, section 13 of the feasibility review, and linked project/decision/collaboration records.
+- Status: no product implementation, deployment, or user test. Recommendations remain proposals.

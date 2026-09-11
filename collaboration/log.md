@@ -28,7 +28,7 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Version record: preserve the setup commit and save this change separately.
 - Input: [0001-language-policy](../prompts/0001-language-policy.md).
 
-Next collaboration record: **0003**.
+Next collaboration record: **0004**.
 
 ## 0002 — Review Hackathon Town
 
@@ -42,3 +42,12 @@ Next collaboration record: **0003**.
 - Verification: all local links in 16 Markdown files resolved and git diff --check passed. No implementation, performance test, pilot interview, or user retention measurement performed.
 - Open questions: pilot, data mapping, display policy, reuse/track, assets, and partner choice.
 - References: [Input](../prompts/0002-hackathon-town.md), [review](../docs/ideation/0002-hackathon-town-review.md).
+
+## 0003 — Refine organizer deployments and presentation modes
+
+- Date: 2026-09-11 (UTC+8).
+- Human contribution: specified self-deployed, event-branded towns, deployment-time game versions, fixed editions and live monitoring, and visual building evolution.
+- AI contribution: recorded and translated the refinement; separated deployment versions from data snapshots; proposed persistence, stable plots, and clear change comparisons.
+- Outputs: prompt 0003, review section 13, and updated status/decision/AI records.
+- Verification: local links in all 17 Markdown files resolved and git diff --check passed. No product code, deployment, or user validation.
+- Input: [0003-town-deployment-modes](../prompts/0003-town-deployment-modes.md).

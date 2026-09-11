@@ -1,6 +1,6 @@
 # Prompt records
 
-Record 0000 covers setup, 0001 the language preference, and 0002 the Hackathon Town idea and review. The next record is **0003**.
+Record 0000 covers setup, 0001 the language preference, 0002 the town concept, and 0003 organizer deployment modes. The next record is **0004**.
 
 > 中文提示：用户原话原样保留，英文翻译单独标注。
 

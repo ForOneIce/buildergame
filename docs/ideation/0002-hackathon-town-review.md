@@ -238,3 +238,72 @@ Do not perform a chain integration before the core discovery flow works. No impl
 - [GitHub REST limits](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) — retrieved 2026-09-11.
 - [Event partner prizes](https://ethglobal.com/events/ethonline2026/prizes) — reviewed earlier in this conversation.
 - [General event rules](https://ethglobal.com/rules)
+
+## 13. User refinement: organizer-deployed towns with two modes
+
+Recorded from [prompt 0003](../../prompts/0003-town-deployment-modes.md). These direction requirements were specified by the user after the initial assessment; implementation details below are AI proposals.
+
+### Product identity
+
+A reusable, organizer-deployed repository template. Each deployment belongs to one event and uses that event's name in the opening sequence. A centrally operated directory is not required for the first product.
+
+The visual composition of project buildings produces the event's cityscape. Returning viewers should be able to identify projects whose observable public activity or milestones changed.
+
+### Two modes
+
+| Mode | Published output | Data refresh | Useful occasion |
+| --- | --- | --- | --- |
+| Snapshot showcase | A fixed, dated event edition | Only on deliberate publication of another edition | Closing ceremony, recap, archived exhibition |
+| Live town | A persistent dashboard of project evolution | Scheduled snapshots, proposed default daily | Post-event follow-up and repeat discovery |
+
+A snapshot edition is a supported finished product, not a failed live deployment. A later snapshot edition can be published deliberately. A live deployment needs persistent snapshot storage; ephemeral runtime memory is insufficient.
+
+### Version and data timestamps
+
+User requirement: use deployment time as the displayed game version.
+
+Proposed display:
+- Town version: `v20260911-094500Z` (illustrative UTC deployment timestamp, not an actual deployment).
+- Data as of: a separate GitHub snapshot timestamp.
+- Historical edition/source revision: retain a commit reference in metadata if useful.
+
+Generate the deployment timestamp once per deployment; do not change it per page view or GitHub refresh. The same deployed game version may show many data snapshots. A redeployment may initially use the same latest snapshot.
+
+### Make evolution perceptible
+
+Proposed interaction:
+1. Skip or shorten the event-title opening after the first visit; respect reduced-motion preferences.
+2. Keep each project on a stable plot across snapshots.
+3. Show a subtle change marker on buildings that crossed a milestone or changed visual state.
+4. Provide a 'Since your last visit' summary with the period shown explicitly.
+5. Let viewers inspect the underlying evidence, such as a release or an increase in observed active days.
+6. Offer previous/current snapshot comparison when a meaningful visual transition would otherwise be missed.
+
+A first-time visitor has no personal prior snapshot. Show a clearly dated town-wide comparison instead of claiming they previously visited. Persist an anonymous last-seen snapshot reference locally, while retaining the actual comparison snapshots server-side. If either baseline is unavailable, state that limitation. Do not fabricate past growth.
+
+Use staged geometry changes for milestones and separate decorations for attention. Avoid rebuilding the street layout as scores change, because viewers then lose the location of familiar projects. Fixed plot envelopes can support different house sizes without collisions.
+
+### Organizer preparation and operating costs
+
+Proposed configuration additions:
+- `event.title`, subtitle, logo, official URL, theme.
+- `mode: snapshot | live`.
+- `deploymentVersion` generated at deployment.
+- Snapshot source and, for live mode, refresh cadence and persistence configuration.
+- Display profile and public legend.
+- Opening animation enabled/skippable settings.
+
+Snapshot mode can be served as static assets with a bundled snapshot and has no required periodic API job. Live mode adds a scheduler, server-side credentials, persistent snapshots, error handling, and monitoring. Provide deployment instructions for each mode rather than assuming that every organizer can configure a backend.
+
+The user-facing city should explain an activity-based representation, not certify objective code quality or effort. Organizer branding does not prove organizer identity; imported data still needs clear attribution.
+
+### Refined validation
+
+- Can an organizer rename and deploy a town from configuration without changing application code?
+- Does a snapshot build work without exposing a GitHub token to viewers?
+- Does a live town retain historical comparisons across restarts and redeployments?
+- Can a returning viewer recognize what changed without memorizing counts?
+- Is the same information available through a list and keyboard navigation?
+- Does one organizer choose to publish a second edition or keep live refresh enabled?
+
+No deployment, implementation, or user test has yet been performed.

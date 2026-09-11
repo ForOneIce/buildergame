@@ -46,3 +46,9 @@ A Three.js town maps hackathon repositories to houses. Structured event manifest
 - Important assumptions: the town creates repeat visits; builders welcome metric-based appearance; organizers will curate and may pay. None has been tested.
 - Full review: [Hackathon Town](ideation/0002-hackathon-town-review.md).
 - Next decisions: pilot event, initial data set, metric definitions, reuse/track choice, and whether ENS namespace delegation solves a real need.
+
+## User refinement: deployment modes
+
+The user specified organizer self-deployment with event-name branding in the opening animation, a deployment-time game version, a fixed post-event showcase mode, and a continuously updated town mode. Evolving project buildings form the cityscape and should make change visible to returning visitors.
+
+Reference: [prompt 0003](../prompts/0003-town-deployment-modes.md). AI proposes separate deployment/data timestamps and persistent snapshot comparison; these technical details remain unapproved.
