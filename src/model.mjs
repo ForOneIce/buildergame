@@ -24,6 +24,7 @@ export function validateRule(rule) {
   if (rule.mode === 'weighted') assert(rule.weights && Object.keys(rule.weights).length === 3 && ['commits', 'stars', 'forks'].every(k => Number.isFinite(rule.weights[k]) && rule.weights[k] >= 0) && Object.values(rule.weights).some(n => n > 0), 'Invalid metric weights');
 }
 export function validateManifest(event) {
+  if (!['flat','valley','clouds'].includes(event?.landscape ?? 'flat')) throw new Error('Unknown town landscape');
   assert(event && event.schemaVersion === 1 && typeof event.id === 'string' && event.id.length && typeof event.name === 'string' && event.name.length, 'Event id, name and schemaVersion 1 are required');
   assert(typeof event.sampleData === 'boolean', 'sampleData flag is required');
   assert(['static', 'live'].includes(event.mode), 'Event mode must be static or live');

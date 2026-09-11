@@ -1,0 +1,16 @@
+{
+  "status": "Human accepted; architectural assets locked",
+  "sourceCommit": "6613a0d",
+  "sha256": {
+    "stage-1.glb": "9a97bf931832497468a0a6c777b79d3dbb64882bfc319db7a5e47a06ab3bc833",
+    "stage-1-low.glb": "0beb28772bf139d1470edea7ee61a4028a71a630fe1152df686732679f11a7fb",
+    "stage-2.glb": "6bcf897925f09ec9303fa6bdadaeaef98f54a8c0eea1993503968bd8947dcd95",
+    "stage-2-low.glb": "6e070afad4175ac145928a5dc5a912d57573df69fb72bf9a0f03854d681b9db2",
+    "stage-3.glb": "f3b5635afee4cd9675bc6ee092c894c2dfcc463190aacbd4ca59ee082c716268",
+    "stage-3-low.glb": "71a1be635578aef23842e29e03be94bdede5245803b4b05aad051341fc3a221f",
+    "stage-4.glb": "445e366133a69fe4a1285c2d136b4fda08d83f97413e42a23d807e7893f21356",
+    "stage-4-low.glb": "ecf095b4c7e05338060703b1bc019ba338d02348b31d4ed447e0680efc478546",
+    "cozy-house.glb": "e1d5e232d02b1d1305ef90df8192a843e77e39fea431a08c4b5f972280e1b778",
+    "cozy-house-low.glb": "445c9e596c3535b83e0be23d912561422c3e6524f4e5da96f6349424b3cc2a15"
+  }
+}
