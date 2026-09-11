@@ -4,6 +4,7 @@ import bpy
 import math
 import random
 import json
+import sys
 from pathlib import Path
 from mathutils import Vector
 
@@ -13,6 +14,11 @@ WORK = ROOT / 'private' / 'art'
 OUT.mkdir(parents=True, exist_ok=True)
 WORK.mkdir(parents=True, exist_ok=True)
 random.seed(49)
+STAGE = int(sys.argv[sys.argv.index('--stage')+1]) if '--stage' in sys.argv else 5
+if STAGE not in range(1,6): raise ValueError('Stage must be 1–5')
+STEM = 'cozy-house' if STAGE == 5 else 'stage-'+str(STAGE)
+WIDTH, DEPTH = (9.4,9.4) if STAGE == 5 else (7.25,6.9)
+PART = 'land'
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
@@ -86,6 +92,7 @@ yellow = material('Petal marigold', 'efb448')
 
 def finish(obj, name, mat, smooth=True):
     obj.name = name
+    obj['part'] = PART
     if mat: obj.data.materials.append(mat)
     if smooth and obj.type == 'MESH':
         for p in obj.data.polygons: p.use_smooth = True
@@ -129,6 +136,7 @@ def curve(name, points, radius, mat, cyclic=False):
     for p, co in zip(s.points, points): p.co=(*co,1)
     s.use_cyclic_u=cyclic
     o=bpy.data.objects.new(name,data); bpy.context.collection.objects.link(o); data.materials.append(mat)
+    o['part'] = PART
     return o
 
 def arch(name, x, y, bottom, width, height, mat, depth=.09):
@@ -193,16 +201,17 @@ def tree(x,y,h,autumn=False):
     sphere('Tree tip',(x,y,h+.22),(h*.11,h*.11,h*.21),leaves[3] if autumn else leaves[1])
 
 # Thin, rounded soil tile and scalloped planted border.
-cube('Earth tile',(0,0,0),(7.25,6.9,.35),earth,.23,5)
-cube('Soft lawn',(0,0,.18),(7.18,6.83,.22),grass,.22,5)
+cube('Earth tile',(0,0,0),(WIDTH,DEPTH,.35),earth,.23,5)
+cube('Soft lawn',(0,0,.18),(WIDTH-.07,DEPTH-.07,.22),grass,.22,5)
 cube('House clearing',(-.6,.3,.3),(4,3.85,.09),dirt,.22)
 for i in range(100):
-    side=i%4; t=random.uniform(-3.1,3.1)
-    x,y=((t,-3.22) if side==0 else (t,3.22) if side==1 else (-3.4,t) if side==2 else (3.4,t))
-    if y < -3 and -.9<x<.2: continue
+    side=i%4; t=random.uniform(-1,1)
+    x,y=((t*(WIDTH/2-.3),-DEPTH/2+.23) if side==0 else (t*(WIDTH/2-.3),DEPTH/2-.23) if side==1 else (-WIDTH/2+.23,t*(DEPTH/2-.3)) if side==2 else (WIDTH/2-.23,t*(DEPTH/2-.3)))
+    if y < -DEPTH/2+.4 and -1.6<x<-.5: continue
     sphere('Moss edge',(x,y,.31),(random.uniform(.17,.32),random.uniform(.16,.28),.13),random.choice(leaves[:3]),10,6)
 
 # Multi-course foundation and honey-colored structural timber.
+PART = 'foundation'
 for row in range(2):
     for i in range(7):
         for y in [-1.28,1.95]:
@@ -210,6 +219,7 @@ for row in range(2):
     for i in range(6):
         for x in [-2.25,.94]:
             cube('Foundation stone',(x,-.96+i*.52,.39+row*.19),(.32,.5,.21),stone[(i+row)%3],.05)
+PART = 'body'
 cube('Plaster house',(-.65,.33,1.98),(3.12,3.16,2.74),plaster,.10)
 for x in [-2.19,.9]:
     for y in [-1.25,1.91]:
@@ -229,6 +239,7 @@ for y in [-1.3,1.96]:
     for side in [-1,1]: beam('Gable fascia',(-.65+side*1.68,y-.03,3.18),(-.65,y-.03,4.99),.12,trim,True)
 
 # Front door, individually grooved boards, and round attic window.
+PART = 'details'
 door=arch('Door',-1.25,-1.466,.67,.89,1.82,dark,.12)
 arch_frame('Door surround',-1.25,-1.51,.67,1.05,1.98,terracotta,.145)
 for i in range(7):
@@ -256,6 +267,7 @@ for y in [-1.43,2.08]:
 front_window(-1.3,2.05,1.35,.8,1.05)
 
 # Quilted roof: broad, overlapping cushions follow a gently bowed roof profile.
+PART = 'roof'
 for side in [-1,1]:
     for row in range(5):
         t=(row+.42)/5
@@ -272,6 +284,7 @@ for i in range(8):
     cube('Soft ridge cap',(-.65,-1.7+i*.55,5.12),(.44,.68,.33),roof_light,.16,5)
 
 # Front dormer on the right slope.
+PART = 'dormer'
 cube('Dormer body',(.43,-.54,4.2),(.72,.77,.75),plaster,.06)
 front_window(.43,-.966,3.91,.48,.72)
 for side in [-1,1]:
@@ -279,6 +292,7 @@ for side in [-1,1]:
     o.rotation_euler.y=side*.52
 
 # Tall stone chimney, with a visible dark opening.
+PART = 'chimney'
 cube('Chimney shaft',(-1.43,1.14,4.7),(.56,.55,1.35),terracotta,.065)
 for row in range(4):
     cube('Chimney course',(-1.43,1.14,4.2+row*.29),(.61,.60,.07),wood,.025)
@@ -286,6 +300,7 @@ cube('Chimney crown',(-1.43,1.14,5.38),(.76,.75,.2),terracotta,.07)
 cube('Chimney dark opening',(-1.43,1.14,5.491),(.46,.44,.025),dark,.06)
 
 # Side veranda with planks, posts, lean-to roof, chairs and a table.
+PART = 'porch'
 for i in range(11):
     cube('Porch plank',(1.89,-1.14+i*.27,.51),(1.88,.25,.15),trim if i%3 else wood,.038)
 for y in [-1.1,.25,1.56]:
@@ -323,6 +338,7 @@ lantern(2.65,-1.1,2.61)
 planter(2.65,1.45,.87,.55)
 
 # Windmill tower is an independent sculptural landmark.
+PART = 'windmill'
 for x in [2.06,2.64]:
     for y in [1.05,1.64]:
         beam('Windmill platform support',(x,y,2.82),(x,y,3.08),.06,wood)
@@ -331,6 +347,7 @@ for z in [3.5,4.16]:
     for y in [1.11,1.59]: beam('Tower rung',(2.12,y,z),(2.58,y,z),.047,trim)
 cube('Windmill platform',(2.35,1.35,3.08),(.82,.87,.15),trim,.06)
 rotor=bpy.data.objects.new('WindmillRotor',None); bpy.context.collection.objects.link(rotor); rotor.location=(2.35,1.0,4.40)
+rotor['part'] = PART
 bpy.context.view_layer.update()
 for i in range(8):
     a=i*math.tau/8
@@ -343,67 +360,12 @@ for i in range(8):
 o=sphere('Windmill hub',(2.35,.89,4.40),(.18,.12,.18),terracotta)
 o.parent=rotor; o.matrix_parent_inverse=rotor.matrix_world.inverted()
 
-# Front garden: irregular stepping stones, fences, bench, mailbox and sign.
-for i in range(6):
-    x=-1.13+.30*math.sin(i*.6)
-    o=sphere('Stepping stone',(x,-1.70-i*.27,.32+i*.008),(.32,.22,.095),stone[i%3],12,6)
-    o.rotation_euler.z=i*.6
-for i in range(3):
-    cube('Door step',(-1.24,-1.42-i*.16,.60-i*.105),(1.04+i*.14,.34,.14),stone[1],.07)
-for x in [-3.13,3.13]:
-    for y in [-2.5,-1.1,.3,1.7,2.75]:
-        cube('Fence post',(x,y,.75),(.14,.16,.94),trim,.045)
-    for z in [.64,.98]:
-        beam('Fence rail',(x,-2.55,z),(x,2.79,z),.055,wood,True)
-for x in [1.0,1.75,2.5,3.13]: cube('Front fence post',(x,-2.78,.73),(.15,.15,.91),trim,.04)
-for z in [.61,.96]: beam('Front fence rail',(.95,-2.78,z),(3.17,-2.78,z),.052,wood,True)
-for y in [2.8]:
-    for x in [-2.9,-1.5,0,1.5,2.9]: cube('Back fence post',(x,y,.77),(.14,.14,.94),trim,.04)
-    for z in [.65,1.02]: beam('Back fence rail',(-3.12,y,z),(3.12,y,z),.05,wood,True)
-
-cube('Garden bench seat',(1.05,-2.13,.76),(.91,.41,.13),trim,.05)
-for x in [.72,1.38]:
-    beam('Bench leg',(x,-2.13,.29),(x,-2.13,.79),.05,wood)
-    beam('Bench back post',(x,-1.94,.69),(x,-1.94,1.28),.05,wood)
-for z in [1.02,1.21]: cube('Bench back',(1.05,-1.94,z),(.95,.08,.15),trim,.045)
-beam('Mailbox post',(.08,-2.60,.3),(.08,-2.60,1.05),.06,wood)
-cube('Mailbox',(.08,-2.60,1.13),(.36,.44,.27),terracotta,.10)
-cube('Mailbox slot',(.08,-2.83,1.15),(.19,.018,.04),dark,.01)
-lantern(-2.57,-1.73,1.25,True)
-lantern(.21,-1.87,.93,True)
-for x in [-2.81,-1.78]: beam('Sign post',(x,-2.47,.25),(x,-2.47,1.45),.065,wood)
-for z in [1.01,1.28]: cube('Sign board',(-2.3,-2.47,z),(1.30,.14,.25),trim,.07)
-# Browser canvas label is mounted on this named anchor, not burned into the model.
-anchor=bpy.data.objects.new('SignAnchor',None); bpy.context.collection.objects.link(anchor); anchor.location=(-2.3,-2.56,1.16)
-
-tree(-2.7,1.91,2.9,True)
-tree(-2.98,.61,2.1)
-tree(2.98,2.15,2.47)
-for i in range(52):
-    x=random.uniform(-3.15,3.12); y=random.uniform(-3.0,2.98)
-    if -2.55<x<2.85 and -1.7<y<2.18: continue
-    if -1.6<x<-.55 and y< -1.5: continue
-    flower(x,y,.32,scale=random.uniform(.8,1.35))
-for x,y in [(-2.8,-2.82),(-2.30,-2.9),(-1.98,-1.83),(.58,-2.87),(1.69,-2.97),(2.6,-2.08),(2.95,-1.55)]:
-    for i in range(5):
-        flower(x+random.uniform(-.22,.22),y+random.uniform(-.17,.17),.36,scale=random.uniform(1.1,1.6))
-    for i in range(5):
-        a=i*math.tau/5
-        leaf=sphere('Garden blade',(x+.12*math.cos(a),y+.12*math.sin(a),.49),(.055,.09,.24),leaves[i%3],8,6)
-        leaf.rotation_euler=(.4*math.cos(a),.4*math.sin(a),a)
-for i in range(170):
-    side=i%4;t=random.uniform(-3.15,3.15)
-    x,y=((t,-3.17) if side==0 else (t,3.12) if side==1 else (-3.31,t) if side==2 else (3.3,t))
-    if y< -3 and -1.6<x<-.5: continue
-    leaf=sphere('Moss tuft',(x,y,.38),(.025,.055,random.uniform(.10,.19)),leaves[i%3],6,4)
-    leaf.rotation_euler.y=random.uniform(-.4,.4)
-for x,y in [(-2.7,-.95),(-2.82,2.76),(2.94,-.43),(-2.4,-2.98),(.82,2.62)]:
-    sphere('Garden rock',(x,y,.4),(.25,.18,.18),random.choice(stone))
-    for j in range(3):
-        sphere('Low shrub',(x+.19*math.cos(j*2),y+.19*math.sin(j*2),.40),(.19,.16,.18),leaves[j])
+# Stage derivation and the perimeter garden share the authoring primitives above.
+stage_source = Path(__file__).with_name('stage_details.py')
+exec(compile(stage_source.read_text(encoding='utf-8'), str(stage_source), 'exec'))
 
 # Save a fully editable source before material batching for browser efficiency.
-bpy.ops.wm.save_as_mainfile(filepath=str(WORK/'cozy-house.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(WORK/(STEM+'.blend')))
 source_objects=len(bpy.data.objects)
 for obj in list(bpy.data.objects):
     if obj.type == 'CURVE':
@@ -411,21 +373,22 @@ for obj in list(bpy.data.objects):
         bpy.ops.object.convert(target='MESH')
 groups={}
 for obj in list(bpy.data.objects):
-    if obj.type!='MESH' or obj.parent==rotor or obj.name=='Door': continue
+    if obj.type!='MESH' or (obj.parent and obj.parent.name=='WindmillRotor') or obj.name=='Door': continue
     key=obj.data.materials[0].name if obj.data.materials else 'none'
     groups.setdefault(key,[]).append(obj)
 for name,objects in groups.items():
     bpy.ops.object.select_all(action='DESELECT')
     for obj in objects: obj.select_set(True)
     bpy.context.view_layer.objects.active=objects[0]
-    bpy.ops.object.join(); bpy.context.object.name='Surface_'+name
+    if len(objects)>1: bpy.ops.object.join()
+    bpy.context.object.name='Surface_'+name
 
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.export_scene.gltf(filepath=str(OUT/'cozy-house.glb'), export_format='GLB', export_apply=True, export_yup=True, export_materials='EXPORT', export_extras=True)
+bpy.ops.export_scene.gltf(filepath=str(OUT/(STEM+'.glb')), export_format='GLB', export_apply=True, export_yup=True, export_materials='EXPORT', export_extras=True)
 triangles=0
 for obj in bpy.data.objects:
     if obj.type=='MESH':
         obj.data.calc_loop_triangles(); triangles+=len(obj.data.loop_triangles)
-stats={'generator':'Blender '+bpy.app.version_string,'sourceObjects':source_objects,'exportObjects':len(bpy.data.objects),'triangles':triangles,'bytes':(OUT/'cozy-house.glb').stat().st_size,'status':'visual prototype; not approved final art'}
-(OUT/'cozy-house.stats.json').write_text(json.dumps(stats,indent=2)+'\n')
+stats={'generator':'Blender '+bpy.app.version_string,'stage':STAGE,'tile':[WIDTH,DEPTH],'sign':sign_info,'sourceObjects':source_objects,'exportObjects':len(bpy.data.objects),'triangles':triangles,'bytes':(OUT/(STEM+'.glb')).stat().st_size,'status':'visual direction accepted; revised stages pending review'}
+(OUT/(STEM+'.stats.json')).write_text(json.dumps(stats,indent=2)+'\n')
 print('BUILDERGAME_ASSET '+json.dumps(stats))

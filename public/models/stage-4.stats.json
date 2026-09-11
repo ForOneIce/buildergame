@@ -1,0 +1,24 @@
+{
+  "generator": "Blender 4.5.10 LTS",
+  "stage": 4,
+  "tile": [
+    7.25,
+    6.9
+  ],
+  "sign": {
+    "position": [
+      -2.32,
+      1.13,
+      2.6950000000000003
+    ],
+    "size": [
+      1.24,
+      0.44
+    ]
+  },
+  "sourceObjects": 805,
+  "exportObjects": 23,
+  "triangles": 124612,
+  "bytes": 4429240,
+  "status": "visual direction accepted; revised stages pending review"
+}

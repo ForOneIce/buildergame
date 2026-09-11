@@ -1,4 +1,4 @@
-# Complete-house asset source
+# Five-stage building asset source
 
 This directory contains the reproducible Blender authoring script for the stage-5 visual prototype. The script creates an original interpretation of the human-supplied construction reference, not an imported marketplace model.
 
@@ -7,6 +7,10 @@ Run with Blender 4.5 LTS from the repository root:
 ```powershell
 blender --background --factory-startup --python scripts/art/build_house.py
 ```
+
+The default is stage 5. To generate another appearance, append `-- --stage 1` (or 2, 3, 4). Each run writes the corresponding `stage-N.glb`, `stage-N.stats.json` and local `stage-N.blend`. `stage_details.py` supplies stage derivation and the shared garden layout; it executes inside the main script's authoring namespace. Stage 5 keeps the compatible `cozy-house` filename.
+
+The final tile measures 9.4 × 9.4 units; stages 1–4 use 7.25 × 6.9. A future town must reserve the maximum footprint at the fixed project location. Sign placement and face dimensions are in each statistics JSON, so the viewer does not duplicate layout constants.
 
 Outputs: `public/models/cozy-house.glb` (web asset), `private/art/cozy-house.blend` (editable local source), and `public/models/cozy-house.stats.json` (generation inventory). The source script is the tracked reproducible authoring source. The generated Blender working file and portable authoring tools remain local.
 
