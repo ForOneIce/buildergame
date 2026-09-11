@@ -1,25 +1,31 @@
-# 0000 — 工作区准备
+# 0000 — Workspace setup
 
-- 日期：2026-09-11（UTC+8）。
-- 阶段：准备，不计为已经完成选题或产品实现。
-- AI 工具：Codex，本次会话。
+- Date: 2026-09-11 (UTC+8).
+- Phase: preparation; no product selection or implementation completed.
+- AI tool: Codex, this conversation.
 
-## 用户原始输入
+> 中文提示：保留原始指令，英文为翻译。
+
+## Original user input
 
 > 新建一个目录名为buildergame，按比赛要求规划人机协作目录。从接下来的构思环节开始记录。
 
-## 提交给其他 AI 工具的提示词
+## English translation
 
-无。
+> Create a directory named buildergame and organize human–AI collaboration according to the competition requirements. Start recording from the upcoming ideation stage.
 
-## 实现的目录方案
+## Prompts submitted to other AI tools
 
-- `docs/`：问题背景、规则来源和决策。
-- `specs/`：实际使用的规格与验收标准。
-- `prompts/`：从下一轮构思开始保留实际输入。
-- `collaboration/`：人的贡献、AI 贡献、验证和既有工作边界。
-- `src/`、`tests/`：待选题后增加实现和有效验证。
-- `submission/`：提交清单与真人演示脚本。
-- `AGENTS.md`：后续 AI 在本工作区持续维护这些记录的约定。
+None.
 
-完整结构见 [README](../README.md)。产品、技术栈和合作方尚未选择。
+## Implemented plan
+
+- `docs/`: problem background, rules, and decisions.
+- `specs/`: actual specifications and acceptance criteria.
+- `prompts/`: actual instructions for subsequent work.
+- `collaboration/`: human/AI contributions, verification, and reuse boundaries.
+- `src/` and `tests/`: implementation and meaningful verification after topic selection.
+- `submission/`: checklist and human-narrated demo outline.
+- `AGENTS.md`: future recordkeeping conventions.
+
+See [README](../README.md). Product, stack, and partners remain undecided. Initial commit: `0b573c4`.

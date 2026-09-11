@@ -1,13 +1,15 @@
-# 演示脚本草稿
+# Demo script draft
 
-状态：未选题、未录制。目标约 3 分钟，最终必须在 2–4 分钟内，至少 720p，由真人讲解。
+Status: topic undecided; not recorded. Target approximately three minutes. Final video must be 2–4 minutes, at least 720p, with human narration. Use English as the primary narration language.
 
-| 时段 | 内容 | 待填写 |
+> 中文提示：产品可展示 TTS；视频讲解仍需真人配音。
+
+| Time | Content | Status |
 | --- | --- | --- |
-| 0:00–0:20 | 用户是谁、遇到什么具体问题 | 待定 |
-| 0:20–1:50 | 一个实际可运行的核心流程 | 待实现 |
-| 1:50–2:20 | 一个重要失败／边界情况及处理 | 待实现 |
-| 2:20–2:45 | 合作方技术的实际作用、开发贡献 | 待核实 |
-| 2:45–3:00 | 已验证的价值与当前限制 | 未进行用户验证 |
+| 0:00–0:20 | Target user and one concrete problem | Undecided |
+| 0:20–1:50 | One working core workflow | Not implemented |
+| 1:50–2:20 | One important failure/boundary case and its handling | Not implemented |
+| 2:20–2:45 | Actual partner integration and event contributions | Unverified |
+| 2:45–3:00 | Validated value and current limitations | No user validation yet |
 
-如果产品本身使用语音合成，可以展示该功能；提交视频的讲解仍使用真人声音。演示中的 mock、测试网和模拟执行应清楚标注。
+Identify mocks, testnets, and simulations clearly. Chinese notes are brief and supplementary to the English explanation.

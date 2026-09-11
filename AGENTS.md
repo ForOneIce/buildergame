@@ -1,41 +1,52 @@
-# buildergame 项目协作约定
+# buildergame collaboration policy
 
-## 范围与真实性
+> 中文提示：英文优先，简短中文辅助；真实记录人机贡献。
 
-- 用户指令优先。当前只授权搭建工作区和开始协作记录，未选定产品、赛道或技术栈。
-- 后续在本目录继续构思或开发时，主动维护以下记录，不要求用户每轮重复提醒。
-- 区分用户明确要求、AI 建议、待验证假设和实际证据；AI 推荐不等于用户已确认。
-- 不把建立文件、生成代码、构建通过或测试网演示写成已有用户、商业验证或生产可用。
-- 不编造人的贡献、测试结果、提交记录、时间或赛前／赛中边界。
+## Scope and accuracy
 
-## 每轮记录
+- User instructions take precedence. No product, stack, or competition track has been selected.
+- Maintain these records proactively during subsequent ideation and development in this directory.
+- Distinguish user requirements, AI proposals, assumptions, and evidence. An AI recommendation is not user approval.
+- Do not describe generated files, passing builds, or testnet demos as real adoption, commercial validation, or production readiness.
+- Never invent human contributions, verification, commits, dates, or pre-event/event boundaries.
 
-1. 将实际可获得的用户项目指令保存到 `prompts/NNNN-topic.md`，使用连续编号。保留原文，说明上下文；不要反向重构所谓逐字历史。
-2. 使用其他 AI 工具时，保存实际提交的提示词及其名称；规格、规划和实现依据放在 `specs/` 或 `docs/`，并从提示词记录链接。重要方案变更保留来由。
-3. 更新 `collaboration/log.md`：日期与时区、阶段、用户贡献、AI 贡献、产物、验证、未决事项。长时间工作可以分阶段记录。
-4. 更新 `collaboration/AI_USAGE.md`，说明具体文件或模块中 AI 的生成／辅助范围与人工审阅状态。
-5. 更新 `docs/decisions.md` 中实际发生的决策；待定事项进入 brief，不写成已批准。
-6. 有旧代码、设计、素材、开源模板或第三方模块复用时，更新 `collaboration/baseline.md`：来源、版本、许可、赛前部分和本次新增。
+## Language policy
 
-简短状态查询可以合并记录，避免文档数量掩盖实际工作。记录事实、方案和产物，不需要记录内部推理或系统指令。
+- Use English as the primary language for documentation, specifications, architecture notes, decisions, AI disclosures, submission materials, code identifiers, test names, and commit messages.
+- Use English for future product copy and demo narration by default, unless the user selects a different audience or localization requirement.
+- Add brief Chinese notes where useful; do not duplicate entire documents in two languages.
+- Preserve original user prompts verbatim in their original language. Add a separately labeled English translation or summary; never present it as the original.
+- Preserve historical attribution, dates, uncertainty, and meaning when translating documents; retain the original versions through Git.
+- Conversation with the user may continue in Chinese; project artifacts follow the English-first policy.
 
-## 实现与验证
+## Per-session records
 
-- 选定方案后，先定义最小范围、技术依赖和可观察的验收标准，再实现。
-- 记录真实执行的检查命令、结果及限制；未执行的检查明确标为未执行。
-- 用有意义的 Git 提交保留进展，不在最后一天把全部实现压成唯一一次提交，不伪造历史。
-- 不因目录名而预设游戏、代币、NFT、AI Agent 或链上支付功能。
-- 需要人对外发送消息、发布或执行资金操作时，遵守当前会话授权和工具规则；此文件不构成这些行为的授权。
+1. Save actual available instructions in sequential `prompts/NNNN-topic.md` files with context. Do not invent verbatim history.
+2. For other AI tools, preserve actual submitted prompts and tool names. Store complete specifications and plans in `specs/` or `docs/`, link them, and preserve important revisions.
+3. Update `collaboration/log.md`: date/timezone, phase, human contributions, AI contributions, outputs, verification, and open questions.
+4. Update `collaboration/AI_USAGE.md` with generated/assisted file scopes and actual human review status.
+5. Record actual decisions in `docs/decisions.md`; undecided proposals belong in the brief.
+6. Register reused code, designs, assets, templates, and modules in `collaboration/baseline.md`: source, version, license, pre-existing scope, and event additions.
 
-## 记录与隐私
+Brief status inquiries may share a record. Record facts, plans, and artifacts, not internal reasoning or system instructions.
 
-- 不提交 API Key、Token、私钥、助记词、未授权个人资料或敏感聊天导出。
-- 提示词包含敏感内容时，保存可公开版本，用占位符替换并说明已脱敏；不要声称脱敏版本是完整逐字原文。
-- 不以隐私为由省略所有 AI 使用记录；保留工具名称、用途、文件范围和可公开的规格／提示词。
-- 未经用户授权不把日志或仓库上传到外部平台。
+## Implementation and verification
 
-## 比赛提醒
+- Define scope, dependencies, and observable acceptance criteria before implementation.
+- Record commands actually executed, results, and limitations. Mark unperformed checks as not run.
+- Preserve meaningful Git history; do not collapse all implementation into a single final-day commit or fabricate history.
+- Do not infer game, token, NFT, agent, or payment features from the directory name.
+- Follow current session authorization and tool rules for external messages, publication, and financial actions. This file does not authorize those actions.
 
-- 官方规则来源在 `docs/rules.md`。合作方资格必须与最终选题及 Classic／Continuity 路线一起核对。
-- AI 可以辅助开发；人的实质性贡献必须如实呈现。规格驱动开发的 spec、提示词和规划材料需保留在提交仓库。
-- 提交视频为 2–4 分钟、至少 720p、真人讲解；产品本身使用 TTS 不等于可使用 AI 配音制作提交视频。
+## Privacy and records
+
+- Do not commit API keys, tokens, private keys, seed phrases, unauthorized personal data, or sensitive chat exports.
+- Replace sensitive prompt content with placeholders and identify redactions. Do not label redacted copies complete verbatim originals.
+- Preserve tool names, purposes, file scopes, and publishable specs/prompts even when sensitive details are omitted.
+- Do not upload the repository or logs without user authorization.
+
+## Competition reminders
+
+- Sources are in `docs/rules.md`. Check partner eligibility against the final product and Classic/Continuity route.
+- Disclose AI assistance and actual human contributions. Preserve specs, prompts, and planning artifacts used in spec-driven development.
+- Video: 2–4 minutes, at least 720p, human narration. Product TTS does not authorize AI narration of the submission video.

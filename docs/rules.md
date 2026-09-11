@@ -1,43 +1,47 @@
-# 比赛规则核对
+# Competition rules
 
-活动：ETHOnline 2026。依据本会话 2026-09-10 阅读的官方页面整理；建档日期为 2026-09-11。提交前重新核对变更和个人 Dashboard 状态。
+Event: ETHOnline 2026. Based on official pages read in this conversation on 2026-09-10; recorded on 2026-09-11. Recheck updates and personal Dashboard status before submission.
 
-## 官方来源
+> 中文提示：规则以官网为准；北京时间为 UTC+8。
 
-- [活动详情与提交规则](https://ethglobal.com/events/ethonline2026/info/details)
-- [活动日程](https://ethglobal.com/events/ethonline2026)
-- [合作伙伴奖项](https://ethglobal.com/events/ethonline2026/prizes)
-- [通用规则与既有工作条款](https://ethglobal.com/rules)
+## Official sources
+
+- [Event details and submission rules](https://ethglobal.com/events/ethonline2026/info/details)
+- [Event schedule](https://ethglobal.com/events/ethonline2026)
+- [Partner prizes](https://ethglobal.com/events/ethonline2026/prizes)
+- [General rules and pre-existing work](https://ethglobal.com/rules)
 - [Hacker Dashboard](https://ethglobal.com/events/ethonline2026/home)
 
-## 时间（均为北京时间 UTC+8）
+## Schedule
 
-| 节点 | 时间 |
-| --- | --- |
-| 正式开始开发 | 2026-09-05 00:00 |
-| 第二次项目 Check-in 截止 | 2026-09-11 11:59 |
-| 项目最终提交截止 | 2026-09-14 00:00（即 9 月 13 日 12:00 EDT） |
-| 第一轮异步评审 | 2026-09-14 03:00 |
-| 第二轮实时评审 | 2026-09-15 00:00–02:00，个人安排看 Dashboard |
+| Milestone | UTC | Beijing (UTC+8) |
+| --- | --- | --- |
+| Hacking begins | 2026-09-04 16:00 | 2026-09-05 00:00 |
+| Second project check-in due | 2026-09-11 03:59 | 2026-09-11 11:59 |
+| Final submission due | 2026-09-13 16:00 | 2026-09-14 00:00 |
+| Round 1 asynchronous judging | 2026-09-13 19:00 | 2026-09-14 03:00 |
+| Round 2 live judging window | 2026-09-14 16:00–18:00 | 2026-09-15 00:00–02:00 |
 
-## 影响项目记录的要求
+Final deadline: September 13 at 12:00 pm EDT. Individual judging assignments appear in the Dashboard.
 
-- 团队 1–5 人；是否报名成功及完成 Check-in 尚未核实。
-- Classic / From Scratch：项目专属代码、设计和素材须从正式开赛后开始。允许公共库与 starter kit，需透明披露。
-- Continuity：可以基于已有项目开发，但必须明确披露赛前工作、赛中新功能及复用边界；新增部分须开源。合作方资格逐项核对。
-- 全程保留版本控制历史。一次性大提交或缺少历史可能导致不合格。
-- 提交应提供 GitHub 仓库、相关设计材料等，证明新增工作。
-- AI 工具通常允许使用，但需标明用途与涉及代码／文件／素材。团队须有实质性贡献，不能把全部 AI 工作记作人工实现。
-- 使用 spec 驱动流程时，全部规格、提示词和规划材料需放在提交仓库。本项目的目录组织用于保留这些证据，不保证获奖或资格自动通过。
-- 最多申请 3 家合作方奖项；同一家多个子赛道只占一家名额，需在表单选中并说明真实集成。
-- 视频 2–4 分钟、至少 720p，禁止通过加速压缩时长、手机录制和 TTS／AI 配音；可以剪去等待时间。
-- Finalist 实时评审为每队 7 分钟：4 分钟演示、3 分钟问答。合作方异步评审。
+## Requirements relevant to records
 
-## 选题后必须补充的专项要求
+- Teams: 1–5 people. Acceptance and check-in status remain unverified.
+- Classic / From Scratch: project-specific code, designs, and assets must begin after the official start. Public libraries and starter kits are allowed with transparent disclosure.
+- Continuity: disclose pre-existing work and substantive event additions. New parts must remain open source. Check partner eligibility individually.
+- Preserve version-control history throughout development. Large single commits or missing history may lead to disqualification.
+- Include repositories and relevant design materials establishing the work performed.
+- AI tools are generally permitted. Disclose purposes and affected code/files/assets. Team members must contribute meaningfully.
+- Spec-driven workflows must include all specs, prompts, and planning artifacts in the submission repository. This structure retains evidence; it does not guarantee eligibility or awards.
+- Select at most three partner prizes in the form. Multiple subtracks from one partner count as one partner. Explain actual integration.
+- Video: 2–4 minutes, at least 720p. No speeding up to fit the limit, phone recording, or TTS/AI voiceover. Waiting time may be edited out.
+- Finalist live judging: four-minute demo plus three-minute Q&A. Partners judge asynchronously.
 
-- [ ] 选定 Classic 或 Continuity，并核对所选合作方是否接受。
-- [ ] 保存每个合作方的具体赛道链接、集成门槛、反馈表和部署要求。
-- [ ] 核对视频、演示、代码开放程度及任何赛后付款条件。
-- [ ] 如条款不明确，记录向主办方／合作方确认后的实际答复。
+## Checks after topic selection
 
-已知示例：ENSv2 要求 Sepolia；Ledger、Uniswap、World 有反馈材料要求；Arc 部分奖金以 9 月 30 日前主网部署为条件。此处不是已选择这些合作方。
+- [ ] Select Classic/Continuity and verify each partner's eligibility.
+- [ ] Record specific prize links, integration criteria, feedback forms, and deployment requirements.
+- [ ] Check video, demonstration, code access, and any post-event payout conditions.
+- [ ] Record actual organizer/partner clarification for ambiguous requirements.
+
+Observed examples: ENSv2 requires Sepolia; Ledger, Uniswap, and World require feedback materials; parts of Arc's prizes require mainnet deployment by September 30. These partners have not been selected.

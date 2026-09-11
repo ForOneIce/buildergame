@@ -1,22 +1,25 @@
-# 既有工作与新增边界
+# Pre-existing work and new contributions
 
-建档日期：2026-09-11（UTC+8）。这是当前工作区的起始记录，不代表比赛正式开始时间，也不代表最终已获资格。
+Recorded on 2026-09-11 (UTC+8). This is a workspace baseline, not the official event start or confirmation of eligibility.
 
-## 当前基线
+> 中文提示：从零或续作取决于实际复用，不取决于新建目录。
 
-- 新建工作区，仅包含准备文档和空目录。
-- 未引入产品代码、设计素材、第三方模板或旧仓库文件。
-- 选题与 Classic／Continuity 路线待定。
-- 本次搭建由 AI 辅助完成，详见 `AI_USAGE.md`。
+## Current baseline
 
-## 已知背景，不等于代码已复用
+- Preparation documents and empty implementation/test directories.
+- No product code, design assets, third-party templates, or old repository files imported.
+- Product and Classic/Continuity route undecided.
+- AI assisted setup and English translation; see `AI_USAGE.md`.
+- Initial setup: `0b573c4`. Session 0001 changes documentation and language only.
 
-- 用户确认 [web3-FTW](https://github.com/ForOneIce/web3-FTW) 是其上次黑客松作品。
-- 前序讨论查阅了 pr-review-tool、doubao-rescue、CareerSpring、SourceMapLeak、Pop-Up-City-Tech-Ops 等公开项目，当前工作区没有复制这些项目。
-- 从零或续作的认定取决于实际复用与比赛规则，不取决于目录名或是否新建 Git 仓库。
+## Background, not imported code
 
-## 后续复用登记
+- The user confirmed [web3-FTW](https://github.com/ForOneIce/web3-FTW) was their previous hackathon submission.
+- Earlier discussion reviewed pr-review-tool, doubao-rescue, CareerSpring, SourceMapLeak, and Pop-Up-City-Tech-Ops; none has been copied here.
+- From Scratch/Continuity depends on actual reuse and event rules, not the directory name or a new Git repository.
 
-每项记录：来源 URL／仓库、准确版本或 commit、文件范围、许可证、赛前已有功能、本次新增功能、人工／AI 参与情况，以及选择的参赛路线。
+## Reuse register
 
-目前：无复用项。
+Record source URL/repository, exact version/commit, files, license, pre-event functionality, event additions, human/AI involvement, and selected track for each imported item.
+
+Current imported items: none.

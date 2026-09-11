@@ -1,21 +1,27 @@
-# AI 使用披露（持续维护）
+# AI usage disclosure
 
-这是一份事实记录草稿，供最终提交整理使用。未有人审阅或未验证的内容不能标成已确认。
+This evolving factual record supports final submission. Do not mark content reviewed or verified without evidence.
 
-## 使用工具
+> 中文提示：按文件记录 AI 参与和人的实际贡献。
 
-- Codex：用于本次工作区结构、比赛规则整理、文档和记录模板生成。
-- 其他 AI 工具：目前无记录。
+## Tools used
 
-## 文件与贡献范围
+- Codex: workspace structure, competition-rule organization, documentation, templates, and English translation.
+- Other AI tools: none recorded.
 
-| 文件／模块 | AI 的实际参与 | 人的实际贡献 | 审阅／验证状态 |
+## Contribution scopes
+
+| Files/module | Actual AI involvement | Actual human contribution | Review/verification |
 | --- | --- | --- | --- |
-| README.md、AGENTS.md、.gitignore | 生成初版结构与协作约定 | 用户指定目录名及记录目标 | 待用户审阅；结构检查另见日志 |
-| docs/* | 根据对话整理背景、官方规则与准备决策 | 用户提供兴趣、需求和既有项目背景 | 选题未确认；规则需提交前复核 |
-| specs/README.md、prompts/* | 生成规格／提示词保存约定，保存实际指令 | 用户原始指令保留 | 尚无产品规格 |
-| collaboration/* | 建立贡献、复用与验证记录 | 用户要求持续记录 | 仅准备阶段 |
-| submission/* | 建立清单和空白演示脚本 | 尚无实际演示贡献记录 | 未填写完成、未提交 |
-| src/、tests/ 的占位文件 | 创建空目录占位 | 无产品实现贡献可归属 | 没有产品代码或测试 |
+| README.md, AGENTS.md, .gitignore | Generated structure and conventions; translated Markdown and added language policy | Workspace name, recording objective, and language preference | Structural checks in log; full user review not recorded |
+| docs/* | Summarized context/rules/decisions and translated records | Interests, requirements, prior-project context, language choice | Topic unapproved; recheck rules before submission |
+| specs/README.md, prompts/* | Generated conventions, saved instructions, labeled translations | Original user inputs retained | No product specification yet |
+| collaboration/* | Created and translated contribution, reuse, and verification records | Requested continuous recording and English-first artifacts | Preparation only |
+| submission/* | Generated and translated checklist and blank demo outline | No demo contribution yet | Not completed or submitted |
+| src/ and tests/ placeholders | Created empty placeholders | No implementation contribution to attribute | No product code or tests |
 
-后续每轮补充具体代码、文件、素材、提示词与人工修改／验证范围。不得将 AI 输出统一归为人工实现，也不得补造人的参与来满足资格要求。
+## Session 0001
+
+AI translated 13 existing Markdown files and added `prompts/0001-language-policy.md`. The user made the language decision; AI performed translation and editing. Original Chinese prompts remain intact. No product functionality changed.
+
+For later work, identify actual code, assets, prompts, human revisions, and verification. Do not attribute all AI output to humans or invent participation to satisfy eligibility.

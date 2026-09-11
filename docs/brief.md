@@ -1,35 +1,36 @@
-# 项目问题与假设
+# Problem brief
 
-状态：待构思，未选题。以下为此前讨论的背景摘要，不是对旧对话的逐字记录，也不是已经批准的功能规格。
+Status: awaiting ideation; no topic selected. This summarizes earlier discussion and is neither a verbatim transcript nor an approved feature specification.
 
-## 用户明确关注的目标
+> 中文提示：区分用户需求、AI 建议与待验证假设。
 
-- 做有实际用户价值、赛后有机会持续使用的项目。
-- 关注真实付费意愿和维护成本，不以获奖或接入赞助商作为唯一目标。
-- 降低钱包、签名、交易等对非 Web3 用户造成的负担。
-- 用户已有一次 Solidity 黑客松经验，`web3-FTW` 是上次作品。
+## Explicit user priorities
 
-## 待比较的方向
+- Build practical value with a chance of continued use after the hackathon.
+- Consider willingness to pay and maintenance costs; prizes and integrations alone are not validation.
+- Reduce wallet, signing, and transaction friction for people unfamiliar with Web3.
+- The user has one Solidity hackathon experience and confirmed `web3-FTW` was that submission.
+- Use English for this international competition, with brief Chinese notes.
 
-| 方向 | 已知问题背景 | 必须验证的问题 |
+## Candidate directions
+
+| Direction | Reported problem | Questions to validate |
 | --- | --- | --- |
-| 小活动成团与退款 | 社群发布分散，需统计报名、决定成行／取消、处理付款 | 组织者最费时的环节是什么？用户能接受哪种支付方式？ |
-| 编程 AI 语音与无障碍交互 | 希望减少视觉依赖，以语音输入、状态播报和听觉反馈交互 | 首批用户是谁？最需要替代哪个视觉／操作环节？ |
-| Web3 漏洞复现实验工具 | 入门者搭建环境、复现和保护材料有困难 | 首个漏洞类型与环境是什么？如何验证新手能独立完成？ |
+| Small-event formation and refunds | Fragmented announcements, attendance counting, go/no-go decisions, payment handling | Which task costs organizers the most time? What payment methods can participants use? |
+| Voice and accessible coding-AI interaction | Reduce visual dependence with speech input, status narration, and audio feedback | Who are the initial users? Which visual or manual task matters most? |
+| Web3 vulnerability reproduction tools | Environment setup, reproduction, and confidential materials are difficult for beginners | What is the first vulnerability and environment? Can a beginner complete it independently? |
 
-社群成员准入也被讨论过，尚未纳入任何方案。真人验证、性别与成员资格不是同一件事，不能用自拍凭证声称证明实际性别。
+Community admission was discussed but has not been included in a selected proposal. Proof of a live human, gender, and community eligibility are distinct claims; a selfie credential must not be presented as proof of actual gender.
 
-## 构思时逐步填写
+## Fill during ideation
 
-- 目标用户：待定。
-- 一句具体问题：待定。
-- 当前替代方案及其不足：待定。
-- 谁使用／谁付费：待验证。
-- 第一位可参与测试的用户：待定。
-- 最小完整流程：待定。
-- 明确不做的范围：待定。
-- 为什么需要所选 Web3 技术：待论证。
-- 合作方与具体赛道：待定。
-- 从零开发或续作，以及复用范围：待定。
-- 关键依赖、时间风险与备选方案：待定。
-- 首次用户验证结果：未进行。
+- Target user and one concrete problem: undecided.
+- Current alternatives and limitations: unvalidated.
+- User versus payer: unvalidated.
+- First potential test participant: unidentified.
+- Smallest complete workflow and out-of-scope features: undecided.
+- Why the chosen Web3 technology is needed: to establish.
+- Partner and specific prize: undecided.
+- From Scratch versus Continuity, including reuse scope: undecided.
+- Dependencies, timing risks, and alternatives: to assess.
+- User validation results: none.

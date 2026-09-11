@@ -1,14 +1,27 @@
-# 决策记录
+# Decision log
 
-每条记录包含日期、决策、提出／确认方、理由、影响与相关材料。AI 提议尚未确认时留在 brief 中。
+Record dates, decisions, attribution, rationale, impact, and references. Unconfirmed AI proposals belong in the brief.
 
-## D-000 — 建立独立协作工作区
+> 中文提示：只记录实际决策，不把建议写成已确认。
 
-- 日期：2026-09-11（UTC+8）。
-- 用户要求：创建 `buildergame`，按比赛要求规划人机协作目录，从接下来的构思开始记录。
-- 落地：使用文档、规格、提示词、协作记录、实现、测试和提交材料目录。
-- 提出／确认：工作区名称与记录目标由用户明确指定；具体目录组织由 AI 在授权范围内实现。
-- 边界：不选定产品，不复制既有项目，不把前序讨论视为最终方案。
-- 关联：[原始指令](../prompts/0000-workspace-setup.md)。
+## D-000 — Create a separate workspace
 
-下一条决策编号：D-001。
+- Date: 2026-09-11 (UTC+8).
+- User instruction: create `buildergame`, organize collaboration around competition requirements, and record subsequent ideation.
+- Implementation: documentation, specs, prompts, collaboration, implementation, tests, and submission directories.
+- Attribution: the user specified the name and recording objective; AI implemented the directory structure within that scope.
+- Boundary: no product selected, no old code copied, no earlier discussion treated as a final specification.
+- Reference: [Original instruction](../prompts/0000-workspace-setup.md).
+- Initial commit: `0b573c4`.
+
+## D-001 — Use English first with short Chinese notes
+
+- Date: 2026-09-11 (UTC+8).
+- User instruction: prioritize English because the competition is international; add simple Chinese notes.
+- Decision: translate project documents into English, retain concise Chinese explanations, and apply the policy to future artifacts.
+- Attribution: user selected the language; AI translated documents and implemented the policy.
+- Traceability: preserve original Chinese instructions with labeled English translations, and retain original documents in Git history.
+- Impact: no product, stack, or competition-track change.
+- Reference: [Language instruction](../prompts/0001-language-policy.md).
+
+Next decision: D-002.

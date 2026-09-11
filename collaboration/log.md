@@ -1,17 +1,31 @@
-# 人机协作日志
+# Human–AI collaboration log
 
-日期使用北京时间（UTC+8）。只记录实际发生的输入、贡献和验证，不将未执行的计划标为完成。
+Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verification; planned work is not completed work.
 
-## 0000 — 建立工作区
+> 中文提示：保留真实过程，未验证项明确注明。
 
-- 日期：2026-09-11。
-- 用户贡献：指定目录名、要求依据比赛规划人机协作结构，并决定从下一轮构思开始记录。
-- AI 贡献：整理此前需求背景与已查阅的比赛规则；创建目录、协作约定、记录入口和提交模板。
-- 产物：本次初始化文件，文件范围见 `AI_USAGE.md`。
-- 选题状态：未选择；没有复制 `web3-FTW` 或其他旧项目代码。
-- 验证状态：已检查 16 个工作区文件；13 份 Markdown 的本地链接全部有效，Git 状态确认准备文件均可见。本阶段没有产品代码，不运行产品测试。
-- 版本记录：本地 Git 已初始化；本轮准备文档作为初始提交保存，不远程发布。初始提交可通过 `git log --reverse --oneline` 查询。
-- 未决事项：选题、人员分工、参赛路线、合作方、验收标准、用户验证。
-- 原始指令：[0000-workspace-setup](../prompts/0000-workspace-setup.md)。
+## 0000 — Create the workspace
 
-下一轮从 `0001` 开始，记录具体构思输入和产物。
+- Date: 2026-09-11.
+- Human contribution: specified the workspace name, competition-oriented structure, and recording of subsequent ideation.
+- AI contribution: summarized prior background and previously read official rules; created collaboration instructions and submission templates.
+- Outputs: initial workspace files; scopes listed in `AI_USAGE.md`.
+- Topic status: undecided; no code copied from `web3-FTW` or other existing projects.
+- Verification: checked 16 workspace files; local links in 13 Markdown files resolved; staged whitespace checks passed; working tree clean after commit. No product tests were applicable.
+- Version record: local initial commit `0b573c4`; no remote publication.
+- Open questions: topic, roles, track, partners, acceptance criteria, and user validation.
+- Input: [0000-workspace-setup](../prompts/0000-workspace-setup.md).
+
+## 0001 — Apply the language preference
+
+- Date: 2026-09-11.
+- Human contribution: selected English as the primary language with simple Chinese notes.
+- AI contribution: translated documentation, preserved original prompts, added labeled English translations, and updated the collaboration policy.
+- Outputs: 13 translated Markdown files and one new language-instruction record.
+- Scope: preparation only; no product, stack, or track decision.
+- Verification: local links in all 14 Markdown files resolved; git diff --check passed. No product code changed, so product tests were not applicable.
+- Execution note: the sandbox denied document writes; the write command required elevated execution.
+- Version record: preserve the setup commit and save this change separately.
+- Input: [0001-language-policy](../prompts/0001-language-policy.md).
+
+Next collaboration record: **0002**, expected to cover ideation.

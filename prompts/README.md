@@ -1,23 +1,31 @@
-# 提示词记录
+# Prompt records
 
-`0000` 是目录准备工作。从下一轮构思开始使用 `0001`、`0002` 等编号。
+Record 0000 covers setup; 0001 covers the language preference. The next record is **0002**.
 
-建议格式：
+> 中文提示：用户原话原样保留，英文翻译单独标注。
+
+Use English for structure and reviewer-facing explanations. Preserve original inputs in their original language.
+
+Suggested format:
 
 ```markdown
-# NNNN — 主题
-- 日期与时区：
-- 阶段：构思／规划／实现／验证／提交
-- 使用工具：
+# NNNN — Topic
+- Date and timezone:
+- Phase: ideation / planning / implementation / verification / submission
+- AI tools used:
 
-## 用户原始输入
-保存本轮实际输入。敏感内容用占位符替换并注明脱敏。
+## Original user input
+Preserve actual input. Replace sensitive content with placeholders and label redactions.
 
-## 提交给其他 AI 工具的提示词
-如无则写“无”；不能把事后摘要当成原始提示词。
+## English translation
+Provide a labeled translation of non-English input for reviewers.
 
-## 方案、产物与反馈
-保存实际方案或链接到完整规格／规划文件；注明用户反馈和未决项。
+## Prompts submitted to other AI tools
+Save actual prompts and tool names; write "None" if not applicable.
+
+## Proposals, outputs, and feedback
+Include actual proposals or links to complete specs/plans.
+Identify user feedback, decisions, and open questions.
 ```
 
-不追溯伪造此前讨论的逐字文本。背景摘要见 `docs/brief.md`。文件进入 Git 历史；任何敏感材料不得因比赛记录要求而公开。
+Do not fabricate earlier verbatim history. Background is summarized in `docs/brief.md`. Track these files without publishing sensitive material.

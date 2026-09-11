@@ -1,59 +1,66 @@
 # buildergame
 
-ETHOnline 2026 项目工作区。`buildergame` 暂为目录名，产品名称、选题、技术栈和参赛赛道尚未确定。
+Workspace for ETHOnline 2026. The product name, topic, technical stack, and competition track remain undecided.
 
-创建日期：2026-09-11（北京时间，UTC+8）。从下一轮构思开始记录项目的人机协作过程；本次目录搭建记录为准备工作。
+Created on 2026-09-11 (Asia/Shanghai, UTC+8). Human–AI collaboration is recorded from workspace preparation onward. Product ideation has not started in this workspace.
 
-## 目录
+> 中文提示：英文为主，中文仅作辅助说明；选题尚未确定。
+
+## Directory map
 
 ```text
 buildergame/
-├── AGENTS.md                 # AI 在本项目内工作时遵守的记录规则
-├── README.md                 # 项目入口、状态和目录说明
+├── AGENTS.md                 # Collaboration and language policy / 协作约定
+├── README.md                 # Project entry point / 项目入口
 ├── docs/
-│   ├── brief.md              # 用户问题、候选方向、范围和待验证假设
-│   ├── rules.md              # 官方规则、来源、时间与资格核对
-│   └── decisions.md          # 已作出的决策及其原因
+│   ├── brief.md              # Problems, candidates, and assumptions
+│   ├── rules.md              # Official sources, deadlines, and eligibility
+│   └── decisions.md          # Decisions and rationale
 ├── specs/
-│   └── README.md             # 规格与验收标准的编写约定
+│   └── README.md             # Specifications and acceptance criteria
 ├── prompts/
-│   ├── README.md             # 用户指令与 AI 工具提示词的保存约定
-│   └── 0000-workspace-setup.md
+│   ├── README.md             # Prompt recording conventions
+│   ├── 0000-workspace-setup.md
+│   └── 0001-language-policy.md
 ├── collaboration/
-│   ├── log.md                # 每轮协作：输入、贡献、产物和验证
-│   ├── AI_USAGE.md           # 提交时使用的 AI 披露，按文件或模块标注
-│   └── baseline.md           # 赛前既有工作、复用来源和本次新增边界
-├── src/                      # 选定技术栈后存放实现
-├── tests/                    # 与验收标准对应的有效验证
+│   ├── log.md                # Inputs, contributions, outputs, verification
+│   ├── AI_USAGE.md           # AI disclosure by file or module
+│   └── baseline.md           # Pre-existing work and event additions
+├── src/                      # Implementation after scope selection
+├── tests/                    # Meaningful acceptance verification
 └── submission/
-    ├── checklist.md          # 提交与合作方专项要求
-    └── demo-script.md        # 2–4 分钟真人讲解演示脚本
+    ├── checklist.md          # Submission and partner requirements
+    └── demo-script.md        # 2–4 minute, human-narrated demo
 ```
 
-## 当前状态
+## Current status
 
-- 阶段：准备完成，等待第一轮构思。
-- 候选兴趣：小型活动成团与退款、编程 AI 语音与无障碍交互、Web3 漏洞复现实验工具。
-- 选题／Classic 或 Continuity／合作方：待定。
-- 已有产物：协作与比赛记录框架；尚无产品代码、测试结果或用户验证。
-- 参赛状态：是否已录取、完成 Check-in，尚未在 Dashboard 核实。
+- Phase: preparation; waiting for the first product ideation session.
+- Candidate interests: small-event formation and refunds; voice and accessible coding-AI interaction; Web3 vulnerability reproduction tools.
+- Product, Classic/Continuity route, and partners: undecided.
+- Outputs: collaboration scaffolding only; no product code, test results, or user validation.
+- Participation: acceptance and check-ins have not been verified in the Dashboard.
+- Language: English first with brief Chinese notes. Original user prompts retain their language and receive separately labeled English translations.
+- History: local Git initialized; setup commit `0b573c4`. No remote publication.
 
-## 工作方式
+## Workflow
 
-1. 在 `prompts/` 保存本轮用户指令；在 `docs/brief.md` 更新需求与假设。
-2. 构思结果和正式决策分别进入 brief 与 decisions，保留放弃方案的必要理由。
-3. 实现前形成小范围规格和可观察的验收标准，放在 `specs/`。
-4. 完成一轮工作后更新协作日志、AI 使用披露和复用边界，记录实际验证情况。
-5. 使用 Git 按有意义的工作单元保留历史；记录实际 commit，不补造或回填开发时间。
+1. Save actual instructions in `prompts/` and update the problem brief.
+2. Keep proposals and confirmed decisions distinct; preserve relevant reasons for changes.
+3. Before implementation, write small specifications with observable acceptance criteria.
+4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
+5. Commit meaningful work units. Never invent or backdate development history.
 
-优先做一个可验证的完整用户流程。目录结构是工作约定，不是必须实现的功能清单。
+The next collaboration record is **0002**; record 0001 covers the language preference. The directory structure supports the work and does not prescribe product features.
 
-## 关键入口
+## Entry points
 
-- [项目问题与假设](docs/brief.md)
-- [比赛规则与来源](docs/rules.md)
-- [协作记录](collaboration/log.md)
-- [AI 使用披露](collaboration/AI_USAGE.md)
-- [提交清单](submission/checklist.md)
+- [Problem brief](docs/brief.md)
+- [Competition rules](docs/rules.md)
+- [Collaboration log](collaboration/log.md)
+- [AI disclosure](collaboration/AI_USAGE.md)
+- [Submission checklist](submission/checklist.md)
 
-最终提交截止：**北京时间 2026-09-14 00:00**。第二次 Check-in 截止：**2026-09-11 11:59**。个人状态以官方 Dashboard 为准。
+Final submission: **2026-09-13 16:00 UTC / 2026-09-14 00:00 Beijing**.
+Second check-in: **2026-09-11 03:59 UTC / 2026-09-11 11:59 Beijing**.
+Verify personal status in the official Dashboard.

@@ -1,32 +1,34 @@
-# 提交清单
+# Submission checklist
 
-清单中的勾选必须有实际证据。当前尚未提交项目，未登录核实个人参赛状态。
+Check items only with evidence. No project has been submitted; personal participation status remains unverified.
 
-## 资格与过程
+> 中文提示：按实际完成情况勾选，英文材料面向国际评委。
 
-- [ ] 核对报名／录取和 Check-in 状态（第二次截止：北京时间 2026-09-11 11:59）。
-- [ ] 确认团队成员与 1–5 人规模。
-- [ ] 确认 Classic／Continuity，披露所有赛前项目专属工作。
-- [ ] 确认合作方接受本次路线，最多选择 3 家。
-- [ ] 保留开发过程中的 Git 历史。
-- [ ] 补齐 AI 使用、人的实际贡献、提示词、规格与规划材料。
-- [ ] 核对代码、第三方素材和复用部分的许可。
+## Eligibility and process
 
-## 产品与材料
+- [ ] Verify acceptance and check-ins; second check-in due 2026-09-11 03:59 UTC / 11:59 Beijing.
+- [ ] Confirm members and the 1–5 person team limit.
+- [ ] Select Classic/Continuity and disclose pre-existing project-specific work.
+- [ ] Verify partner eligibility for that route; select at most three partners.
+- [ ] Preserve development history.
+- [ ] Complete AI disclosure, actual human contributions, prompts, specs, and planning records.
+- [ ] Check licenses for code, assets, and reused work.
 
-- [ ] 有一个可运行的主要用户流程和重要失败流程。
-- [ ] README 包含启动方法、环境变量示例、架构及限制。
-- [ ] 仓库和设计材料对评委可访问；没有秘密或未经授权的个人资料。
-- [ ] 实际验证结果与未完成部分明确记录。
-- [ ] 为每个合作方说明集成位置、功能和运行证据。
-- [ ] 完成所需 FEEDBACK.md、反馈表、测试网部署或合约验证。
-- [ ] 视频 2–4 分钟、至少 720p、真人讲解，清楚展示实际操作。
-- [ ] 检查视频无 AI 配音、无加速压时长、非手机录制。
-- [ ] 北京时间 2026-09-14 00:00 前在 Dashboard 完成提交并确认成功。
-- [ ] 如申请 Finalist，查看个人评审安排，准备 4 分钟演示与 3 分钟问答。
+## Product and materials
 
-## 合作方专项登记（选定后填写）
+- [ ] Demonstrate one primary workflow and important failure cases.
+- [ ] Provide an English README with setup, environment examples, architecture, and limitations.
+- [ ] Make code/design materials accessible to judges without secrets or unauthorized personal data.
+- [ ] Record actual verification and unfinished work.
+- [ ] Explain integration locations, functions, and evidence for each partner.
+- [ ] Complete required feedback files/forms, testnet deployment, and contract verification.
+- [ ] Record a 2–4 minute video at 720p or higher with human narration; English is the project default.
+- [ ] Check for no AI voiceover, speeding up to fit the limit, or phone recording.
+- [ ] Submit and confirm success before 2026-09-13 16:00 UTC / 2026-09-14 00:00 Beijing.
+- [ ] If seeking Finalist consideration, check the individual assignment and prepare a four-minute demo plus three-minute Q&A.
 
-| 合作方与赛道 | 官方链接 | 路线资格 | 必需集成及材料 | 证据／状态 |
+## Partner-specific register
+
+| Partner and prize | Official link | Route eligibility | Required integration/materials | Evidence/status |
 | --- | --- | --- | --- | --- |
-| 待定 | — | 待核对 | 待核对 | 未开始 |
+| Undecided | — | Unverified | To check | Not started |

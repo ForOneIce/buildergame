@@ -1,15 +1,17 @@
-# 规格与验收标准
+# Specifications and acceptance criteria
 
-选题确认后创建 `0001-<feature>.md`。本阶段没有已批准的功能规格。
+Create `0001-<feature>.md` after topic selection. No product specification has been approved.
 
-每份规格至少包含：
+> 中文提示：先定义可观察的验收标准，再实现。
 
-1. 解决的用户问题与相关决策／提示词链接。
-2. 最小用户流程和范围之外的功能。
-3. 数据、角色、权限和外部依赖。
-4. Web3／合作方技术承担的具体功能。
-5. 可观察的验收标准，包含正常流程与重要失败情况。
-6. 验证方式和实际结果链接。
-7. 状态：草案／已确认／实现中／已验证，以及变更记录。
+Use English with short Chinese notes where useful. Each specification should include:
 
-保留实际用到的 spec、计划和重要修订。不要把验收目标写成已经通过的测试结果。
+1. User problem and links to decisions/prompts.
+2. Smallest complete workflow and out-of-scope features.
+3. Data, roles, permissions, and external dependencies.
+4. The concrete role of Web3 and partner technology.
+5. Observable acceptance criteria for normal and important failure paths.
+6. Verification method and links to actual results.
+7. Status: draft / confirmed / implementing / verified, with revision history.
+
+Preserve actual specs, plans, and important revisions. Acceptance targets are not passing test results.
