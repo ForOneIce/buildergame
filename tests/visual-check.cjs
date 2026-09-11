@@ -1,0 +1,51 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+
+(async () => {
+  fs.mkdirSync('private/qa', { recursive: true });
+  const software = process.env.BROWSER_RENDERER !== 'default';
+  const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_BIN ? { executablePath: process.env.BROWSER_BIN } : { channel: 'chrome' }), args: software ? ['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : ['--enable-webgl'] });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  const failedResponses = [];
+  page.on('pageerror', e => errors.push(e.message));
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('response', r => { if(r.status() >= 400) failedResponses.push({ url:r.url(), status:r.status() }); });
+  await page.goto('http://127.0.0.1:5173/visual.html', { waitUntil: 'domcontentloaded' });
+  await page.locator('#studio[data-ready="true"]').waitFor({ timeout: 120000 });
+  await page.locator('#motion').uncheck();
+  await page.waitForFunction(() => document.querySelector('#studio').dataset.fps);
+  await page.screenshot({ path: 'private/qa/cottage-hero.png' });
+  for (const view of ['front', 'side', 'top', 'close']) {
+    await page.locator(`[data-view="${view}"]`).click();
+    await page.screenshot({ path: `private/qa/cottage-${view}.png` });
+  }
+  await page.locator('#reference-button').click();
+  assert.equal(await page.locator('#reference-panel').isVisible(), true);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#reference-panel').isVisible(), false);
+  await page.locator('#lighting').selectOption('evening');
+  await page.locator('[data-view="hero"]').click();
+  await page.screenshot({ path: 'private/qa/cottage-evening.png' });
+  await page.locator('#quality').selectOption('low');
+  assert.equal(await page.locator('#ao').isChecked(), false);
+  await page.locator('#language').click();
+  assert.equal(await page.locator('html').getAttribute('lang'), 'zh-CN');
+  await page.locator('#language').click();
+  const downloadEvent = page.waitForEvent('download');
+  await page.locator('#save').click();
+  const download = await downloadEvent;
+  await download.saveAs('private/qa/cottage-export.png');
+  assert.ok(fs.statSync('private/qa/cottage-export.png').size > 10000);
+  const stats = await page.locator('#studio').evaluate(el => ({ triangles: el.dataset.triangles, meshes: el.dataset.meshes, fps: el.dataset.fps, frameMs: el.dataset.frameMs }));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator('[data-view="hero"]').click();
+  await page.screenshot({ path: 'private/qa/cottage-mobile.png', fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  console.log(JSON.stringify({failedResponses}));
+  assert.deepEqual(errors, []);
+  const gpu = await page.locator('canvas').first().evaluate(canvas => { const gl = canvas.getContext('webgl2'); const ext = gl?.getExtension('WEBGL_debug_renderer_info'); return ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : 'not exposed'; });
+  console.log(JSON.stringify({ passed: ['GLB load', 'five camera views', 'reference toggle', 'lighting preset', 'quality setting', 'language toggle', 'PNG export', 'mobile overflow'], rendering: { requested: software ? 'software' : 'browser default', gpu, stats }, errors }, null, 2));
+  await browser.close();
+})().catch(e => { console.error(e); process.exit(1); });

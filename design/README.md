@@ -2,6 +2,8 @@
 
 ## Current visual priority
 
+An initial stage-5 sample is now available at `/visual.html` when running the project. It loads the generated Blender GLB and provides orbit/zoom, five camera presets, reference comparison and lighting controls. See the [prototype record](../collaboration/house-prototype.md) for actual checks, measured limits and open art work. The existing town renderer still uses the earlier model pending review.
+
 Five additional construction sheets (`建筑状态1` through `建筑状态5`) and `roads.jpg` now define the visual target. The original procedural demo described below has not met that target. See [visual pipeline evaluation](../specs/0007-visual-pipeline.md) for the gap analysis, researched tools/assets and proposed complete-house prototype. Feature expansion is paused until the visual sample is reviewed.
 
 The new building sheets guide shape, surface and garden detail; the roads image guides block connectivity. No new asset has been generated or imported as part of the evaluation.

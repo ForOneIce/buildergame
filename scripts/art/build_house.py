@@ -50,14 +50,15 @@ def textile_image(name, code, kind):
     values = []
     for y in range(size):
         for x in range(size):
-            grain = random.uniform(-.065, .065)
+            grain = random.uniform(-.026, .026)
             if kind == 'wood':
-                grain += .043*math.sin(x*.53 + math.sin(y*.07)*2.8) + .023*math.sin(x*1.7+y*.012)
+                grain += .016*math.sin(x*.53 + math.sin(y*.07)*2.8) + .009*math.sin(x*1.7+y*.012)
             elif kind == 'felt':
                 grain += .025*math.sin(x*2.5+y*.7)*math.cos(y*1.3)
             else:
                 grain += .025*math.sin(x*.16)*math.cos(y*.16)
-            values.extend([max(0,min(1,c+grain)) for c in base] + [1])
+            # Blender pixel buffers are scene-linear; PNG export encodes sRGB.
+            values.extend([linear(max(0,min(1,c+grain))) for c in base] + [1])
     image.pixels = values
     image.filepath_raw = str(WORK / (name+'.png'))
     image.file_format = 'PNG'
@@ -65,8 +66,8 @@ def textile_image(name, code, kind):
     image.pack()
     return image
 
-wood = material('Honey wood', 'b7793e', texture=textile_image('wood-grain','b7793e','wood'))
-trim = material('Golden end grain', 'ce9955', texture=textile_image('warm-wood','ce9955','wood'))
+wood = material('Honey wood', 'b28b58', texture=textile_image('wood-grain','b28b58','wood'))
+trim = material('Golden end grain', 'd1aa6c', texture=textile_image('warm-wood','d1aa6c','wood'))
 dark = material('Deep timber', '704827')
 plaster = material('Warm lime plaster', 'edd8ae', texture=textile_image('plaster','edd8ae','stone'))
 roof = material('Felt cream', 'efd7aa', texture=textile_image('felt-cream','efd7aa','felt'))
@@ -288,13 +289,13 @@ cube('Chimney dark opening',(-1.43,1.14,5.491),(.46,.44,.025),dark,.06)
 for i in range(11):
     cube('Porch plank',(1.89,-1.14+i*.27,.51),(1.88,.25,.15),trim if i%3 else wood,.038)
 for y in [-1.1,.25,1.56]:
-    beam('Porch column',(2.68,y,.58),(2.68,y,2.92),.085,wood)
-    beam('Porch angled brace',(2.68,y,2.35),(2.34,y,2.96),.055,trim)
+    beam('Porch column',(2.68,y,.58),(2.68,y,2.69),.085,wood)
+    beam('Porch angled brace',(2.68,y,2.16),(2.34,y,2.80),.055,trim)
 for i in range(7):
     for row in range(3):
         o=cube('Veranda felt', (1.16+row*.60,-1.32+i*.49,3.18-row*.18),(.85,.64,.23),roof,.11,4)
         o.rotation_euler.y=.3
-cube('Porch front trim',(1.91,-1.42,2.99),(2.12,.15,.19),trim,.05)
+cube('Porch front trim',(1.91,-1.42,2.71),(2.12,.15,.19),trim,.05)
 for y in [-.62,.92]:
     cube('Side window frame',(1.0,y,1.91),(.12,.82,1.06),wood,.10)
     cube('Side window light',(1.075,y,1.91),(.06,.65,.88),glass,.10)
@@ -324,10 +325,11 @@ planter(2.65,1.45,.87,.55)
 # Windmill tower is an independent sculptural landmark.
 for x in [2.06,2.64]:
     for y in [1.05,1.64]:
-        beam('Windmill tower',(x,y,.63),(2.35+(x-2.35)*.4,1.35+(y-1.35)*.4,4.48),.065,wood)
-for z in [1.5,2.5,3.4,4.16]:
+        beam('Windmill platform support',(x,y,2.82),(x,y,3.08),.06,wood)
+        beam('Windmill tower',(x,y,3.13),(2.35+(x-2.35)*.4,1.35+(y-1.35)*.4,4.48),.065,wood)
+for z in [3.5,4.16]:
     for y in [1.11,1.59]: beam('Tower rung',(2.12,y,z),(2.58,y,z),.047,trim)
-cube('Windmill platform',(2.35,1.35,3.33),(.82,.87,.15),trim,.06)
+cube('Windmill platform',(2.35,1.35,3.08),(.82,.87,.15),trim,.06)
 rotor=bpy.data.objects.new('WindmillRotor',None); bpy.context.collection.objects.link(rotor); rotor.location=(2.35,1.0,4.40)
 bpy.context.view_layer.update()
 for i in range(8):
@@ -382,6 +384,19 @@ for i in range(52):
     if -2.55<x<2.85 and -1.7<y<2.18: continue
     if -1.6<x<-.55 and y< -1.5: continue
     flower(x,y,.32,scale=random.uniform(.8,1.35))
+for x,y in [(-2.8,-2.82),(-2.30,-2.9),(-1.98,-1.83),(.58,-2.87),(1.69,-2.97),(2.6,-2.08),(2.95,-1.55)]:
+    for i in range(5):
+        flower(x+random.uniform(-.22,.22),y+random.uniform(-.17,.17),.36,scale=random.uniform(1.1,1.6))
+    for i in range(5):
+        a=i*math.tau/5
+        leaf=sphere('Garden blade',(x+.12*math.cos(a),y+.12*math.sin(a),.49),(.055,.09,.24),leaves[i%3],8,6)
+        leaf.rotation_euler=(.4*math.cos(a),.4*math.sin(a),a)
+for i in range(170):
+    side=i%4;t=random.uniform(-3.15,3.15)
+    x,y=((t,-3.17) if side==0 else (t,3.12) if side==1 else (-3.31,t) if side==2 else (3.3,t))
+    if y< -3 and -1.6<x<-.5: continue
+    leaf=sphere('Moss tuft',(x,y,.38),(.025,.055,random.uniform(.10,.19)),leaves[i%3],6,4)
+    leaf.rotation_euler.y=random.uniform(-.4,.4)
 for x,y in [(-2.7,-.95),(-2.82,2.76),(2.94,-.43),(-2.4,-2.98),(.82,2.62)]:
     sphere('Garden rock',(x,y,.4),(.25,.18,.18),random.choice(stone))
     for j in range(3):
