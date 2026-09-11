@@ -28,7 +28,7 @@ Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verifi
 - Version record: preserve the setup commit and save this change separately.
 - Input: [0001-language-policy](../prompts/0001-language-policy.md).
 
-Next collaboration record: **0006**.
+Next collaboration record: **0007**.
 
 ## 0002 — Review Hackathon Town
 
@@ -69,3 +69,12 @@ Next collaboration record: **0006**.
 - Outputs: prompt 0005, growth-rule specification, reconciled review/timeline, and updated records.
 - Verification: all local links in 21 Markdown files resolved; git diff --check passed; conflicting current metric-separation recommendations were reconciled. No product code or acceptance tests.
 - References: [Input](../prompts/0005-organizer-growth-rules.md), [specification](../specs/0002-organizer-growth-rules.md).
+
+## 0006 — Cumulative commits preserve buildings
+
+- Date: 2026-09-11 (UTC+8).
+- Human contribution: clarified historical total commits and rejected the implied inactivity/abandonment mechanic.
+- AI contribution: corrected recent-window wording and recorded persistent cumulative growth with empty-versus-unavailable data handling.
+- Outputs: prompt 0006 and updated specs, review, policy, and project records.
+- Verification: local links in all 22 Markdown files resolved and git diff --check passed. No product code or acceptance tests.
+- Input: [0006-cumulative-commit-growth](../prompts/0006-cumulative-commit-growth.md).

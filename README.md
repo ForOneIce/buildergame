@@ -28,7 +28,8 @@ buildergame/
 │   ├── 0002-hackathon-town.md
 │   ├── 0003-town-deployment-modes.md
 │   ├── 0004-town-timeline.md
-│   └── 0005-organizer-growth-rules.md
+│   ├── 0005-organizer-growth-rules.md
+│   └── 0006-cumulative-commit-growth.md
 ├── collaboration/
 │   ├── log.md                # Inputs, contributions, outputs, verification
 │   ├── AI_USAGE.md           # AI disclosure by file or module
@@ -58,7 +59,7 @@ buildergame/
 4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
 5. Commit meaningful work units. Never invent or backdate development history.
 
-The next collaboration record is **0006**; records 0002–0005 capture the town concept, deployment modes, timeline, and organizer-defined growth. The directory structure supports the work and does not prescribe product features.
+The next collaboration record is **0007**; records 0002–0006 capture the town concept, deployment modes, timeline, organizer-defined growth, and cumulative commit behavior. The directory structure supports the work and does not prescribe product features.
 
 ## Entry points
 

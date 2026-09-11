@@ -72,8 +72,7 @@ Proposed first deployment: one event, 20–50 curated public repositories, one n
 | --- | --- | --- |
 | Repository name, description, stars, forks, homepage, archived/fork flags | Repository metadata | Counts are cumulative and are not quality or user metrics |
 | Avatar, bio, follower count | Explicitly chosen representative's user profile | An organization owner is not a person; ownership is not team membership |
-| Recent commits | Bounded, paginated default-branch query over a stated time window | Not a simple repository metadata field; cap/history errors must not become zero |
-| Activity days | Deduplicate eligible commits by day in a stated timezone | A proxy with bot/merge/fork noise and manipulable commit dates |
+| Cumulative commits | Historical total under an explicit repository/reference definition, captured per snapshot | Not a rolling activity window; pagination/truncation or failures must not be reported as a complete zero/smaller total |
 | Releases | Release metadata if within scope | Not all useful projects publish GitHub releases |
 | Event association | Organizer submission, official showcase link, or curator manifest | A URL alone does not prove participation or organizer endorsement |
 | Demo URL | GitHub homepage with an explicit curator override | Nonempty URL does not prove a working or safe demo |
@@ -82,7 +81,7 @@ Use stable repository IDs alongside owner/name to handle renames where possible.
 
 Record source identity, fetch timestamp, window, and calculation version. Store an initial observation snapshot. Historical star growth cannot be derived from a current star count alone; do not invent a pre-event baseline.
 
-Limit forked/imported repositories to the declared event additions when interpreting development activity. The current built-in growth sources are commits and stars; a custom table may encode the organizer's own system. See section 6.
+Built-in commits mode follows the user's cumulative-history rule; do not silently limit it to event-only additions. Reuse disclosure for the buildergame competition submission is a separate requirement. The other sources are stars and organizer-provided custom scores. See section 6.
 
 ### API limits and request budget
 
@@ -102,7 +101,7 @@ Do not fetch all repositories independently for every visitor. Use a backend/sch
 **Updated after the user's clarification in [prompt 0005](../../prompts/0005-organizer-growth-rules.md).** Earlier AI recommendations about mandatory separation of development and attention, normalization, or universal progression are superseded.
 
 The organizer chooses the values represented by the town:
-- Commit-count growth uses the configured commit count.
+- Commit-count growth uses cumulative historical commits, as clarified in [prompt 0006](../../prompts/0006-cumulative-commit-growth.md). No new commits preserves the building; only a confirmed zero-commit repository is an empty plot.
 - Star-based growth uses GitHub stars.
 - A custom scoring system supplies a complete repository-to-score table before deployment.
 

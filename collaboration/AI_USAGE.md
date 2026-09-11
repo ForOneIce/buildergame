@@ -56,3 +56,10 @@ For later work, identify actual code, assets, prompts, human revisions, and veri
 - AI contribution: withdrew conflicting recommendations, drafted the source/mapping/import contract, and reconciled current documentation.
 - Files: prompt 0005, specs/0002-organizer-growth-rules.md, updated review, timeline, project status, and collaboration records.
 - No product implementation, scoring evaluation, or user testing performed.
+
+## Session 0006: cumulative commits
+
+- Human contribution: corrected the AI's recent-activity interpretation; cumulative historical commits preserve the existing building.
+- AI contribution: documented unchanged-building behavior, zero-versus-unavailable data, timeline implications, and reconciled conflicting current text.
+- Files: prompt 0006, growth/timeline specs, review, project policy/status, and collaboration records.
+- No product implementation or acceptance testing performed.

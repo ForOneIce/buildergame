@@ -56,11 +56,12 @@ Suggested transition duration: approximately 0.4–0.8 seconds, subject to devic
 - Before a project's first listing, show its reserved location as not yet listed.
 - For a removed project, preserve older snapshots; its current plot follows an explicit removal policy.
 - A failed fetch is not project removal and must not downgrade or erase a building.
+- A confirmed zero-commit repository may have an empty plot. No new commits on an existing repository leaves its building unchanged under the same mapping.
 - If a layout must change, version it and do not silently present relocation as project evolution.
 
 ## Comparison integrity
 
-Freeze the display policy within a comparable timeline: metric definitions, window length, thresholds, weights, and visual mappings.
+Freeze the display policy within a comparable timeline: metric definitions, repository/reference scope, thresholds, weights, and visual mappings. Commits mode uses cumulative history; the collection window describes when data was fetched, not a rolling scoring period.
 
 If an organizer changes those settings, identify a new display-policy version and label the view change. Do not present a house upgrade caused only by new weights or artwork as new development.
 

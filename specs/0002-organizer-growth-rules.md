@@ -2,7 +2,7 @@
 
 Status: user-confirmed product principle; configuration details and acceptance checks below are draft implementation proposals.
 
-Source: [prompt 0005](../prompts/0005-organizer-growth-rules.md).
+Sources: [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [cumulative-count clarification](../prompts/0006-cumulative-commit-growth.md).
 
 > 中文提示：活动方选择价值导向；程序按既定数值映射房屋，不另行修正评分。
 
@@ -18,13 +18,25 @@ Numerical scores do not need to appear in the viewer interface, consistent with 
 
 | Mode | Input | Computation |
 | --- | --- | --- |
-| commits | GitHub commit count under the configured branch/time scope | Use the selected count directly unless the organizer configures another mapping |
+| commits | Cumulative historical GitHub commit total for the selected repository/reference definition | Map the total directly; no rolling activity window or inactivity decay |
 | stars | GitHub star count at the snapshot | Use the selected count directly |
 | custom | Complete repository-to-score table supplied before deployment | Use supplied scores; do not recompute the organizer's method |
 
 Earlier discussion allowed multiple dimensions. The organizer can combine them externally and import final custom scores, avoiding an arbitrary formula engine in the first version.
 
-The commit branch/window and house-stage boundaries still need to be specified before implementation. Do not silently replace commit count with active days or stars with star growth.
+The repository/reference counting definition and house-stage boundaries still need to be specified before implementation. Count full available history under that definition, not a recent time window. Do not substitute active days, recent commit counts, event-only additions, or star growth.
+
+## Cumulative commit behavior
+
+> 中文提示：累计成果保留；停止提交不会让房屋荒废。
+
+- A repository's recorded historical commit total is the input.
+- If the total and mapping remain unchanged, its building stays unchanged regardless of elapsed time.
+- Additional commits can advance the house when the next configured threshold is reached; not every commit must change the model.
+- A confirmed blank repository with zero commits may use the empty-land stage. A missing response, inaccessible repository, or counting failure is not zero.
+- Timeline selection renders the historical count and model saved in that snapshot; returning to an older version is historical viewing, not decay.
+- Branch/reference changes or rewritten history require an explicit data-handling policy during implementation; do not assume Git itself guarantees every observed count is monotonic or silently invent replacement scores.
+- This clarification applies to commits mode. Stars and organizer-supplied scores retain their own recorded values.
 
 ## Shared pipeline
 
@@ -67,7 +79,10 @@ These checks verify completeness and consistent rendering, not whether the organ
 
 ## Proposed acceptance criteria
 
-- [ ] Commits mode maps configured commit counts to the organizer's house stages without an unrequested adjustment.
+- [ ] Commits mode maps cumulative historical counts to organizer-defined house stages without an unrequested adjustment.
+- [ ] Advancing snapshot time without new commits preserves the same building under the same mapping.
+- [ ] Only a confirmed zero-commit repository uses the zero-commit empty-land state; unknown data does not.
+- [ ] Crossing a configured threshold through additional commits changes the stage in the next snapshot.
 - [ ] Stars mode maps star counts, not increments or active days.
 - [ ] Custom mode uses the exact supplied values and validates full repository coverage.
 - [ ] Missing/duplicate/non-numeric custom entries block publication with actionable errors.

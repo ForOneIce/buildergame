@@ -62,3 +62,9 @@ The user specified fixed project land positions and a town-wide update timeline.
 The user explicitly assigns growth criteria to each organizer. Commits or stars can directly drive house stages. A custom scoring system requires a complete repository-to-score mapping supplied before deployment. Earlier AI proposals for mandatory separation or adjustment of metrics are superseded.
 
 See [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [the current specification](../specs/0002-organizer-growth-rules.md). Technical configuration and implementation remain pending.
+
+## User clarification: accumulated construction remains
+
+Commits mode uses cumulative historical totals. With no new commits, the existing building stays unchanged under the same mapping. A confirmed empty repository with zero commits may render as empty land. Recent activity, rolling scoring windows, and inactivity decay are not part of this requirement.
+
+Source: [prompt 0006](../prompts/0006-cumulative-commit-growth.md).

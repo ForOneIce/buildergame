@@ -24,7 +24,7 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - Impact: no product, stack, or competition-track change.
 - Reference: [Language instruction](../prompts/0001-language-policy.md).
 
-Next decision: D-006.
+Next decision: D-007.
 
 ## D-002 — Assess the user-originated town proposal
 
@@ -61,3 +61,12 @@ Next decision: D-006.
 - AI work: document configurable sources, direct score-to-stage mapping, complete-table validation, and snapshot behavior.
 - Scope: accepted product principle; no implementation or deployment authorization.
 - References: [Input](../prompts/0005-organizer-growth-rules.md), [specification](../specs/0002-organizer-growth-rules.md).
+
+## D-006 — Use cumulative commits without inactivity decay
+
+- Date: 2026-09-11 (UTC+8).
+- User clarification: historical commit totals remain recorded; stopping new commits does not imply abandonment or a smaller house.
+- Behavior: unchanged total and mapping → unchanged building; confirmed zero-commit repository → empty-land stage.
+- Supersedes: AI's recent-activity interpretation and related decay concern.
+- Technical details still pending: repository/reference count definition, handling changed Git history, and stage boundaries.
+- Reference: [Input](../prompts/0006-cumulative-commit-growth.md).
