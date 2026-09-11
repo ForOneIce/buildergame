@@ -1,4 +1,4 @@
-import { repositoryKey, makeRecord, validateManifest } from '../src/model.mjs';
+import { repositoryKey, makeRecord, validateManifest, safeUrl } from '../src/model.mjs';
 import { publicBundle, cleanEvent } from '../src/bundle.mjs';
 
 export async function github(path, token, fetcher = fetch) {
@@ -37,7 +37,7 @@ export async function capture(event, previousHistory, token, fetcher = fetch) {
     const old = previousHistory?.snapshots.at(-1)?.projects.find(r => r.projectId === p.id);
     try {
       const { repo, metrics } = await observe(p.repository, token, fetcher);
-      p.name = repo.name; p.description = repo.description || p.description; p.homepage = repo.homepage || p.homepage;
+      p.name = repo.name; p.description = repo.description || p.description; p.homepage = safeUrl(repo.homepage) || p.homepage;
       if (!p.builder.avatar) p.builder.avatar = repo.owner.avatar_url;
       records.push(makeRecord(p, metrics, event.rule, observedAt, old, custom[repositoryKey(p.repository)]));
     } catch { failures.push(p.id); records.push(makeRecord(p, null, event.rule, observedAt, old)); }

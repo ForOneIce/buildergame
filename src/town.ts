@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Project, Snapshot, Stage } from './types';
+import { houseModel } from './models';
 
-const colors = { grass: '#b8cd91', plot: '#dfd7ab', road: '#f1e4c8', wood: '#8a5942', trunk: '#896545', leaf: '#628b64' };
+const colors = { grass: '#a8c875', plot: '#c9cd8b', road: '#ddcf9e', wood: '#8a5942', trunk: '#896545', leaf: '#729d4d' };
 const material = (color: THREE.ColorRepresentation) => new THREE.MeshStandardMaterial({ color, roughness: 0.92 });
 function box(group: THREE.Group, w: number, h: number, d: number, x: number, y: number, z: number, color: THREE.ColorRepresentation) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material(color));
@@ -10,54 +11,8 @@ function box(group: THREE.Group, w: number, h: number, d: number, x: number, y: 
 }
 function tree(group: THREE.Group, x: number, z: number, size = 1) {
   box(group, .15, .8 * size, .15, x, .4 * size, z, colors.trunk);
-  const crown = new THREE.Mesh(new THREE.IcosahedronGeometry(.66 * size, 0), material(colors.leaf));
-  crown.position.set(x, 1.05 * size, z); crown.castShadow = true; group.add(crown);
-}
-// Replace this factory when final visual references arrive. 中文：模型与数据规则分离。
-export function buildHouse(stage: Stage | null, color: string): THREE.Group {
-  const g = new THREE.Group();
-  if (!stage) {
-    for (let i = 0; i < 4; i++) box(g, .35, .1, .35, (i % 2) * .7 - .35, .05, Math.floor(i / 2) * .7 - .35, '#b0b6aa');
-    return g;
-  }
-  if (stage === 'land') {
-    for (let i = 0; i < 4; i++) box(g, 1.4, .04, .12, 0, .035, -.5 + i * .32, '#b5a681');
-    return g;
-  }
-  box(g, 1.75, .2, 1.5, 0, .1, 0, '#a8a795');
-  if (stage === 'foundation') {
-    box(g, 1.5, .17, .18, 0, .27, -.58, '#b9b5a3'); box(g, .18, .17, 1.2, -.67, .27, 0, '#b9b5a3');
-    box(g, .6, .13, .3, .35, .27, .3, colors.wood); return g;
-  }
-  if (stage === 'frame') {
-    for (const x of [-.68, .68]) for (const z of [-.55, .55]) box(g, .12, 1.2, .12, x, .8, z, colors.wood);
-    for (const z of [-.55, .55]) box(g, 1.5, .12, .12, 0, 1.37, z, colors.wood);
-    box(g, .12, .12, 1.2, -.68, 1.37, 0, colors.wood); box(g, .12, .12, 1.2, .68, 1.37, 0, colors.wood);
-    return g;
-  }
-  const tall = stage === 'townhouse' || stage === 'decorated';
-  const height = tall ? 1.9 : 1.15;
-  box(g, 1.5, height, 1.25, 0, .2 + height / 2, 0, '#f7ebce');
-  const shape = new THREE.Shape(); shape.moveTo(-.92, 0); shape.lineTo(0, .8); shape.lineTo(.92, 0); shape.closePath();
-  const roof = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: 1.65, bevelEnabled: false }), material(color));
-  roof.position.set(0, height + .2, -.825); roof.castShadow = true; g.add(roof);
-  box(g, .33, .65, .06, 0, .52, .65, colors.wood);
-  for (const x of [-.48, .48]) {
-    box(g, .3, .33, .05, x, .83, .65, '#86abad');
-    if (tall) box(g, .3, .35, .05, x, 1.63, .65, '#86abad');
-  }
-  box(g, .25, .65, .25, .45, height + .63, -.2, '#b77c65');
-  if (stage === 'decorated') {
-    box(g, 1.85, .14, .35, 0, 1.16, .83, color);
-    for (const x of [-1.08, 1.08]) {
-      box(g, .2, .22, .25, x, .14, .5, '#b47d59');
-      const flower = new THREE.Mesh(new THREE.IcosahedronGeometry(.22, 0), material('#e8b27c'));
-      flower.position.set(x, .42, .5); g.add(flower);
-    }
-    box(g, .05, .75, .05, -.8, height + .95, 0, colors.wood);
-    box(g, .37, .23, .025, -.6, height + 1.16, 0, '#e9ba61');
-  }
-  return g;
+  for(let i=0;i<3;i++) { const crown = new THREE.Mesh(new THREE.IcosahedronGeometry((.5-i*.045) * size, 1), material(i%2?'#8aab52':colors.leaf));
+  crown.position.set(x+Math.sin(i*2)*.3*size, (1.12+i*.15)*size, z+Math.cos(i*2)*.24*size); crown.castShadow = true; group.add(crown); }
 }
 function disposeGroup(group: THREE.Group) {
   group.traverse(obj => { if (obj instanceof THREE.Mesh) { obj.geometry.dispose(); const mats = Array.isArray(obj.material) ? obj.material : [obj.material]; mats.forEach(m => { if ('map' in m) (m as THREE.MeshBasicMaterial).map?.dispose(); m.dispose(); }); } });
@@ -65,10 +20,11 @@ function disposeGroup(group: THREE.Group) {
 
 export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void) {
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#e9eddf');
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#86bcd0'); scene.fog = new THREE.Fog('#add9e4', 75, 160);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
   host.append(renderer.domElement); renderer.domElement.setAttribute('aria-label', 'Interactive 3D town. Use the project directory for keyboard access.');
   const camera = new THREE.PerspectiveCamera(36, 1, .1, 500);
   const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.enablePan = true;
@@ -81,7 +37,16 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   const center = new THREE.Vector3((Math.min(...xs) + Math.max(...xs)) / 2, 0, (Math.min(...zs) + Math.max(...zs)) / 2);
   const width = Math.max(...xs) - Math.min(...xs) + 7, depth = Math.max(...zs) - Math.min(...zs) + 7;
   const terrain = new THREE.Group(); scene.add(terrain);
-  box(terrain, width, .65, depth, center.x, -.48, center.z, '#9db180');
+  box(terrain, width, 1.8, depth, center.x, -1, center.z, '#a19f8a');
+  // Irregular cliff skirt, with a soft sea underneath the island.
+  for (let i=0;i<36;i++) { const angle=i/36*Math.PI*2;const cliff=new THREE.Mesh(new THREE.IcosahedronGeometry(1.45+(i%3)*.2,0),material(i%2?'#b2ae96':'#979c8a'));cliff.position.set(center.x+Math.cos(angle)*(width/2-.5),-2.8-(i%3)*.22,center.z+Math.sin(angle)*(depth/2-.5));cliff.scale.y=1.25;cliff.castShadow=true;terrain.add(cliff); }
+  const sea=new THREE.Mesh(new THREE.PlaneGeometry(600,600),material('#68b5c9'));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
+  const scenery=new THREE.Group();scene.add(scenery);
+  for(let i=0;i<18;i++) {const ripple=box(scenery,1.2+(i%3),.008,.05,center.x+Math.sin(i*2.4)*(width/2+3+i*.6),-4.98,center.z+Math.cos(i*2.4)*(depth/2+3+i*.5),'#acd5dd');ripple.rotation.y=i*.6;}
+  // A small landing dock connects the town to the open water.
+  for(let i=0;i<8;i++)box(scenery,1,.07,.23,center.x-2,.02,center.z+depth/2+i*.26,'#b89765');
+  for(const x of [-2.55,-1.45])for(const z of [depth/2,depth/2+1.7]){box(scenery,.09,1.5,.09,center.x+x,-.3,center.z+z,'#8b7350');}
+  for(let i=0;i<5;i++){const cloud=new THREE.Group();for(let j=0;j<4;j++){const puff=new THREE.Mesh(new THREE.IcosahedronGeometry(1.3-j*.13,1),new THREE.MeshStandardMaterial({color:'#eaf2e6',transparent:true,opacity:.68,roughness:1}));puff.position.set(j*1.1,Math.sin(j)*.3,0);cloud.add(puff);}cloud.position.set(center.x+(i%2?1:-1)*(width/2+7+i*2),-1.5,center.z+(i-2)*9);scenery.add(cloud);}
   box(terrain, width, .12, depth, center.x, -.095, center.z, colors.grass);
   for (const z of new Set(zs)) box(terrain, width - .5, .035, .72, center.x, 0, z + 1.85, colors.road);
   for (const x of new Set(xs)) box(terrain, .55, .035, depth - .5, x + 1.9, .006, center.z, colors.road);
@@ -94,7 +59,9 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     const root = new THREE.Group(); root.position.set(p.plot.x * 4, 0, p.plot.z * 4); scene.add(root);
     box(root, 3.25, .065, 3.05, 0, .015, 0, colors.plot);
     box(root, .45, .025, .85, 0, .06, 1.18, colors.road);
-    for (const x of [-1.45, 1.45]) box(root, .055, .3, 2.65, x, .25, -.12, '#c5b887');
+    for (const x of [-1.45, 1.45]) { for(const z of [-1.2,0,1.2])box(root,.09,.48,.09,x,.3,z,'#ab8651');for(const y of [.24,.43])box(root,.055,.06,2.65,x,y,-.12,'#b49461'); }
+    tree(root,-1.07,-.97,.58); tree(root,1.1,-.92,.45);
+    for(let i=0;i<6;i++){const petal=new THREE.Mesh(new THREE.IcosahedronGeometry(.06,0),material(i%2?'#f8d576':'#f4e5b5'));petal.position.set(-1.25+(i%3)*.18,.14,-.55+Math.floor(i/3)*.18);root.add(petal);}
     const sign = new THREE.Group(); sign.position.set(-.83, 0, 1.27); root.add(sign);
     box(sign, .07, .65, .07, 0, .34, 0, colors.wood);
     box(sign, 1.15, .5, .08, 0, .66, 0, colors.wood);
@@ -132,8 +99,9 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   renderer.domElement.addEventListener('pointerup', e => { if (dragged || e.button !== 0) return; const hit = pick(e); if (hit) select(hit.id, hit.action === 'visit'); });
   let distance = 25;
   function reset() {
-    distance = Math.max(width, depth) * (host.clientWidth < 650 ? 2.2 : 1.45);
-    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(distance * .66, distance * .82, distance));
+    camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();
+    distance = Math.max(width, depth) / (2 * Math.tan(THREE.MathUtils.degToRad(18)) * Math.min(camera.aspect,1)) * 1.15;
+    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.66,.82,1).normalize().multiplyScalar(distance));
     controls.minDistance = 5; controls.maxDistance = distance * 3; controls.update();
   }
   const resize = new ResizeObserver(() => { const w = host.clientWidth, h = host.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }); resize.observe(host); reset();
@@ -155,10 +123,12 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
         const item = buildings.get(record.projectId)!;
         if (item.stage === record.stage) continue;
         item.root.remove(item.house); disposeGroup(item.house);
-        item.house = buildHouse(record.stage, projects.find(p => p.id === record.projectId)!.color || '#688d87');
+        item.house = houseModel(record.stage, projects.find(p => p.id === record.projectId)!.color || '#477eae');
         item.root.add(item.house); item.stage = record.stage; item.progress = 0;
       }
       if (highlighted) this.focus(highlighted);
     },
+    zoom(direction: number) { camera.position.sub(controls.target).multiplyScalar(direction > 0 ? .8 : 1.25).add(controls.target);controls.update(); },
+    dispose() { renderer.setAnimationLoop(null);resize.disconnect();controls.dispose();disposeGroup(terrain);disposeGroup(scenery);for(const item of buildings.values())disposeGroup(item.root);ring.geometry.dispose();ring.material.dispose();sea.geometry.dispose();(sea.material as THREE.Material).dispose();sun.shadow.dispose();renderer.dispose();renderer.domElement.remove(); },
   };
 }

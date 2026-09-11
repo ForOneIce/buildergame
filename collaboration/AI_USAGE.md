@@ -22,6 +22,8 @@ Codex assisted with project planning, research, English translations, specificat
 
 ## Development trace
 
+Session 0012: the human supplied six visual references and specified two setup modes, deployer GitHub authorization, bilingual UI, portable snapshot backup and public exploration. Codex generated the server, data pipeline, tests, procedural 3D components and UI. Eight Node tests and browser journeys passed; browser capture/OAuth responses were mocked for repeatability, while separate public GitHub reads were verified live. Real OAuth authorization and a hosted production deployment have not been tested. The reference image model/prompts were not supplied, so no attribution has been invented.
+
 Session 0011: Codex wrote the user-facing root README and relocated reviewer materials to hackathon/ at the human's direction. The README identifies planned and unverified functionality; no product code changed.
 
 Session 0010: the human proposed developer portfolio towns. Codex assessed reuse of the existing data contract, wrote the scope and translated the project-related prompt excerpt, and updated positioning documents. No developer-mode implementation or adoption is claimed.
