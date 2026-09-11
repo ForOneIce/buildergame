@@ -1,0 +1,27 @@
+[
+  {
+    "file": "stage-1-low.glb",
+    "triangles": 7055,
+    "bytes": 985720
+  },
+  {
+    "file": "stage-2-low.glb",
+    "triangles": 9985,
+    "bytes": 1074408
+  },
+  {
+    "file": "stage-3-low.glb",
+    "triangles": 12750,
+    "bytes": 1282988
+  },
+  {
+    "file": "stage-4-low.glb",
+    "triangles": 14940,
+    "bytes": 1540672
+  },
+  {
+    "file": "cozy-house-low.glb",
+    "triangles": 21458,
+    "bytes": 1820896
+  }
+]
