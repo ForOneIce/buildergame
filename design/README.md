@@ -1,5 +1,13 @@
 # Visual references and procedural interpretation
 
+## Current visual priority
+
+Five additional construction sheets (`建筑状态1` through `建筑状态5`) and `roads.jpg` now define the visual target. The original procedural demo described below has not met that target. See [visual pipeline evaluation](../specs/0007-visual-pipeline.md) for the gap analysis, researched tools/assets and proposed complete-house prototype. Feature expansion is paused until the visual sample is reviewed.
+
+The new building sheets guide shape, surface and garden detail; the roads image guides block connectivity. No new asset has been generated or imported as part of the evaluation.
+
+## Earlier demo interpretation
+
 The human supplied six reference images for the welcome screen, town map and building stages. Their image-generation tool and exact prompts have not been supplied; no tool/model attribution is inferred.
 
 The Demo uses an original procedural interpretation in [src/models.ts](../src/models.ts) and [src/town.ts](../src/town.ts), rather than displaying the map image as a simulated interactive scene.
