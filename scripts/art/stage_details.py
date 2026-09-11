@@ -15,9 +15,13 @@ for obj in list(bpy.data.objects):
 
 PART='construction'
 if STAGE==1:
-    cube('Open earth clearing',(-.3,.1,.30),(5.3,4.6,.10),dirt,.44,5)
-    for i in range(35):
-        sphere('Clearing pebble',(random.uniform(-2.7,2.3),random.uniform(-1.9,2.15),.37),(.07,.055,.035),stone[i%3],8,5)
+    # 空地保留绿色地衣，不覆盖黄色施工清理面。
+    bpy.data.objects.remove(bpy.data.objects['House clearing'],do_unlink=True)
+    for i in range(60):
+        sphere('Lichen cushion',(random.uniform(-2.7,2.3),random.uniform(-1.9,2.15),.29),
+               (random.uniform(.08,.22),random.uniform(.08,.19),random.uniform(.015,.04)),leaves[i%3],10,6)
+    for i in range(9):
+        sphere('Small meadow pebble',(random.uniform(-2.7,2.3),random.uniform(-1.9,2.15),.31),(.045,.035,.025),stone[i%3],8,5)
 
 if STAGE in (2,3):
     # The existing foundation is raised into three clear stone courses.
@@ -107,6 +111,25 @@ for x in [-fx,fx]:
     for z in [.64,.98]: beam('Fence rail',(x,-fy,z),(x,fy,z),.055,wood,True)
 for i in range(7): cube('Back fence post',(-fx+i*fx/3,fy,.75),(.14,.16,.94),trim,.045)
 for z in [.64,.98]: beam('Back fence rail',(-fx,fy,z),(fx,fy,z),.055,wood,True)
+if STAGE==1:
+    # Replace complete rails with separate remnants and visible open gaps.
+    for obj in list(bpy.data.objects):
+        if obj.name.startswith(('Fence post','Fence rail','Back fence')):
+            bpy.data.objects.remove(obj,do_unlink=True)
+    for side,segments in [(-1,[(-fy,-fy+.95),(.35,1.40)]),(1,[(-.55,.50),(fy-.70,fy)])]:
+        x=side*fx
+        for index,(a,b) in enumerate(segments):
+            for y in [a,b]:
+                post=cube('Weathered fence post',(x,y,.61),(.13,.14,.66),wood,.035)
+                post.rotation_euler.y=side*.07
+            beam('Remaining fence rail',(x,a,.66),(x,b,.71),.05,trim,True)
+            if index==0:
+                beam('Short broken rail',(x,a,.88),(x,a+(b-a)*.55,.83),.045,wood,True)
+    for x in [-fx,-fx+1.15,.65,fx]:
+        cube('Back fence remnant',(x,fy,.61),(.13,.14,.66),wood,.035)
+    beam('Back rail remnant',(-fx,fy,.70),(-fx+1.15,fy,.66),.05,trim,True)
+    beam('Back rail remnant',(.65,fy,.66),(1.50,fy,.61),.045,wood,True)
+    beam('Leaning broken rail',(fx,1.48,.31),(fx,2.12,.58),.045,wood,True)
 if STAGE==5:
     for x in [.45,1.7,2.95,fx]: cube('Front fence post',(x,-fy,.73),(.15,.15,.91),trim,.04)
     for z in [.61,.96]: beam('Front fence rail',(.45,-fy,z),(fx,-fy,z),.052,wood,True)
@@ -130,8 +153,19 @@ anchor=bpy.data.objects.new('SignAnchor',None); bpy.context.collection.objects.l
 sign_info={'position':[sx,sz,-sy+.095],'size':[sw-.16,sh-.18]}
 
 # Planting follows the expanded perimeter rather than filling the visitor path.
-tree(-fx+.30,fy-.55,2.9 if STAGE==5 else 1.8,STAGE==5)
-tree(fx-.26,fy-.5,2.6 if STAGE==5 else 1.6)
+if STAGE==1:
+    for x,y,h in [(-fx+.45,fy-.62,.66),(fx-.42,fy-.57,.50)]:
+        beam('Sapling stem',(x,y,.29),(x+.025,y,.29+h),.023,wood)
+        for j in range(4):
+            side=1 if j%2 else -1
+            z=.45+j*h*.16
+            beam('Sapling twig',(x,y,z),(x+side*.12,y+.02,z+.08),.012,wood)
+            leaf=sphere('Sapling leaf',(x+side*.14,y+.02,z+.11),(.13,.055,.075),leaves[j%3],10,6)
+            leaf.rotation_euler.y=-side*.45
+        sphere('Sapling new bud',(x+.025,y,.31+h),(.048,.04,.075),leaves[1],10,6)
+else:
+    tree(-fx+.30,fy-.55,2.9 if STAGE==5 else 1.8,STAGE==5)
+    tree(fx-.26,fy-.5,2.6 if STAGE==5 else 1.6)
 if STAGE==5: tree(-fx+.25,.65,2.15)
 clusters=[(-fx+.2,-fy+.35),(fx-.3,-fy+.45),(fx-.25,-1.5),(-fx+.23,.4),(.85,fy-.3)]
 if STAGE==5: clusters += [(1.28,-3.55),(3.5,1.6),(-3.7,2.55)]

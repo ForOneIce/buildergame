@@ -10,7 +10,11 @@ blender --background --factory-startup --python scripts/art/build_house.py
 
 The default is stage 5. To generate another appearance, append `-- --stage 1` (or 2, 3, 4). Each run writes the corresponding `stage-N.glb`, `stage-N.stats.json` and local `stage-N.blend`. `stage_details.py` supplies stage derivation and the shared garden layout; it executes inside the main script's authoring namespace. Stage 5 keeps the compatible `cozy-house` filename.
 
-The final tile measures 9.4 × 9.4 units; stages 1–4 use 7.25 × 6.9. A future town must reserve the maximum footprint at the fixed project location. Sign placement and face dimensions are in each statistics JSON, so the viewer does not duplicate layout constants.
+The final tile measures 9.4 × 9.4 units; stages 1–4 use 7.25 × 6.9. The main town reserves 12 units per fixed logical plot. Sign placement and face dimensions are in each statistics JSON, so the viewer does not duplicate layout constants.
+
+Stage 1 uses a green lichen lawn, incomplete fence sections and two small leafy saplings. It has no yellow clearing overlay. Stages 2–5 retain their construction surfaces and mature planting.
+
+Generate distant-view derivatives with `blender --background --factory-startup --python scripts/art/build_lods.py`. Append `-- --stage 1` to update only one stage and its statistics. The full-detail source assets are never modified by decimation.
 
 Outputs: `public/models/cozy-house.glb` (web asset), `private/art/cozy-house.blend` (editable local source), and `public/models/cozy-house.stats.json` (generation inventory). The source script is the tracked reproducible authoring source. The generated Blender working file and portable authoring tools remain local.
 
