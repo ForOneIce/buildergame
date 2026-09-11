@@ -4,8 +4,8 @@
 
 ## Scope and accuracy
 
-- User instructions take precedence. Hackathon Town is the current concept; user-defined requirements are recorded in specs. Implementation scope and competition route remain unconfirmed.
-- House-growth criteria belong to the organizer: apply configured commits, stars, or supplied custom scores. Do not reintroduce superseded AI scoring preferences.
+- User instructions take precedence. A Web2-first Hackathon Town Demo is authorized in prompt 0007; competition route remains unconfirmed.
+- House-growth criteria belong to the organizer: apply configured commits, stars, weighted commits/stars/forks, or supplied custom scores. Do not reintroduce superseded AI scoring preferences.
 - Commits mode uses the cumulative historical total, not recent activity. No new commits means no change in the building under the same mapping; do not invent inactivity decay.
 - Maintain these records proactively during subsequent ideation and development in this directory.
 - Distinguish user requirements, AI proposals, assumptions, and evidence. An AI recommendation is not user approval.

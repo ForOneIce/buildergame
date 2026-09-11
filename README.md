@@ -1,10 +1,14 @@
 # buildergame
 
-Workspace for ETHOnline 2026. Current concept: an organizer-deployed Hackathon Town. Branding, implementation details, and competition track remain undecided.
+An organizer-deployed 3D hackathon town where GitHub projects become houses that evolve with their recorded history. Intended pilot: ETHOnline 2026. Basic viewing requires no wallet; ENS integration is deferred.
 
-Created on 2026-09-11 (Asia/Shanghai, UTC+8). Human–AI collaboration is recorded from workspace preparation onward. Product ideation is in progress; user requirements and AI proposals are recorded separately.
+Created on 2026-09-11 (Asia/Shanghai, UTC+8). Human–AI collaboration is recorded from workspace preparation onward. Demo implementation is in progress; user requirements and AI proposals are recorded separately.
 
-> 中文提示：英文为主，中文辅助；当前构思为活动小镇，尚未开始实现。
+> 中文提示：英文为主，中文辅助；当前是开发中的 Demo 骨架，尚不能完整运行。
+
+The current checkout is **not yet a complete runnable Demo**. The initial renderer, interface and data contract have been written. Event/sample JSON, snapshot capture/validation scripts, tests, dependency installation and build verification remain pending. Some package scripts refer to files not yet implemented. Actual event projects and final visual references are also pending. No adoption or deployment is claimed.
+
+The organizer controls growth. This pilot uses cumulative commits, stars and forks, with provisional AI-selected weights of 1, 3 and 6 respectively. These are not official ETHGlobal criteria. Inactivity does not reduce accumulated commit progress. The town is intended to support both fixed showcases and newly published snapshots. See the [Demo specification](specs/0003-web2-demo.md).
 
 ## Directory map
 
@@ -43,10 +47,10 @@ buildergame/
 
 ## Current status
 
-- Phase: ideation; reviewing the user's Hackathon Town concept. No implementation scope has been approved.
+- Phase: initial implementation of the Web2-first Demo authorized in prompt 0007.
 - Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots. Earlier candidate interests remain in the brief.
 - Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle; Classic/Continuity route and partners are undecided.
-- Outputs: collaboration scaffolding and a feasibility review; no product code, product test results, or user validation.
+- Outputs: collaboration records, feasibility review and initial product code. No passing build, product test results or user validation yet.
 - Participation: acceptance and check-ins have not been verified in the Dashboard.
 - Language: English first with brief Chinese notes. Original user prompts retain their language and receive separately labeled English translations.
 - History: local Git initialized; setup commit `0b573c4`. No remote publication.
@@ -59,7 +63,7 @@ buildergame/
 4. Update collaboration, AI disclosure, reuse boundaries, and actual verification after each session.
 5. Commit meaningful work units. Never invent or backdate development history.
 
-The next collaboration record is **0007**; records 0002–0006 capture the town concept, deployment modes, timeline, organizer-defined growth, and cumulative commit behavior. The directory structure supports the work and does not prescribe product features.
+Record 0007 captures the pilot and Demo scope; record 0008 covers submission copy and upload preparation. Records 0002–0006 preserve the earlier product decisions.
 
 ## Entry points
 

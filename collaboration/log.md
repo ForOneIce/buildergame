@@ -1,5 +1,14 @@
 # Human–AI collaboration log
 
+## Sessions 0007–0008 — Demo scaffold and upload preparation
+
+- Date: 2026-09-11 (Asia/Shanghai).
+- Human: chose ETHOnline 2026, commits/stars/forks weight ordering, deferred ENS, reusable Web2 base; requested urgent submission text and safe-upload instructions for the supplied GitHub repository.
+- AI: wrote Demo spec before initial code; generated Three.js renderer, timeline/directory UI, data validation, styling, configuration and English submission text. Updated README to disclose incomplete status.
+- Verification: read-only `git ls-remote` returned no refs for the supplied remote. Common credential-pattern scan of 37 current files and seven historical commit diffs returned no findings; no tracked sensitive/build paths matched. This is a limited pattern scan, not a guarantee that all content is appropriate to publish.
+- Pending: complete sample data and scripts, install dependencies, test/build and visual verification, actual event list/art, human review. No push, deployment or user validation performed.
+- Tools: Codex shell and apply_patch. No other AI design tools used.
+
 Dates use Asia/Shanghai (UTC+8). Record actual inputs, contributions, and verification; planned work is not completed work.
 
 > 中文提示：保留真实过程，未验证项明确注明。

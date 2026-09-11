@@ -6,6 +6,8 @@ This evolving factual record supports final submission. Do not mark content revi
 
 ## Tools used
 
+Current update (sessions 0007–0008): Codex generated the initial TypeScript/Three.js application, shared JavaScript data contract, CSS/procedural visuals, package/build configuration, Demo specification, prompt translations and submission copy. The human selected ETHOnline, metric priority and the Web2-first Demo scope and supplied the remote repository. Code is incomplete and has not passed a build or human review. Earlier session statuses below describe their historical state.
+
 - Codex: workspace structure, competition-rule organization, documentation, templates, and English translation.
 - Other AI tools: none recorded.
 
