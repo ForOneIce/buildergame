@@ -1,0 +1,24 @@
+# Credentials and local-only configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.secrets/
+private/
+
+# Dependencies and generated output
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+Thumbs.db
+
+# Keep docs, specs, prompts, collaboration records and submission materials tracked.
