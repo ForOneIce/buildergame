@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0022: researched Kenney Adventure/UI Pack/Fantasy Borders (CC0), Lucide (ISC with specified Feather MIT notices), Tabler (MIT), Game-icons.net (CC BY 3.0), Web Awesome Core (MIT) and native CSS/HTML techniques. These are candidates, not adopted dependencies or assets. [Source and license register](../docs/ui-kit-research.md). The visual concept reuses a crop of the existing original fictional sample render; no third-party game artwork was copied into the project. Conversation-only Lucide placeholders do not add a repository dependency.
+
 Sessions 0020–0021: the existing five original building assets and their distant derivatives are reused unchanged and protected by SHA-256 checks. Codex generated original Three.js terrain, road/cloud primitives, floating HUD/cards and account-progress logic without importing a new npm package, model pack or earlier project code. Three.js remains 0.180.0 (MIT); original generated building assets retain CC0-1.0. Research inspected THREE.Terrain, MapGenerator and WaveFunctionCollapse as alternatives without importing them. The human supplied map and project-card reference artwork; no ownership or license for those references is inferred. See [implementation/reuse evidence](landscapes-player-ui.md) and [research sources](../docs/procedural-town-plan.md).
 
 Session 0019: reused the existing sample generator, growth rules and foundation GLB to complete the default view's five-stage coverage. No dependency or external asset additions; see [verification](sample-foundation.md).

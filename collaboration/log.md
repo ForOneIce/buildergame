@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## 0022 — Research a shared game interface
+
+- 2026-09-12 (UTC), visual research: the human identified a disconnect between the homepage and town controls, asked for a consistent game visual language and an evaluation of reusable management-game UI components.
+- Codex reviewed current code/screenshots and supplied references, inspected official Kenney previews and source/license pages for game UI assets, icon sets and native web controls, and compared reuse costs. Produced [source research](../docs/ui-kit-research.md), [the shared interface proposal](../specs/0011-shared-game-interface.md) and an in-conversation concept with three screen states and material alternatives.
+- Reuse/evidence: candidate packs were not downloaded or adopted. The concept uses original HTML/CSS and a crop from the project's fictional sample screenshot; supplied Lucide placeholders are part of the conversation preview only. No application code, model, dependency or external account was changed. Research is not final visual acceptance.
+- Verification: official pages and local source/screenshots inspected; documentation links and whitespace checked before the local documentation commit. Runtime tests were not rerun for this research-only change. [Original instruction and translation](../prompts/0022-unified-game-ui.md).
+
 ## 0020–0021 — Landscapes, player interface and automatic layout
 
 - 2026-09-11 (UTC): the human accepted and locked the five construction appearances, requested three immutable landscape modes, floating map controls, GitHub player avatars/progress and project cards, and asked how collection size can drive town generation.

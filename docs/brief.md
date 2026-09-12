@@ -4,6 +4,8 @@ Status: playable local Web2-first Demo with public repository capture, two setup
 
 ## Product priorities
 
+- Current visual requirement: make entrance, setup, success and town interactions feel like the same game. [Shared interface proposal](../specs/0011-shared-game-interface.md) and [reusable UI research](ui-kit-research.md) are under review; the proposed palette and asset selections are not yet accepted.
+
 - Build practical value with a chance of continued use after the hackathon.
 - Consider willingness to pay and maintenance costs; prizes and integrations alone are not validation.
 - Reduce wallet, signing, and transaction friction for people unfamiliar with Web3.

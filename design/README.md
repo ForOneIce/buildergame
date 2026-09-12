@@ -2,6 +2,10 @@
 
 ## Current visual priority
 
+The accepted five building assets are locked and now render in the main town's three landscape modes. The current review concerns a shared game interface across entrance, setup, success and town views. See [UI component research](../docs/ui-kit-research.md) and [the proposed visual system](../specs/0011-shared-game-interface.md). The proposal has not replaced the application skin.
+
+### Earlier visual milestones
+
 The studio now supports all five appearances. The final courtyard is larger, with an outward fence and a larger visitor sign, while the accepted house structure stays fixed. Use the stage selector and the Sign camera at `/visual.html`. See [five-stage verification and asset inventory](../collaboration/five-stages.md).
 
 An initial stage-5 sample is now available at `/visual.html` when running the project. It loads the generated Blender GLB and provides orbit/zoom, five camera presets, reference comparison and lighting controls. See the [prototype record](../collaboration/house-prototype.md) for actual checks, measured limits and open art work. The existing town renderer still uses the earlier model pending review.

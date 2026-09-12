@@ -21,5 +21,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0019 — Foundation sample coverage](0019-sample-foundation.md)
 - [0020 — Landscapes and player UI](0020-landscapes-and-player-ui.md)
 - [0021 — Automatic town generation](0021-automatic-town-generation.md)
+- [0022 — A consistent game interface](0022-unified-game-ui.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

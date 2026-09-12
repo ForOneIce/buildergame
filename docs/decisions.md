@@ -1,5 +1,11 @@
 # Decision log
 
+## D-012 — Unify the interface across the complete town journey
+
+- Human requirement: the homepage and town preview must share a consistent game visual language appropriate to Buildergame, with no abrupt visual boundary.
+- Research scope: assess reusable management-game UI components before the next visual implementation. Existing five building assets remain locked.
+- Wood/paper/blue material variants, an icon family and component extraction are AI proposals in [0011](../specs/0011-shared-game-interface.md), not confirmed adoption decisions. [Source assessment](ui-kit-research.md).
+
 ## D-011 — Preserve accepted buildings while revising landscapes and player UI
 
 - Human direction: lock the five accepted building appearances; choose flat, valley or cloud terrain at town creation; follow the supplied map/card references; allow GitHub players to retain exploration progress. Sources: [0020](../prompts/0020-landscapes-and-player-ui.md) and [0021](../prompts/0021-automatic-town-generation.md).
