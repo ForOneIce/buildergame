@@ -1,0 +1,22 @@
+Buildergame by ForOneIce
+https://github.com/ForOneIce/buildergame
+
+Original project material without a separate license is provided under the
+Buildergame Noncommercial Source-Available License 1.0; see LICENSE.
+
+Separate licenses and existing dedications are preserved:
+- Three.js and its addons: MIT (see installed package license).
+- Vite: MIT; TypeScript: Apache-2.0; other dependencies retain their licenses.
+- Kenney Adventure UI and Cursor Pack: CC0-1.0. Original license files and
+  source manifests are in public/ui/kenney/.
+- Original building assets previously declared CC0-1.0 retain that dedication;
+  see public/models/README.md and public/models/buildings.lock.json, and collaboration/house-prototype.md,
+  collaboration/town-visuals.md, and collaboration/baseline.md.
+- scripts/art/build_house.py, scripts/art/stage_details.py,
+  scripts/art/build_lods.py, and tests/art-invariants.py retain their existing
+  GPL-3.0-or-later SPDX declarations.
+- Font licenses and any other separately identified resources retain their
+  existing terms. Human-supplied design references have no inferred reuse grant.
+
+GitHub repository data, project websites, names, avatars, and linked projects
+belong to their respective owners. Indexing them does not relicense them.

@@ -1,0 +1,76 @@
+Buildergame Noncommercial Source-Available License 1.0
+
+Copyright (c) 2026 ForOneIce
+Project: https://github.com/ForOneIce/buildergame
+
+1. Scope and permission
+
+This license applies to original Buildergame code and other material in this
+repository that is not identified as having a separate license (the Software).
+Subject to these terms, you may use, study, reproduce, modify, distribute, and
+make the Software available over a network for Noncommercial Purposes.
+
+Noncommercial Purposes means purposes not primarily intended for or directed
+toward commercial advantage or monetary compensation. Selling the Software,
+charging for access to it or services substantially based on it, advertising-
+supported operation, and using it to promote or support a commercial business
+require separate prior written permission from the relevant copyright holder.
+Commercial rights are not granted by this license.
+
+2. Attribution
+
+Keep this license, copyright notices, and the NOTICE file in source and binary
+distributions. Give reasonable, visible credit to "Buildergame by ForOneIce"
+with a link to https://github.com/ForOneIce/buildergame in an About page, footer,
+or equivalent location accessible to users of your distributed or hosted version.
+Identify material modifications and their authors without implying endorsement
+by the original authors.
+
+3. Source availability and same terms
+
+If you distribute the Software or a modified version, including a compiled
+version, or allow others to interact with a version over a network, you must
+make the complete corresponding source of that version publicly available at
+no charge under this same license. Provide users a conspicuous source link or
+include the source with the distribution. A hosted version must provide a
+source link for as long as it is offered. Source provided through a link for a
+downloaded distribution must remain available for at least three years after
+the last distribution of that version by you.
+
+Complete corresponding source means the preferred form for making changes,
+including your modifications and the build/configuration scripts needed to
+build and run that version. It does not include credentials, private user data,
+general-purpose tools, or third-party components available under their own
+licenses. You may not impose additional restrictions that prevent recipients
+from exercising the rights granted here. Private changes that are neither
+distributed nor offered to others over a network need not be published.
+
+Independent projects merely displayed, linked, or indexed by Buildergame are
+not modifications of the Software and do not become subject to this license.
+
+4. Separately licensed material and other rights
+
+Third-party dependencies, third-party artwork, and material already identified
+under a separate license remain governed by their own terms. This license
+does not revoke existing permissions or public-domain dedications. See NOTICE
+and the repository's source/asset manifests. No rights in trademarks, third-
+party project data, or rights not held by the licensor are granted here.
+
+5. Termination
+
+Your rights under this license terminate if you violate its conditions. They
+are reinstated if you cure the violation within 30 days after first becoming
+aware of it, unless the copyright holder has explicitly and finally terminated
+your rights for repeated violations. Termination does not affect recipients
+who comply with this license.
+
+6. No warranty or liability
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE AUTHORS AND
+COPYRIGHT HOLDERS ARE NOT LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
+ARISING FROM THE SOFTWARE OR ITS USE.
+
+This is a source-available license with noncommercial and source-sharing
+conditions. It is not an OSI-approved open-source license.

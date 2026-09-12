@@ -127,3 +127,11 @@ The current buildings are intentionally locked: normal validation checks all ten
 Feedback on project discovery, town visuals and the portfolio workflow is welcome in [Issues](https://github.com/ForOneIce/buildergame/issues).
 
 Competition materials, development provenance and AI disclosure are collected in the [hackathon review guide](hackathon/README.md).
+
+## License
+
+Buildergame uses the [Buildergame Noncommercial Source-Available License 1.0](LICENSE): noncommercial use, visible **Buildergame by ForOneIce** attribution, and public corresponding source under the same terms when you distribute a version or offer it over a network. Commercial use requires separate written permission. This is a source-available license, not an OSI-approved open-source license.
+
+Existing CC0 building/UI assets and third-party dependencies retain their own licenses; see [NOTICE](NOTICE). Projects displayed in a town retain their owners' rights.
+
+中文简注：非商业使用须署名；分发或提供在线版本须公开对应源码并保留相同条款。商用需另行书面授权。
