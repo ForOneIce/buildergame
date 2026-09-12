@@ -55,17 +55,18 @@ function stop() { if(timer)clearInterval(timer);timer=undefined; }
 function navigate(to: typeof screen) { stop();screen=to;render(); }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang,screen==='welcome'||screen==='setup'); }
+function header() { return gameHeader(t,session,lang,screen==='welcome'||screen==='setup',screen==='town'&&bundle.event.sampleData); }
 
 function render() {
   homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
   document.body.classList.remove('project-detail-open');document.body.dataset.screen=screen;document.body.classList.toggle('town-view',screen==='town');
   scene?.dispose();scene=undefined;stop();document.documentElement.lang=lang==='en'?'en':'zh-CN';document.title=`Buildergame · ${t('Your repos, your town','你的仓库，你的小镇')}`;
   app.innerHTML=header()+`<div id="notice" class="notice" role="status" aria-live="polite" hidden></div>`+(screen==='welcome'?welcome():screen==='setup'?setup():screen==='success'?success():town())+`<input type="file" id="import" accept=".json,application/json" hidden><dialog id="detail" class="paper-panel" aria-labelledby="detail-title"><button class="close hud-button icon-button" id="close" aria-label="${t('Close','关闭')}">×</button><div id="detail-body"></div></dialog><dialog id="project-entry" class="paper-panel" aria-labelledby="entry-title"><button class="close hud-button icon-button" id="close-entry" aria-label="${t('Close','关闭')}">×</button><div class="entry-door" aria-hidden="true"><span></span></div><h2 id="entry-title"></h2><p id="entry-status" role="status"></p><div id="entry-actions"></div></dialog>`;
-  $('#home').onclick=()=>navigate('welcome');$('#language').onclick=()=>{lang=lang==='en'?'zh':'en';localStorage.setItem('bg-language',lang);render();};
-  $('#language').setAttribute('aria-label',t('Switch to Chinese','切换英文'));
+  $('#home').onclick=()=>navigate('welcome');
+  const languageButton=document.querySelector<HTMLButtonElement>('#language');
+  if(languageButton){languageButton.onclick=()=>{lang=lang==='en'?'zh':'en';localStorage.setItem('bg-language',lang);render();};languageButton.setAttribute('aria-label',t('Switch to Chinese','切换英文'));}
   document.querySelector('#player-login')?.setAttribute('aria-label',session.authenticated?t(`Sync exploration for ${session.login}`,`同步 ${session.login} 的探索进度`):t('Sign in with GitHub','通过 GitHub 登录'));
-  if(session.authenticated)$('#logout').onclick=async()=>{await api('auth/logout',{});session.authenticated=false;session.isDeployer=false;session.login=null;session.avatar=null;render();};
+  document.querySelector('#logout')?.addEventListener('click',async()=>{await api('auth/logout',{});session.authenticated=false;session.isDeployer=false;session.login=null;session.avatar=null;render();});
   document.querySelector('#player-login')?.addEventListener('click',()=>{if(session.authenticated){void syncProgress();return;}if(session.playerConfigured){location.href=import.meta.env.BASE_URL+'api/auth/login?role=player';}else notice(t('GitHub sign-in is unavailable on this deployment. You can explore as a guest; progress is saved on this device.','此部署暂未开放 GitHub 登录。你可以作为访客探索，进度保存在当前设备。'));});
   $('#close-entry').onclick=()=>$<HTMLDialogElement>('#project-entry').close();
   $('#project-entry').addEventListener('close',()=>{clearTimeout(doorTimer);if(entryFromCard){document.body.classList.add('project-detail-open');$<HTMLDialogElement>('#detail').showModal();document.querySelector<HTMLButtonElement>('[data-visit]')?.focus();}else returnFocus?.focus();});
@@ -271,11 +272,14 @@ function bindTown() {
   progressGeneration++;progressTask=undefined;
   visited=localProgress(bundle.event.id,session.login);progressStatus='local';
   $('#map-home').onclick=()=>scene?.reset();
-  document.querySelectorAll<HTMLElement>('.map-nav button').forEach(button=>button.setAttribute('aria-label',button.querySelector('span')!.textContent!));
+  document.querySelectorAll<HTMLElement>('.map-nav button').forEach(button=>{const label=button.querySelector(':scope > span');if(label&&!button.hasAttribute('aria-label'))button.setAttribute('aria-label',label.textContent!);});
   $('#close-projects').onclick=()=>{$('#project-panel').hidden=true;$('#show-projects').setAttribute('aria-expanded','false');};
-  const questStack=$('.quest-stack'),explorationToggle=$('#show-exploration');questStack.id='exploration-panel';
-  questStack.hidden=matchMedia('(max-width: 760px)').matches;explorationToggle.setAttribute('aria-controls',questStack.id);explorationToggle.setAttribute('aria-expanded',String(!questStack.hidden));
-  explorationToggle.onclick=()=>{questStack.hidden=!questStack.hidden;explorationToggle.setAttribute('aria-expanded',String(!questStack.hidden));if(!questStack.hidden)$('#next-project').focus();};
+  const questStack=$('.quest-stack');questStack.id='exploration-panel';
+  const explorationToggles=document.querySelectorAll<HTMLElement>('#show-exploration,#explorer-profile');
+  questStack.hidden=matchMedia('(max-width: 760px)').matches;
+  const updateExplorationToggles=()=>explorationToggles.forEach(button=>{button.setAttribute('aria-controls',questStack.id);button.setAttribute('aria-expanded',String(!questStack.hidden));});
+  updateExplorationToggles();
+  explorationToggles.forEach(button=>button.onclick=()=>{questStack.hidden=!questStack.hidden;updateExplorationToggles();if(!questStack.hidden)$('#next-project').focus();});
   $('#next-project').onclick=()=>{const next=bundle.event.projects.find(p=>!visited.has(p.id))||bundle.event.projects[0];if(next)details(next.id);};
   $('#minimap').onclick=e=>{if(!scene)return;const b=(e.currentTarget as HTMLCanvasElement).getBoundingClientRect();const x=(e.clientX-b.left)/b.width*240,z=(e.clientY-b.top)/b.height*240;const points=minimapPoints();const nearest=points.sort((a,b)=>(a.x-x)**2+(a.z-z)**2-((b.x-x)**2+(b.z-z)**2))[0];if(nearest && Math.hypot(nearest.x-x,nearest.z-z)<26)details(nearest.id);};
   const panel=$('#project-panel');const toggle=$('#show-projects');panel.hidden=true;toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.setAttribute('aria-controls','project-panel');
@@ -304,12 +308,18 @@ function minimapPoints(){
 function refreshProgress(){
   if(screen!=='town')return;
   const count=bundle.event.projects.filter(p=>visited.has(p.id)).length,total=bundle.event.projects.length;
-  $('#visited-count').textContent=count+' / '+total;$('#explorer-count').textContent=count+' / '+total+' '+t('projects discovered','个项目已探索');
+  $('#visited-count').textContent=count+' / '+total;
+  if(bundle.event.sampleData)$('#explorer-count').innerHTML=`<span class="explorer-amount">${count} / ${total}</span> <span class="explorer-caption">${t('projects discovered','个项目已探索')}</span>`;
+  else $('#explorer-count').textContent=count+' / '+total+' '+t('projects discovered','个项目已探索');
   for(const id of ['visited-bar','explorer-bar'])$<HTMLProgressElement>('#'+id).value=count;
   $('#progress-status').textContent=progressStatus==='synced'?t('Synced to your GitHub player profile','已同步到 GitHub 玩家档案'):progressStatus==='memory'?t('This session only · storage unavailable','仅本次会话 · 存储不可用'):t('Saved on this device','保存在当前设备');
   if(session.avatar)$('#explorer-avatar').innerHTML='<img alt="" src="'+escape(session.avatar)+'" referrerpolicy="no-referrer">';
   const records=bundle.history.snapshots[snapshotIndex].projects;
-  $('#town-stats').innerHTML=(['stars','forks'] as const).map((key,i)=>'<span class="stat-token hud-glass"><b>'+['★','⑂'][i]+'</b> '+records.reduce((sum,r)=>sum+(r.metrics?.[key]||0),0).toLocaleString()+'</span>').join('')+'<span class="stat-token hud-glass">⌂ '+total+'</span>';
+  const totals=[records.reduce((sum,r)=>sum+(r.metrics?.stars||0),0),records.reduce((sum,r)=>sum+(r.metrics?.forks||0),0),total];
+  $('#town-stats').innerHTML=totals.map((value,i)=>{
+    const key=['stars','forks','projects'][i],label=[t('Stars','星标'),t('Forks','分叉'),t('Projects','项目')][i];
+    return `<span class="stat-token hud-glass${bundle.event.sampleData?' hinted-control':''}" ${bundle.event.sampleData?`tabindex="0" aria-label="${label}: ${value.toLocaleString()}" aria-describedby="total-${key}-hint"`:''}><b aria-hidden="true">${['★','⑂','⌂'][i]}</b> ${value.toLocaleString()}${bundle.event.sampleData?`<span class="control-hint" id="total-${key}-hint" role="tooltip">${t('Totals across all projects.','为所有项目数据总和')}</span>`:''}</span>`;
+  }).join('');
   const canvas=$<HTMLCanvasElement>('#minimap'),ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,240,240);ctx.fillStyle=bundle.event.landscape==='clouds'?'#c1dff2':'#85ad8d';ctx.beginPath();ctx.arc(120,120,112,0,Math.PI*2);ctx.fill();
   const points=minimapPoints();for(const p of points){ctx.fillStyle=visited.has(p.id)?'#f5d783':'#f1f2dc';ctx.fillRect(p.x-7,p.z-7,14,14);if(selected===p.id){ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.strokeRect(p.x-11,p.z-11,22,22);}}
 }

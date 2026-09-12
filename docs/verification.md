@@ -2,6 +2,18 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Sample-town HUD refinement 0038
+
+The [six requested sample-town HUD changes](../prompts/0038-refine-sample-town-hud.md) are implemented: removed sample account/save controls, relocated exploration and camera controls, name-only town identification and shared cream hints. Homepage/setup and real-town account/settings/export retain their existing scope. No new assets or dependencies were added.
+
+Checks on 2026-09-12 (UTC):
+
+- The updated existing `tests/browser-check.cjs`, `tests/map-ui-check.cjs` and `tests/unified-ui-check.cjs` all passed without page errors. These integration runs covered sample controls, project/history/progress behavior and real-town regression before the final CSS refinements.
+- Focused English/Chinese layout and hint checks passed at 1440×1000, 768×1024, 360×800, 360×640 and 844×390. After the final CSS changes, English/Chinese checks repeated 844×390 and 360×640: keyboard-focused terrain hints stayed fully inside the viewport, the exploration panel sat at least 4px below its badge, and no page errors occurred. Final Chinese screenshots at both sizes were inspected without overlap.
+- TypeScript without emit and sample/asset validation passed: nine projects, three snapshots and ten unchanged GLBs. The final post-CSS Vite production build passed after retry, processing 44 modules; only the existing shared Three.js chunk-size advisory remained.
+
+The three integration scripts were not rerun after the last CSS refinements; final focused checks and the production build cover that final state. Unit tests were not rerun for 0038. Browser account/data transports use fixtures; live OAuth, publication and physical-device testing were not performed. Final human visual acceptance remains pending.
+
 ## Planning-page refinement 0037
 
 The planner now uses compact header controls, a larger rendered terrain image, an aligned paper crease/page turn, expanded growth settings and optional backup tools. `town.plan.json` preserves incomplete input through `buildergame-plan/v1`; complete configuration and captured-town files retain their existing meanings. Three original terrain previews were regenerated at 1280×720. Sample towns expose terrain tours; real towns keep settings.

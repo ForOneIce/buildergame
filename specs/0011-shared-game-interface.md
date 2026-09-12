@@ -10,6 +10,20 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Sample-town HUD refinement 0038
+
+Status: implemented; browser, focused layout/hint, TypeScript, validation and final production-build checks passed. [Verification](../docs/verification.md) records check timing and limits; human visual acceptance remains pending. [Instruction 0038](../prompts/0038-refine-sample-town-hud.md) applies to sample towns:
+
+- Remove upper-right account/language controls from the sample-town HUD. Put the existing exploration-progress control there instead; it must remain visible, update after visits and toggle its progress panel.
+- Place zoom-in, zoom-out and reset directly beneath Town map. Remove Save town from samples. Real towns retain their account, settings and export controls.
+- Keep sample landscape tours, with a cream hover/focus hint explaining that only demonstrations can switch landscapes; a created town retains its original landscape.
+- Put only the town name at the lower left. Remove the About heading and other module copy; use a cream hover/focus hint explaining naming during creation. Interpreting the original “命令” as “命名” is an explicit implementation assumption.
+- Give each of the three top aggregate statistics the shared cream hover/focus hint “Totals across all projects.” Preserve existing metric calculations.
+
+Acceptance covers English/Chinese desktop, narrow and short viewports: sample account/save controls absent; upper-right progress visible, accurate and interactive; camera controls beneath Town map; name-only lower-left content; all requested hints reachable with pointer and keyboard without clipping. Snapshot history, project cards, visit recording and existing progress persistence continue to work. The three updated existing browser scripts passed sample and non-sample regressions before final CSS refinements. Focused layout/hint checks passed at 1440×1000, 768×1024, 360×800, 360×640 and 844×390; final post-CSS checks repeated English/Chinese 844×390 and 360×640, confirming contained keyboard hints and a minimum 4px gap below the exploration badge. Final Chinese screenshots at both sizes were inspected without overlap. Homepage/setup and real-town account/settings/export retain their existing behavior. All ten building fingerprints remained unchanged; no new assets or dependencies. Unit tests, live OAuth, publication and physical-device testing were not performed for this revision. [Exact results and timing](../docs/verification.md).
+
+中文简注：只调整示例小镇的浮窗与提示；真实小镇保留账号、设置和导出入口。
+
 ## Planning-page refinement 0037
 
 Status: implemented; sixteen Node tests, the three browser regressions and final focused/type/build/asset checks passed, with timing recorded in [verification](../docs/verification.md). Human visual acceptance remains pending. [Instruction 0037](../prompts/0037-refine-town-planning-page.md) refines the existing planner and sample-town navigation:

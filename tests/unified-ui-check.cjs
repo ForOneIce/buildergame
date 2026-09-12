@@ -6,13 +6,14 @@ const baseUrl = process.env.DEMO_URL || 'http://127.0.0.1:5173/';
 const output = 'private/qa';
 const viewports = [{ width: 1440, height: 1000 }, { width: 768, height: 1024 }, { width: 360, height: 800 }];
 
-async function header(page, screen) {
+async function header(page, screen, sample = false) {
   await page.locator('.map-header .wood-logo').waitFor();
   assert.equal(await page.locator('.map-header').count(), 1, `${screen}: one shared header`);
   assert.match(await page.locator('.wood-logo').innerText(), /buildergame/i);
-  for (const id of ['home', 'language', 'player-login']) {
+  for (const id of sample ? ['home'] : ['home', 'language', 'player-login']) {
     assert.equal(await page.locator(`#${id}`).isVisible(), true, `${screen}: ${id} remains available`);
   }
+  if (sample) assert.equal(await page.locator('.player-actions, #language, #player-login, #logout').count(), 0, 'The sample header keeps only the shared logo');
 }
 
 async function layout(page, label) {
@@ -26,7 +27,7 @@ async function layout(page, label) {
   );
   assert.deepEqual(clipping, [], `${label}: visible header/dialog must stay inside the viewport`);
   if (page.viewportSize().width <= 400) {
-    const small = await page.locator('.map-header button, .camera-controls button, .map-nav button').evaluateAll(buttons =>
+    const small = await page.locator('.map-header button, .camera-controls button, .map-nav button, #explorer-profile').evaluateAll(buttons =>
       buttons.filter(button => {
         const bounds = button.getBoundingClientRect();
         return bounds.width > 0 && bounds.height > 0 && (bounds.width < 44 || bounds.height < 44);
@@ -214,6 +215,78 @@ async function sampleTours(page) {
   }
 }
 
+async function sampleHud(page, sample) {
+  assert.equal(await page.locator('main.sample-town').count(), 1);
+  assert.equal(await page.locator('[data-export]').count(), 0, 'Sample tours do not export fictional towns');
+  const profile = page.locator('#explorer-profile');
+  assert.equal(await profile.isVisible(), true, 'The sample explorer remains visible on desktop and mobile');
+  assert.equal(await profile.evaluate(element => element.tagName), 'BUTTON');
+  assert.equal(await profile.getAttribute('aria-controls'), await page.locator('#show-exploration').getAttribute('aria-controls'));
+  const initial = await page.locator('.quest-stack').isVisible();
+  await profile.focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator('.quest-stack').isVisible(), !initial);
+  for (const id of ['explorer-profile', 'show-exploration']) assert.equal(await page.locator(`#${id}`).getAttribute('aria-expanded'), String(!initial));
+  await page.locator('#show-exploration').click();
+  assert.equal(await page.locator('.quest-stack').isVisible(), initial);
+  for (const id of ['explorer-profile', 'show-exploration']) assert.equal(await page.locator(`#${id}`).getAttribute('aria-expanded'), String(initial));
+
+  assert.equal(await page.locator('.map-nav #map-home + .camera-controls').count(), 1, 'Camera actions directly follow Town map');
+  for (const name of ['Zoom in', 'Zoom out', 'Reset camera']) assert.equal(await page.getByRole('button', { name, exact: true }).isVisible(), true);
+  const positions = await page.evaluate(() => {
+    const box = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return { left:r.left, right:r.right, top:r.top, bottom:r.bottom }; };
+    return { profile:box('#explorer-profile'), home:box('#home'), map:box('#map-home'), camera:box('.camera-controls'), projects:box('#show-projects'), town:box('.town-info'), width:innerWidth, height:innerHeight };
+  });
+  assert.ok(positions.profile.right <= positions.width && positions.profile.left >= positions.width / 2 && positions.profile.top >= 0 && positions.profile.bottom < positions.height / 2, 'Explorer is in the upper-right viewport');
+  assert.ok(positions.profile.left >= positions.home.right || positions.profile.top >= positions.home.bottom, 'Explorer does not overlap the logo');
+  assert.ok(positions.camera.top >= positions.map.bottom - 1 && positions.camera.bottom <= positions.projects.top + 1, 'Camera actions appear below Town map and above Projects');
+  assert.equal(await page.locator('.quest-stack .town-info').count(), 0, 'The town name is independent from exploration progress');
+  assert.equal(await page.locator('.town-info h2, .town-info p, .town-info small').count(), 0, 'The compact town label omits the former descriptive card');
+  assert.equal(await page.locator('.town-info strong').innerText(), sample.event.name);
+  assert.ok(positions.town.left < positions.width / 2 && positions.town.top > positions.height / 2 && positions.town.bottom <= positions.height, 'The town name remains visible in the lower-left viewport');
+  for (const [selector, id, meaning] of [
+    ['.town-info', 'town-name-hint', /Name your town when you create it/],
+    ['.sample-tour-picker > summary', 'terrain-switch-hint', /only in this sample.*real town keeps the landscape/s],
+  ]) {
+    const control = page.locator(selector);
+    assert.equal(await control.getAttribute('aria-describedby'), id);
+    assert.match(await page.locator(`#${id}`).textContent(), meaning);
+    await control.focus();
+    await page.waitForFunction(id => {
+      const hint = document.getElementById(id);
+      return getComputedStyle(hint).visibility !== 'hidden' && Number(getComputedStyle(hint).opacity) > .9;
+    }, id);
+    if (page.viewportSize().width === 1440) {
+      await page.locator('#home').focus();
+      await control.hover();
+      await page.waitForFunction(id => Number(getComputedStyle(document.getElementById(id)).opacity) > .9, id);
+    }
+  }
+  await page.mouse.move(0, 0);
+
+  const index = Number(await page.locator('#timeline').inputValue());
+  const records = sample.history.snapshots[index].projects;
+  const totals = { Stars: records.reduce((sum, record) => sum + (record.metrics?.stars || 0), 0), Forks: records.reduce((sum, record) => sum + (record.metrics?.forks || 0), 0), Projects: sample.event.projects.length };
+  for (const [name, total] of Object.entries(totals)) {
+    const token = page.locator('#town-stats .stat-token').filter({ has: page.locator(`#total-${name.toLowerCase()}-hint`) });
+    assert.equal(await token.getAttribute('aria-label'), `${name}: ${total.toLocaleString()}`);
+    assert.match(await token.locator('[role="tooltip"]').textContent(), /Totals across all projects/);
+    await token.focus();
+    await page.waitForFunction(id => {
+      const hint = document.getElementById(id);
+      return getComputedStyle(hint).visibility !== 'hidden' && Number(getComputedStyle(hint).opacity) > .9;
+    }, `total-${name.toLowerCase()}-hint`);
+  }
+  const labels = await page.locator('#town-stats .stat-token').evaluateAll(tokens => tokens.map(token => token.getAttribute('aria-label')));
+  await page.locator('#show-projects').click();
+  await page.locator('#search').fill('no-matching-fictional-project');
+  assert.equal(await page.locator('#project-list [data-project]').count(), 0);
+  assert.deepEqual(await page.locator('#town-stats .stat-token').evaluateAll(tokens => tokens.map(token => token.getAttribute('aria-label'))), labels, 'Directory search does not narrow town totals');
+  await page.locator('#search').fill('');
+  await page.locator('#close-projects').click();
+  await page.locator('#home').focus();
+}
+
 async function switchPlanningMode(page, mode, width) {
   await page.locator(`[data-mode="${mode}"]`).focus();
   await page.keyboard.press('Enter');
@@ -389,6 +462,8 @@ async function installMocks(page, makeRecord) {
 (async () => {
   fs.mkdirSync(output, { recursive: true });
   const { makeRecord } = await import('../src/model.mjs');
+  const { sampleTown } = await import('../src/sample.mjs');
+  const sample = sampleTown();
   const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_BIN ? { executablePath: process.env.BROWSER_BIN } : { channel: 'chrome' }) });
   const errors = [];
   try {
@@ -437,10 +512,19 @@ async function installMocks(page, makeRecord) {
           assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
           assert.equal(await page.locator('#map-transition .map-fold').first().evaluate(element => getComputedStyle(element).animationName), 'none');
         }
-        await header(page, 'town');
+        await header(page, 'sample town', true);
         await layout(page, 'town');
         if (width === 1440 || width === 360) await sampleTours(page);
+        await sampleHud(page, sample);
         await screenshot(page, 'town', width);
+        if (width === 360) {
+          await page.setViewportSize({ width: 844, height: 390 });
+          await header(page, 'short sample town', true);
+          await sampleHud(page, sample);
+          await layout(page, 'short sample town');
+          await screenshot(page, 'sample-short', 844);
+          await page.setViewportSize(viewport);
+        }
 
         await page.locator('#show-projects').click();
         const project = page.locator('#project-list [data-project]').first();
@@ -472,13 +556,22 @@ async function installMocks(page, makeRecord) {
           await page.locator('#timeline').fill('0');
           await page.locator('#timeline').dispatchEvent('input');
           assert.match(await page.locator('#snapshot-count').innerText(), /^1\s*\/\s*3$/);
-          const saving = page.waitForEvent('download');
-          await page.locator('.map-nav [data-export]').click();
-          const download = await saving;
-          await download.saveAs(`${output}/unified-sample-backup.json`);
-          const saved = JSON.parse(fs.readFileSync(`${output}/unified-sample-backup.json`, 'utf8'));
-          assert.equal(saved.history.snapshots.length, 3);
-          assert.equal(saved.event.projects.length, 9);
+          await sampleHud(page, sample);
+        }
+        if (width === 360) {
+          await page.locator('#home').click();
+          await page.locator('#language').click();
+          await page.locator('[data-enter]').first().click();
+          await townReady(page);
+          await header(page, 'Chinese sample town', true);
+          assert.equal(await page.locator('html').getAttribute('lang'), 'zh-CN');
+          assert.match(await page.locator('#total-stars-hint').textContent(), /所有项目数据总和/);
+          await layout(page, 'Chinese sample town');
+          await screenshot(page, 'town-zh', width);
+          await page.locator('#home').click();
+          await page.locator('#language').click();
+          await page.locator('[data-enter]').first().click();
+          await townReady(page);
         }
 
         await page.locator('#home').click();
@@ -524,6 +617,17 @@ async function installMocks(page, makeRecord) {
         await header(page, 'captured town');
         assert.equal(await page.locator('.sample-tour-picker').count(), 0, 'Captured towns retain management, not sample tours');
         assert.equal(await page.locator('#manage').isVisible(), true);
+        assert.equal(await page.locator('.map-nav [data-export]').isVisible(), true, 'Real towns retain Save town');
+        if (width === 1440) {
+          const saving = page.waitForEvent('download');
+          await page.locator('.map-nav [data-export]').click();
+          await (await saving).saveAs(`${output}/unified-town-backup.json`);
+          const saved = JSON.parse(fs.readFileSync(`${output}/unified-town-backup.json`, 'utf8'));
+          assert.equal(saved.event.name, 'Interface fixture 1440');
+          assert.equal(saved.history.snapshots.length, 1);
+          assert.equal(saved.event.projects.length, 1);
+          assert.equal(saved.event.sampleData, false);
+        }
         if (width === 1440 || width === 360) await projectEntry(page, context, width === 360);
         if (width === 360) {
           await page.locator('#language').click();
@@ -557,9 +661,11 @@ async function installMocks(page, makeRecord) {
 
         if (width === 1440) {
           await page.locator('#home').click();
-          await page.locator('#import').setInputFiles(`${output}/unified-sample-backup.json`);
+          await page.locator('#import').setInputFiles(`${output}/unified-town-backup.json`);
           await townReady(page);
-          assert.match(await page.locator('#snapshot-count').innerText(), /^3\s*\/\s*3$/);
+          assert.match(await page.locator('#snapshot-count').innerText(), /^1\s*\/\s*1$/);
+          assert.match(await page.locator('.town-info').innerText(), /Interface fixture 1440/);
+          assert.equal(await page.locator('.map-nav [data-export]').isVisible(), true);
           await page.locator('#home').click();
           await page.locator('[data-create]').click();
           await page.locator('[data-mode="personal"]').first().click();
@@ -588,7 +694,7 @@ async function installMocks(page, makeRecord) {
       }
     }
     assert.deepEqual(errors, [], 'No browser page errors');
-    console.log('Refined homepage, silent five-stage showcase, compact planning controls and larger terrain previews, sample-town tours versus real-town settings, retained mode drafts and incomplete-plan file restoration, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
+    console.log('Refined homepage, silent five-stage showcase, compact planning controls, sample-only simplified header, mobile explorer/progress controls, grouped camera actions, standalone town name, all-project total hints, tours versus real-town settings/export, retained drafts, delayed-loading isolation, responsive screens, card/focus, safe door entry, contextual cursors, EN/ZH via the homepage, mocked capture, both collection modes and captured-town backup round trip passed.');
   } finally {
     await browser.close();
   }

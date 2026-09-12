@@ -37,5 +37,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0035 — Place Create before Explore on the homepage](0035-create-before-explore.md)
 - [0036 — Align homepage header button top edges](0036-align-homepage-header-top-edges.md)
 - [0037 — Refine the town-planning page](0037-refine-town-planning-page.md)
+- [0038 — Refine the sample-town HUD](0038-refine-sample-town-hud.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

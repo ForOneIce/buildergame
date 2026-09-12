@@ -1,5 +1,10 @@
 # Human–AI collaboration log
 
+## 0038 — Refine the sample-town HUD
+
+- 2026-09-12 (UTC): the human specified six changes to sample-town control placement and hints. Codex preserved the [original instruction and labeled translation](../prompts/0038-refine-sample-town-hud.md), recorded the naming interpretation and defined bilingual/responsive acceptance criteria.
+- Codex implemented sample-view behavior in `src/main.ts` and HUD markup/styles in `src/game-ui.ts` / `src/map-ui.css`, updating the three existing browser journeys. All three passed before final CSS refinements; focused English/Chinese checks passed at five viewport sizes. Final post-CSS checks at 844×390 and 360×640 confirmed keyboard-hint containment, at least 4px between the badge and exploration panel, and no page errors; Chinese screenshots at both sizes showed no overlap. TypeScript, validation of nine projects/three snapshots/ten unchanged GLBs and the final Vite production build passed. [Verification](../docs/verification.md) records timing and untested areas. No new assets/dependencies or unit-suite rerun; human visual acceptance remains pending.
+
 ## 0037 — Refine the town-planning page
 
 - 2026-09-12 (UTC): Codex implemented the human's [planning-page instruction](../prompts/0037-refine-town-planning-page.md), adding compact setup/header composition, sample-only tours, page-turn feedback and incomplete-plan backup/restore. The original terrain previews were regenerated at 1280×720 and saved with their manifest in asset-only commit `2868c56`. Sixteen Node tests and all three updated browser scripts passed; QA now waits for repository refresh before selecting rows, and the broad journey was rerun after a live asset reload interrupted it. Final TypeScript, asset validation, Vite build, bilingual/responsive checks and desktop/mobile/mid-turn screenshot review passed after the last edits. [Verification](../docs/verification.md) distinguishes integration runs from final checks and records mocked-transport limits. README/deployment instructions now match the current controls and distinguish draft/configuration/snapshot files. Human visual acceptance remains pending.

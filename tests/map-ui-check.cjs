@@ -20,12 +20,14 @@ for(const mode of ['flat','valley','clouds']){
  await page.screenshot({path:`private/qa/map-${mode}.png`});
  await page.locator('#next-project').click();await page.locator('#detail[open]').waitFor();assert.ok((await page.locator('#detail-title').textContent()).trim());assert.equal(await page.locator('#detail [data-visit]').isDisabled(),true);assert.equal(await page.locator('#detail .card-metrics').count(),0);await page.screenshot({path:`private/qa/info-${mode}.png`});await page.locator('#close').click();
  assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
- await page.locator('#language').click();await townReady(page);assert.match(await page.locator('.exploration-panel').innerText(),/你的探索/);await page.locator('#language').click();await townReady(page);
+ assert.equal(await page.locator('#language, #player-login, #logout, [data-export]').count(),0,'Sample HUD omits account, language and export actions');
+ await page.locator('#home').click();await page.locator('#language').click();await page.locator('[data-enter]').click();await townReady(page);assert.match(await page.locator('.exploration-panel').innerText(),/你的探索/);
+ await page.locator('#home').click();await page.locator('#language').click();await page.locator('[data-enter]').click();await townReady(page);
 }
 await page.goto('http://127.0.0.1:5173/');await page.locator('[data-enter]').click();await townReady(page);await tour(page,'flat');assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);
 await page.setViewportSize({width:390,height:844});await page.locator('#reset').click();await page.waitForTimeout(400);await page.screenshot({path:'private/qa/map-mobile.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 assert.equal(await page.getByRole('button',{name:'Projects',exact:true}).getAttribute('id'),'show-projects');
-assert.equal(await page.getByRole('button',{name:'Sign in with GitHub',exact:true}).getAttribute('id'),'player-login');
+assert.equal(await page.locator('#player-login').count(),0);assert.equal(await page.locator('#explorer-profile').isVisible(),true,'Sample explorer profile remains available on mobile');
 await page.locator('#show-projects').click();await page.locator('[data-project="sample-8"]').click();await page.screenshot({path:'private/qa/info-mobile.png'});await page.locator('#close').click();
 await page.locator('#home').click();await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();await page.locator('[data-landscape-choice="valley"]').click();await page.locator('#town-name').fill('Valley example');await page.locator('#repositories').fill('https://github.com/example/project');
 assert.equal(await page.locator('.config-backup').evaluate(element=>element.open),false);await page.locator('.config-backup > summary').click();
@@ -51,7 +53,7 @@ for(const selectedMode of ['valley','clouds']){
   await page.locator('#detail[open]').waitFor();assert.equal(await page.locator('#detail-title').innerText(),'Open Orchard');
   assert.equal(await page.locator('#visited-count').textContent(),'1 / 1');await page.locator('#close').click();
  }
- assert.equal(await page.locator('.sample-tour-picker').count(),0,'Real towns retain settings instead of sample tours');await page.locator('#manage').click();assert.equal(await page.locator('#landscape').inputValue(),'flat');assert.equal(await page.locator('#landscape').isDisabled(),true);
+ assert.equal(await page.locator('.sample-tour-picker').count(),0,'Real towns retain settings instead of sample tours');assert.equal(await page.locator('#language, #player-login, .map-nav [data-export]').count(),3,'Imported real towns retain language, account and export actions');await page.locator('#manage').click();assert.equal(await page.locator('#landscape').inputValue(),'flat');assert.equal(await page.locator('#landscape').isDisabled(),true);
  await page.locator('#home').click();await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();
 }
 await page.close();
@@ -83,6 +85,7 @@ await playerPage.goto('http://127.0.0.1:5173/?town=1',{waitUntil:'domcontentload
 await townReady(playerPage);
 await playerPage.getByText('Synced to your GitHub player profile',{exact:true}).waitFor();
 assert.equal(await playerPage.locator('#player-login strong').innerText(),'test-explorer');
+assert.equal(await playerPage.locator('#language, #logout, .map-nav [data-export]').count(),3,'Authenticated real-town actions remain available');
 assert.equal(await playerPage.locator('#player-login img').getAttribute('src'),avatar);
 assert.equal(await playerPage.locator('#explorer-avatar img').getAttribute('src'),avatar);
 assert.equal(await playerPage.locator('#visited-count').innerText(),'2 / 5');assert.deepEqual(postedVisits,['sample-0']);
@@ -113,5 +116,16 @@ await playerPage.reload({waitUntil:'domcontentloaded'});await playerPage.locator
 await playerPage.getByText('Synced to your GitHub player profile',{exact:true}).waitFor();assert.equal(await playerPage.locator('#visited-count').innerText(),'5 / 5');
 await playerPage.setViewportSize({width:390,height:844});
 assert.equal(await playerPage.getByRole('button',{name:'Sync exploration for test-explorer',exact:true}).getAttribute('id'),'player-login');
-assert.deepEqual(errors,[]);console.log('Three landscapes, reference HUD/card, guest progress, language, mobile accessibility, legacy landscape, minimap and queued player synchronization passed.');
+await playerPage.close();
+// A signed-in visitor still gets the simplified sample HUD and their explorer avatar.
+const samplePlayer=await browser.newPage({viewport:{width:390,height:844}});samplePlayer.on('pageerror',e=>errors.push(e.message));
+await samplePlayer.route('**/api/session',route=>route.fulfill({json:{configured:false,playerConfigured:true,authenticated:true,isDeployer:false,login:'test-explorer',avatar}}));
+await samplePlayer.route('**/api/town',route=>route.fulfill({json:null}));
+await samplePlayer.route('**/api/progress**',route=>route.fulfill({json:{visited:[]}}));
+await samplePlayer.goto('http://127.0.0.1:5173/',{waitUntil:'domcontentloaded'});await samplePlayer.locator('#logout').waitFor();
+await samplePlayer.locator('[data-enter]').click();await townReady(samplePlayer);
+assert.equal(await samplePlayer.locator('main.sample-town').count(),1);
+assert.equal(await samplePlayer.locator('#language, #player-login, #logout, [data-export]').count(),0,'Sample header omits account actions even when signed in');
+assert.equal(await samplePlayer.locator('#explorer-profile').isVisible(),true);assert.equal(await samplePlayer.locator('#explorer-avatar img').getAttribute('src'),avatar);
+assert.deepEqual(errors,[]);console.log('Three landscapes, sample-only HUD for guest and signed-in visitors, homepage language route, mobile explorer access, reference card, guest progress, real-town auth/export controls, legacy landscape, minimap and queued player synchronization passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
