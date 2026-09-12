@@ -4,7 +4,7 @@
 
 - 2026-09-12 (UTC): the human instructed “正式开发改造项目”, authorizing application-wide implementation of the refined visual direction. [Instruction and translation](../prompts/0030-implement-shared-game-interface.md).
 - This supersedes the preview-only restriction in D-013 through D-015. It is implementation authorization, not a claim of separate approval for every prototype detail or completed runtime QA.
-- Preserve free-asset provenance, locked buildings, organizer growth rules, existing data/account/backup behavior and English/Chinese support. Implementation is ongoing; actual browser/build results and remaining limits must be recorded after checks. [Specification](../specs/0011-shared-game-interface.md).
+- Implemented with free-asset provenance, locked buildings, organizer growth rules, existing data/account/backup behavior and English/Chinese support preserved. Production build, twelve tracked Node tests and extended interface/landscape/player browser checks passed; mocked-provider, physical-device and human-review limits remain explicit. [Specification](../specs/0011-shared-game-interface.md), [verification](verification.md).
 
 ## D-015 — Give key actions recognizable game-object forms
 

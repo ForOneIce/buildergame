@@ -2,7 +2,24 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
-## Current landscape and player interface
+## Shared game interface
+
+The application now uses the same wooden header and controls, cream reading surfaces and transparent teal world panels across its entrance, planning desk, capture result and town. Creation opens a kraft-paper plan with native repository fields and illustrated landscape choices. Town entry unfolds a map while the actual building assets load, with an option to explore during loading. Project cards are concise; the separate opening-door dialog offers a deliberate external link. The five accepted building appearances are unchanged.
+
+Checks for this revision:
+
+- `node node_modules/typescript/bin/tsc --noEmit` passed.
+- `node scripts/validate.mjs` passed sample validation and all ten building fingerprints.
+- `node node_modules/vite/bin/vite.js build` passed. The existing shared Three.js chunk still triggers the size advisory. CSS asset paths are rewritten relative to the build for subdirectory hosting.
+- `node --test tests/data.test.mjs tests/api.test.mjs tests/landscape.test.mjs tests/player.test.mjs` passed all twelve existing tests. A separate working-tree run also passed six deferred local exploration tests; those experiments are not included in this interface change.
+- `tests/unified-ui-check.cjs` passed the extended shared-header, actual WebGL readiness, 1440/768/360px layouts, card/focus, English/Chinese, both setup modes, capture/success and backup restoration journeys without page errors. Added checks covered delayed model loading with background controls inactive, restoration after loading, explicit external door links with safe `target`/`rel`, Escape/close returning to the card, reduced motion, a signed-in 360px header and 844×390 controls/timeline. Contextual cursors were checked through computed CSS, not pointer screenshots. GitHub account, repository and capture transports use fictional fixtures; no real OAuth or publication is claimed.
+- `tests/map-ui-check.cjs` passed all three landscapes, concise cards, guest progress, language switching, mobile controls, legacy imports, minimap selection and queued player synchronization with mocked account transport. Transition waits now follow actual readiness; the obsolete building-thumbnail assertion was replaced with the concise-card contract.
+- Actual entrance, planning-sheet and mobile town screenshots were inspected. Mobile exploration now opens on demand so the panel leaves more of the town visible. Asset/license hashes match their original sources.
+- A later short-height screenshot exposed a long player name wrapping into the town metrics. After a CSS-only `white-space: nowrap` correction, a targeted Chrome recheck confirmed that the profile ends above the metrics (83px versus 109px). The equivalent geometry assertion was added to the regression script; the full extended run above preceded this final CSS correction, and the focused recheck followed it.
+
+The doorway is a brief interface animation, followed by a link to a new tab. It is not a walkable interior or an embedded third-party browser. Custom mouse cursors supplement keyboard-accessible controls; physical mobile-device/GPU testing and final human visual review remain outstanding.
+
+## Earlier landscape and player interface
 
 The implementation now uses the five accepted building appearances, three creation-time landscape modes, a floating HUD, project cards with building previews, a minimap, and local/account exploration progress. The ten full/distant GLBs are fingerprinted in `public/models/buildings.lock.json`; validation fails if an accepted file changes.
 

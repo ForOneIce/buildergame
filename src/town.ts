@@ -76,13 +76,21 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   const ring = new THREE.Mesh(new THREE.RingGeometry(6.6, 6.72, 4), new THREE.MeshBasicMaterial({ color: '#fff4c2', side: THREE.DoubleSide }));
   ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); ring.position.y = -.025; ring.visible = false; scene.add(ring);
   const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down = { x: 0, y: 0 }, dragged = false;
+  const greeting=document.createElement('span');greeting.className='scene-greeting';greeting.textContent=t('Say hi','打个招呼');greeting.hidden=true;greeting.setAttribute('aria-hidden','true');host.append(greeting);
+  renderer.domElement.dataset.cursor='walk';
   const pick = (e: PointerEvent) => {
     const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1);
     ray.setFromCamera(pointer, camera); return ray.intersectObjects(hitTargets.filter(o => o.visible), false)[0]?.object.userData;
   };
-  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY }; dragged = false; });
-  renderer.domElement.addEventListener('pointermove', e => { if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) dragged = true; renderer.domElement.style.cursor = pick(e) ? 'pointer' : 'grab'; });
-  renderer.domElement.addEventListener('pointerup', e => { if (dragged || e.button !== 0) return; const hit = pick(e); if (hit) select(hit.id, hit.action === 'visit'); });
+  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY }; dragged = false;renderer.domElement.dataset.cursor='grabbing';greeting.hidden=true; });
+  renderer.domElement.addEventListener('pointermove', e => {
+    if(e.buttons&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)dragged=true;
+    const hit=pick(e);renderer.domElement.dataset.cursor=e.buttons?'grabbing':hit?.action==='visit'?'visit':hit?'grab':'walk';
+    greeting.hidden=!!e.buttons||hit?.action!=='visit'||e.pointerType==='touch';
+    if(!greeting.hidden){const bounds=host.getBoundingClientRect();greeting.style.left=Math.min(Math.max(50,e.clientX-bounds.left),bounds.width-50)+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
+  });
+  renderer.domElement.addEventListener('pointerleave',()=>{greeting.hidden=true;renderer.domElement.dataset.cursor='walk';});
+  renderer.domElement.addEventListener('pointerup', e => { renderer.domElement.dataset.cursor='walk';greeting.hidden=true;if (dragged || e.button !== 0) return; const hit = pick(e); if (hit) select(hit.id, hit.action === 'visit'); });
 
   function reset() {
     camera.aspect = Math.max(1, host.clientWidth) / Math.max(1, host.clientHeight); camera.updateProjectionMatrix();
@@ -164,7 +172,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
       avatars.forEach(a => { a.onload = null; a.onerror = null; }); assets.dispose();
       release([terrain, ring, ...[...buildings.values()].map(b => b.root)]);
       signGeometry.dispose(); hitGeometry.dispose(); hitMaterial.dispose(); sun.shadow.dispose();
-      ao.dispose(); output.dispose(); composer.dispose(); environment.dispose(); renderer.dispose(); renderer.domElement.remove(); status.remove();
+      ao.dispose(); output.dispose(); composer.dispose(); environment.dispose(); renderer.dispose(); renderer.domElement.remove(); status.remove();greeting.remove();
     },
   };
 }

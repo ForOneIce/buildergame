@@ -24,9 +24,9 @@ The common design inference is to connect object, context and response. These so
 
 | Action | Object and response | Status and limits |
 | --- | --- | --- |
-| Create a town | Open a kraft-paper planning sheet, with plot sketches and grouped inputs on the drawing | Human-specified direction; decorative drawing must leave fields readable |
-| Explore a town | Activate a folded map and unfold it into the town view | Human requested map or globe; folded map is the preview implementation choice |
-| Discover a project | Greet at a door with a gloved hand; opening reveals the concise project card | Prior human direction; current scope is a poster hotspot, not a navigable interior |
+| Create a town | Open a kraft-paper planning sheet, with plot sketches and grouped inputs on the drawing | Implemented with the real repository and capture controls; schematic plots are illustrative |
+| Explore a town | Activate a folded map and unfold it into the town view | Implemented; actual asset readiness ends loading, with an option to explore while loading |
+| Discover a project | A gloved hand and greeting identify a building; opening reveals a doorway and project link | Implemented with scene hit testing and a native dialog; a sign opens the concise card. No navigable interior |
 | Review history | Turn pages of a dated town album | AI follow-up idea only; not included in this revision |
 | Import a backup | Open a saved map case | AI follow-up idea only; existing explicit import action remains available |
 

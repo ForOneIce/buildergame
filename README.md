@@ -35,7 +35,9 @@ For GitHub login and hosting, follow the [deployment guide](docs/deployment.md).
 
 **Meet the people behind the houses.** Select a wooden sign to discover a project and its builder. Visit the demo, explore the code, or head to GitHub to star a repository or follow its author.
 
-**Find your next stop.** Orbit, zoom and move around the town, select a plot on the minimap, or search the project directory. Translucent controls keep the town visible, and project cards show a building preview alongside the repository's details.
+**Find your next stop.** Unfold the map, then orbit, zoom and move around the town. Pick a plot on the minimap or search the project directory. Cream visitor cards introduce each builder and project; opening a house reveals a doorway with a link to visit the project in a new tab.
+
+**Draw your own neighborhood.** Open a kraft-paper planning sheet, choose public repositories and a landscape, then capture your first snapshot. Wooden controls, paper cards and transparent teal panels connect the entrance, planning desk and town. On phones, exploration progress folds away to leave room for the world.
 
 **Keep track of your discoveries.** Opening project cards records which projects you have explored. Guests keep progress in their browser; GitHub players can synchronize progress for the deployment's published town when login is configured.
 

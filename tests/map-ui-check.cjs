@@ -1,6 +1,7 @@
 const{chromium}=require(process.env.PLAYWRIGHT_MODULE_PATH||'playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+async function townReady(page){await page.locator('#scene[data-town-ready="true"]').waitFor({timeout:60000});await page.locator('#map-transition').waitFor({state:'hidden',timeout:60000});}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
 try{fs.mkdirSync('private/qa',{recursive:true});const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
 // These journeys use fictional data and mocked account transport, never GitHub credentials.
@@ -8,13 +9,13 @@ await page.route('**/api/session',route=>route.fulfill({json:{configured:false,p
 await page.route('**/api/town',route=>route.fulfill({json:null}));
 for(const mode of ['flat','valley','clouds']){
  await page.goto('http://127.0.0.1:5173/',{waitUntil:'domcontentloaded'});await page.locator(`[data-sample-landscape="${mode}"]`).click();
- await page.locator(`#scene[data-landscape="${mode}"][data-town-ready="true"]`).waitFor({timeout:60000});await page.waitForTimeout(700);
+ await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
  await page.screenshot({path:`private/qa/map-${mode}.png`});
- await page.locator('#next-project').click();await page.locator('#project-preview-image:not([hidden])').waitFor();await page.screenshot({path:`private/qa/info-${mode}.png`});await page.locator('#close').click();
- assert.match(await page.locator('#visited-count').innerText(),/^1 \/ 9$/);await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');await page.locator('#scene[data-town-ready="true"]').waitFor({timeout:60000});assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
- await page.locator('#language').click();assert.match(await page.locator('.exploration-panel').innerText(),/你的探索/);await page.locator('#language').click();
+ await page.locator('#next-project').click();await page.locator('#detail[open]').waitFor();assert.ok((await page.locator('#detail-title').textContent()).trim());assert.equal(await page.locator('#detail [data-visit]').isDisabled(),true);assert.equal(await page.locator('#detail .card-metrics').count(),0);await page.screenshot({path:`private/qa/info-${mode}.png`});await page.locator('#close').click();
+ assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
+ await page.locator('#language').click();await townReady(page);assert.match(await page.locator('.exploration-panel').innerText(),/你的探索/);await page.locator('#language').click();await townReady(page);
 }
-await page.goto('http://127.0.0.1:5173/');await page.locator('[data-sample-landscape="flat"]').click();await page.locator('#scene[data-town-ready="true"]').waitFor({timeout:60000});assert.match(await page.locator('#visited-count').innerText(),/^1 \/ 9$/);
+await page.goto('http://127.0.0.1:5173/');await page.locator('[data-sample-landscape="flat"]').click();await townReady(page);assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);
 await page.setViewportSize({width:390,height:844});await page.locator('#reset').click();await page.waitForTimeout(400);await page.screenshot({path:'private/qa/map-mobile.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 assert.equal(await page.getByRole('button',{name:'Projects',exact:true}).getAttribute('id'),'show-projects');
 assert.equal(await page.getByRole('button',{name:'Sign in with GitHub',exact:true}).getAttribute('id'),'player-login');
@@ -34,13 +35,13 @@ const legacy=fictionalFixture(1,'legacy-test-fixture');
 for(const selectedMode of ['valley','clouds']){
  await page.locator('#landscape').selectOption(selectedMode);
  await page.locator('#import').setInputFiles({name:'legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(legacy))});
- await page.locator('#scene[data-landscape="flat"][data-town-ready="true"]').waitFor({timeout:60000});
+ await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),'flat');
  if(selectedMode==='valley'){
   // A one-project town puts its sole clickable plot at the center of the minimap.
   const bounds=await page.locator('#minimap').boundingBox();assert.ok(bounds);
   await page.locator('#minimap').click({position:{x:bounds.width/2,y:bounds.height/2}});
   await page.locator('#detail[open]').waitFor();assert.equal(await page.locator('#detail-title').innerText(),'Open Orchard');
-  assert.equal(await page.locator('#visited-count').innerText(),'1 / 1');await page.locator('#close').click();
+  assert.equal(await page.locator('#visited-count').textContent(),'1 / 1');await page.locator('#close').click();
  }
  await page.locator('#manage').click();assert.equal(await page.locator('#landscape').inputValue(),'flat');assert.equal(await page.locator('#landscape').isDisabled(),true);
  await page.locator('#home').click();await page.locator('[data-mode="hackathon"]').click();
@@ -71,7 +72,7 @@ await playerPage.route('**/api/progress**',async route=>{
 });
 await playerPage.addInitScript(()=>localStorage.setItem('bg-exploration:player-test-fixture:test-explorer',JSON.stringify(['sample-0'])));
 await playerPage.goto('http://127.0.0.1:5173/?town=1',{waitUntil:'domcontentloaded'});
-await playerPage.locator('#scene[data-town-ready="true"]').waitFor({timeout:60000});
+await townReady(playerPage);
 await playerPage.getByText('Synced to your GitHub player profile',{exact:true}).waitFor();
 assert.equal(await playerPage.locator('#player-login strong').innerText(),'test-explorer');
 assert.equal(await playerPage.locator('#player-login img').getAttribute('src'),avatar);
@@ -100,7 +101,7 @@ assert.deepEqual(postedVisits,['sample-0','sample-2','sample-3','sample-4']);
 assert.ok(remoteVisits.has('sample-3')&&remoteVisits.has('sample-4'));
 const stored=await playerPage.evaluate(()=>JSON.parse(localStorage.getItem('bg-exploration:player-test-fixture:test-explorer')));
 assert.ok(stored.includes('sample-3')&&stored.includes('sample-4'));
-await playerPage.reload({waitUntil:'domcontentloaded'});await playerPage.getByRole('button',{name:'Enter the town'}).click();
+await playerPage.reload({waitUntil:'domcontentloaded'});await playerPage.locator('[data-enter]').first().click();await townReady(playerPage);
 await playerPage.getByText('Synced to your GitHub player profile',{exact:true}).waitFor();assert.equal(await playerPage.locator('#visited-count').innerText(),'5 / 5');
 await playerPage.setViewportSize({width:390,height:844});
 assert.equal(await playerPage.getByRole('button',{name:'Sync exploration for test-explorer',exact:true}).getAttribute('id'),'player-login');
