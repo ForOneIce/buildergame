@@ -1,5 +1,11 @@
 # Decision log
 
+## D-014 — Reserve cream buttons for persistent selection
+
+- 2026-09-12 (UTC): the human specified brown unselected buttons and cream selected buttons, to make control state and click targets understandable.
+- Preview interpretation: brown surfaces with light labels are the default, including single-action buttons; persistent selected navigation uses cream with dark labels. Hover and keyboard focus use separate feedback without implying selection. Teal remains a panel material.
+- Scope: revise the standalone proposal with the existing free asset selection. No new artwork or global integration; D-013's human-review gate remains in force. [Instruction](../prompts/0024-button-selection-language.md), [control contract](../specs/0011-shared-game-interface.md).
+
 ## D-013 — Review free wood, paper and teal materials before global application
 
 - 2026-09-12 (UTC): the human selected wooden identity, cream paper and highly transparent teal floating panels, with free Kenney Adventure UI assets and no paid resources.

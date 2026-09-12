@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## 0024 — Clarify button selection in the proposal
+
+- 2026-09-12 (UTC): the human requested brown unselected buttons and cream selected buttons, with clear click targets and state distinctions. [Original instruction and translation](../prompts/0024-button-selection-language.md).
+- Codex revised the standalone proposal and documented the control contract: default brown/light labels and persistent selected navigation cream/dark labels. Single-action buttons use the default brown family; teal remains a panel material. Native keyboard focus and pressed depth remain separate from selection. This supersedes the earlier AI primary-action color suggestion.
+- Outputs: sequential prompt, prompt index, [shared interface specification](../specs/0011-shared-game-interface.md), decision and AI-contribution records. No additional asset reuse, dependency or application change is part of this correction. Global use still requires the human's confirmation of the proposal.
+- Verification: scoped `git diff --check` passed and 109 local Markdown links across six changed records resolved. Browser checks switched through all three preview screens and confirmed exactly one selected navigation control. Entrance and neighborhood screenshots showed cream only on the selected navigation button, brown on default actions and teal on panels. The local preview server now renders current source per request without caching. No runtime regression result is claimed; human visual acceptance remains pending.
+
 ## 0023 — Preview selected materials before global integration
 
 - 2026-09-12 (UTC), visual-proposal iteration: the human selected free Kenney Adventure UI wood elements, cream paper and highly transparent teal floating panels. The human then specified that the revised proposal must be shown first and confirmed before application across the product.

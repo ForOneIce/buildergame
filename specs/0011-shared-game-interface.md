@@ -1,6 +1,6 @@
 # Shared game interface proposal
 
-Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md) and [0023](../prompts/0023-preview-material-direction.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md) and [0024](../prompts/0024-button-selection-language.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
 
 ## Observable problem
 
@@ -44,6 +44,14 @@ Changing landscape affects the world background, not the interface brand. Keep t
 Proposed starting tokens: paper `#FFF6DF`, ink `#304C4F`, wood `#997149`, deep blue `#294E62`, gold `#E8BE68`, moss `#718761`. Values are a proposal, not verified contrast pairs in every state. Limit corner radii to 8/12/16px, spacing to 4/8/12/16/24/32px, and button depth to 2–3px. Text content should remain on a quiet readable surface; illustrated grain belongs to borders and non-reading areas.
 
 Use one functional SVG icon family such as selected Lucide icons. Give any larger illustrative badges a defined separate role. Replace ambiguous Unicode symbols. Roundness should come from shapes and typography without relying on oversized outlines. Use a readable rounded heading treatment, 14–16px body text and at least 12px compact labels where practical. Choose and license fonts during implementation; keep text outside image assets. Support Chinese fallback, natural line height and label expansion without Latin-style letter spacing.
+
+### Button selection language
+
+The human requires brown for unselected buttons and cream only for selected buttons. In the standalone preview, default buttons use a brown surface with light labels; persistently selected navigation and choices use cream with dark labels. An ordinary action such as opening a card stays brown because it does not select a lasting mode. This takes precedence over the earlier AI suggestion of separate gold primary-action surfaces.
+
+Hover and pressed feedback can adjust depth or brightness without switching an unselected control to cream. Keyboard focus uses a separate visible outline, and must not imply persistent selection. Teal remains the translucent panel material. Reuse the already selected free assets; this state correction adds no new artwork or dependency.
+
+中文简注：棕色表示可点击，奶油色表示已选中；悬停和键盘焦点不冒充选中状态。
 
 ## Implementation approach and effort
 
