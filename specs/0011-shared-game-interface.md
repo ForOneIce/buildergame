@@ -1,6 +1,6 @@
 # Shared game interface proposal
 
-Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md) and [0025](../prompts/0025-readable-preview-layout.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md), [0025](../prompts/0025-readable-preview-layout.md) and [0026](../prompts/0026-concise-project-popup.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
 
 ## Observable problem
 
@@ -24,7 +24,7 @@ The game metaphor remains connected to real use: repositories are plots, snapsho
 | Collection setup | Planning desk with readable form sections, personal/community selection and illustrated landscape choices | Same field, tab, button, repository row and status components |
 | Capture and success | An opening notice over the same world background; real measured progress where available, otherwise an indeterminate loading state | Same progress ribbon, notification and explicit local/published state |
 | Town exploration | Transparent teal HUD variants around the town; collapse secondary panels to leave the world visible | Same player medallion, icon buttons, project row and snapshot ribbon |
-| Project information | A cream visitor card that looks related to setup panels | Same title scale, avatar, metrics, link button and focus treatment |
+| Project information | A concise cream visitor card that looks related to setup panels | Same title scale, avatar, description, link button and focus treatment |
 
 Changing landscape affects the world background, not the interface brand. Keep the logo and account entry in predictable locations. On capable devices, later implementation can keep the scene canvas alive between screen states; use a lightweight town poster where maintaining the full scene would be costly. Both should share one composition.
 
@@ -36,7 +36,7 @@ Changing landscape affects the world background, not the interface brand. Keep t
 | `GamePanel` | Paper and transparent teal HUD variants; shared radii, warm edges, inset highlights, spacing and shadow direction |
 | `GameButton` / `GameIconButton` | Primary, secondary and quiet; default, hover, pressed, selected, disabled, loading and keyboard-focus states |
 | `TownTicket` | Personal/community and terrain selections; consistent thumbnail, title, selection indicator and hit area |
-| `RepositoryRow` / `BuilderCard` | Search/list/detail share avatar medallion, title hierarchy, stage label and meaningful metrics |
+| `RepositoryRow` / `BuilderCard` | Search/list/detail share avatar medallion and title hierarchy; the concise popup uses author, description and one visit action |
 | `GameField` / `GameTabs` | Native semantic controls with consistent field depth, labels, help and errors |
 | `ProgressRibbon` / `StatusNote` | Shared snapshot, capture and exploration presentation; never imply progress that has not been measured |
 | `GameDialog` / mobile sheet | Readable paper content, clear close action, controlled focus and one active mobile information panel |
@@ -59,7 +59,11 @@ The human requested more breathing room and a layout that reduces reading effort
 
 Desktop and narrow layouts should reflow without clipping text or controls. Chinese text uses normal letter spacing, with enough line height for the typeface. Preserve the brown-default and cream-selected button rule while changing spacing. This revision adds no assets and does not authorize global integration before the existing human review gate is satisfied.
 
-Current preview choices: 16px body text, 28px descriptive-paragraph line height, 13–15px secondary labels, 20–32px panel padding and at least 48px button height. Form labels sit 8px above their fields; field groups use a 24px gap. Narrow layouts stack fields and actions while retaining readable labels. The project card replaces the exploration summary in a dedicated grid area, leaving navigation unobscured; project metrics separate each value from its label. Opening/closing the card moves and restores keyboard focus. These are preview choices awaiting visual acceptance, not a global design-system release. Actual checks are recorded in [the collaboration log](../collaboration/log.md).
+Current preview choices: 16px body text, 28px descriptive-paragraph line height, 13–15px secondary labels, 20–32px panel padding and at least 48px button height. Form labels sit 8px above their fields; field groups use a 24px gap. Narrow layouts stack fields and actions while retaining readable labels. The project card replaces the exploration summary in a dedicated grid area, leaving navigation unobscured. Opening/closing the card moves and restores keyboard focus. These are preview choices awaiting visual acceptance, not a global design-system release. Actual checks are recorded in [the collaboration log](../collaboration/log.md).
+
+### Concise project popup
+
+The human requested less redundant popup content. Keep the title, close control, avatar with author name, one useful sentence about the project and one Visit project action, disabled for the fictional preview. Remove the construction-stage badge, redundant “Builder” suffix, three-metric block and repeated generic filler copy. This is a presentation change: it does not remove source metrics or alter house-growth rules. Preserve the existing button materials, readable spacing and focus behavior. The standalone preview remains subject to human review before any global application; QA for this simplification must be recorded after inspection.
 
 ## Implementation approach and effort
 

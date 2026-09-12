@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## 0026 — Simplify the project popup
+
+- 2026-09-12 (UTC): the human requested removal of redundant popup structure and unnecessary information. [Original instruction and translation](../prompts/0026-concise-project-popup.md).
+- Codex simplified the standalone preview card to title, close control, avatar/author, one project-description sentence and one disabled fictional Visit project action. Removed the stage badge, “Builder” suffix, three-metric block, their unused styles and repeated filler copy. Existing materials, spacing and focus behavior remain.
+- Outputs: revised external preview, prompt/index, [interface specification](../specs/0011-shared-game-interface.md) and contribution records. Source metrics and growth rules remain intact; no runtime integration or asset changes. The human-review gate continues.
+- Verification: the browser displayed the reduced English and Chinese card content. The English screenshot was reviewed, and the card closed and reopened successfully. Scoped whitespace checks passed. No runtime regression tests were run for this presentation-only change.
+
 ## 0025 — Improve reading comfort in the proposal
 
 - 2026-09-12 (UTC): the human requested breathing room in typography, a more reasonable layout and less reading difficulty. [Original instruction and translation](../prompts/0025-readable-preview-layout.md).
