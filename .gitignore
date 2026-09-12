@@ -4,7 +4,12 @@
 !.env.example
 *.pem
 *.key
+*.p12
+*.pfx
 .secrets/
+/.npmrc
+/.netrc
+/playwright/.auth/
 
 # Necessary local project material; all future children are ignored.
 /private/
@@ -16,6 +21,7 @@ dist/
 build/
 coverage/
 .vite/
+.vercel/
 .cache/
 *.tsbuildinfo
 playwright-report/
