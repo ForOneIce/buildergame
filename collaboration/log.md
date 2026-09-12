@@ -1,5 +1,11 @@
 # Human–AI collaboration log
 
+## 0027 — Center paired actions
+
+- 2026-09-12 (UTC): the human requested that a two-button row place each button at the center of its half. [Instruction and translation](../prompts/0027-paired-action-layout.md).
+- Codex updated the standalone preview with equal-column, content-sized paired actions and narrow-screen stacking where necessary. Three-tab navigation and compact account controls retain their own layout. The concise popup, existing assets, button states and preview-only approval gate remain unchanged.
+- Verification: browser measurements placed both the town-tool and planning-action button centers at 25% and 75% of their row width. The final screenshot showed the paired town controls and concise project card; the temporary viewport override was reset. Scoped whitespace checks passed. No runtime integration or regression testing was part of this preview-only adjustment.
+
 ## 0026 — Simplify the project popup
 
 - 2026-09-12 (UTC): the human requested removal of redundant popup structure and unnecessary information. [Original instruction and translation](../prompts/0026-concise-project-popup.md).

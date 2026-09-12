@@ -1,6 +1,6 @@
 # Shared game interface proposal
 
-Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md), [0025](../prompts/0025-readable-preview-layout.md) and [0026](../prompts/0026-concise-project-popup.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md), [0025](../prompts/0025-readable-preview-layout.md), [0026](../prompts/0026-concise-project-popup.md) and [0027](../prompts/0027-paired-action-layout.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
 
 ## Observable problem
 
@@ -60,6 +60,8 @@ The human requested more breathing room and a layout that reduces reading effort
 Desktop and narrow layouts should reflow without clipping text or controls. Chinese text uses normal letter spacing, with enough line height for the typeface. Preserve the brown-default and cream-selected button rule while changing spacing. This revision adds no assets and does not authorize global integration before the existing human review gate is satisfied.
 
 Current preview choices: 16px body text, 28px descriptive-paragraph line height, 13–15px secondary labels, 20–32px panel padding and at least 48px button height. Form labels sit 8px above their fields; field groups use a 24px gap. Narrow layouts stack fields and actions while retaining readable labels. The project card replaces the exploration summary in a dedicated grid area, leaving navigation unobscured. Opening/closing the card moves and restores keyboard focus. These are preview choices awaiting visual acceptance, not a global design-system release. Actual checks are recorded in [the collaboration log](../collaboration/log.md).
+
+Paired horizontal action rows use two equal columns, each with a content-sized button centered in its half. Stack the actions on narrow layouts when both cannot fit. This rule applies to paired action groups, not three-tab navigation or compact account controls; existing button-state semantics remain unchanged.
 
 ### Concise project popup
 
