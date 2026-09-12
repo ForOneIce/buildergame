@@ -1,5 +1,9 @@
 # Human–AI collaboration log
 
+## 0035 — Place Create before Explore
+
+- 2026-09-12 (UTC): Codex implemented [0035](../prompts/0035-create-before-explore.md), placing Create left and Explore right. Focused Chrome checks in English/Chinese at 1440/360px passed DOM/visual order, plan/map artwork, Create hover hint, Tab order and both destinations (setup form and ready town), without page errors; TypeScript without emit passed. No production-build or full-suite rerun, new tests or assets for this DOM reorder.
+
 ## 0034 — Balance the introduction and share the tooltip style
 
 - 2026-09-12 (UTC): the human requested equal introduction spacing and a matching building hint. Codex updated markup/styles in `src/main.ts` and `src/style.css`; focused bilingual/responsive checks and screenshot review passed. A final tooltip-width correction passed a targeted mobile check and rebuilt successfully; TypeScript/asset validation preceded it. No full suite, new tests or assets; human visual acceptance remains pending. [Instruction](../prompts/0034-balanced-intro-and-shared-tooltip.md), [verification](../docs/verification.md).

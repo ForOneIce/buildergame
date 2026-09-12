@@ -1,5 +1,9 @@
 # Decision log
 
+## D-021 — Put Create before Explore
+
+- 2026-09-12 (UTC): [instruction 0035](../prompts/0035-create-before-explore.md) is implemented with Create left, Explore right and matching DOM/keyboard order. Existing artwork/actions remain; focused Chrome and TypeScript checks passed. [Results](../collaboration/log.md#0035--place-create-before-explore).
+
 ## D-020 — Align paper spacing and share the building hint style
 
 - 2026-09-12 (UTC): [instruction 0034](../prompts/0034-balanced-intro-and-shared-tooltip.md) is implemented with full panel-content width and the existing cream `.control-hint` inside the building illustration. Focused spacing/style/hover checks and build validation passed; final width correction timing is recorded in [verification](verification.md). Human visual acceptance remains pending.

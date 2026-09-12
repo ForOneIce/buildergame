@@ -10,6 +10,10 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Homepage action order 0035
+
+[Instruction 0035](../prompts/0035-create-before-explore.md) is implemented: Create left, Explore right, with existing artwork/hints/actions and matching keyboard order. Focused English/Chinese checks at 1440/360px and TypeScript passed; [results](../collaboration/log.md#0035--place-create-before-explore).
+
 ## Balanced introduction and tooltip refinement 0034
 
 [Instruction 0034](../prompts/0034-balanced-intro-and-shared-tooltip.md) is implemented in `src/main.ts` and `src/style.css`: the introduction fills the paper panel's content width, and the building tagline uses the shared cream `.control-hint` inside the illustration. Focused English/Chinese checks at 1440/768/360px passed equal insets, matching hint styles and hover/viewport behavior; desktop English/Chinese and mobile Chinese screenshots were inspected. A final width adjustment passed a targeted mobile Chinese single-line check and a new production build. TypeScript and asset validation preceded that CSS-only adjustment; no full suite or new tests/assets. Human visual acceptance remains pending. [Verification](../docs/verification.md).

@@ -13,6 +13,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
+Session 0035: Codex reordered the existing Create/Explore buttons with their illustrations, hints and actions. Focused bilingual/responsive Chrome checks and TypeScript passed; no new tests/assets or full-suite/build rerun. [Instruction](../prompts/0035-create-before-explore.md), [results](log.md#0035--place-create-before-explore).
+
 Session 0034: Codex implemented the [balanced-introduction and shared-tooltip instruction](../prompts/0034-balanced-intro-and-shared-tooltip.md) in homepage markup/CSS. Focused English/Chinese layout, hover/style checks and screenshot review passed; a final width correction passed targeted mobile QA and a new build. TypeScript/asset checks preceded that correction. No full-suite rerun or new tests/assets; human visual acceptance remains pending. [Verification](../docs/verification.md).
 
 Session 0033: Codex implemented the [hover-tagline and enlargement instruction](../prompts/0033-hover-tagline-and-larger-building.md) only in `src/style.css`. Focused 1440/768/360px Chrome checks, stage-5 screenshot review, TypeScript, sample/asset validation and production build passed. No JavaScript, test or asset changes, and no full-suite rerun. [Verification](../docs/verification.md); human visual acceptance remains pending.
