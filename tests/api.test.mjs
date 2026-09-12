@@ -7,12 +7,12 @@ import { join } from 'node:path';
 import { createApi } from '../server/api.mjs';
 import { configuration } from '../src/bundle.mjs';
 
-test('OAuth state, allowlisted publishing, public viewing and token-free exports',async()=>{
+test('OAuth state, deployer default publishing, public viewing and token-free exports',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'buildergame-test-'));let api;const server=createServer((req,res)=>api(req,res));
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`http://127.0.0.1:${server.address().port}`;
  const fake=async(url,init)=>{
    if(url.includes('access_token'))return Response.json({access_token:'secret-only-on-server'});
-   if(url.endsWith('/user'))return Response.json({login:'owner'});
+   if(url.endsWith('/user'))return Response.json({login:'owner',id:1});
    if(url.includes('/commits?'))return Response.json([{sha:'head'}]);
    return Response.json({name:'project',private:false,default_branch:'main',size:1,stargazers_count:10,forks_count:2,owner:{avatar_url:'https://avatars.githubusercontent.com/u/1'}});
  };

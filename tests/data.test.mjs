@@ -37,10 +37,10 @@ const response=(data,status=200,headers={})=>new Response(JSON.stringify(data),{
 test('public repository capture appends real observations and carries failures forward',async()=>{
  const event=configuration({name:'Test',repositories:['https://github.com/a/one','https://github.com/b/two']});
  const fetcher=async url=>url.includes('/commits?')?response([{sha:'head'}],200,{link:'<https://api.github.com/repos/a/one/commits?per_page=1&page=123>; rel="last"'}):response({name:'repo',private:false,size:10,default_branch:'main',stargazers_count:7,forks_count:3,owner:{avatar_url:'https://avatars.githubusercontent.com/u/1'}});
- const first=await capture(event,null,'server-token',fetcher);assert.equal(first.bundle.history.snapshots[0].projects[0].metrics.commits,123);
- const serialized=JSON.stringify(first.bundle);await new Promise(r=>setTimeout(r,5));
+ const first=await capture(event,null,'server-token',fetcher);assert.equal(first.bundle.history.snapshots[1].projects[0].metrics.commits,123);
+ const serialized=JSON.stringify(first.bundle);
  const second=await capture(first.bundle.event,first.bundle.history,'server-token',url=>url.includes('/b/two')?response({},403):fetcher(url));
- assert.equal(second.bundle.history.snapshots.length,2);assert.equal(second.bundle.history.snapshots[1].projects[1].status,'stale');assert.equal(JSON.stringify(first.bundle),serialized);assert.equal(JSON.stringify(second.bundle).includes('server-token'),false);
+ assert.equal(second.bundle.history.snapshots.length,3);assert.equal(second.bundle.history.snapshots[2].projects[1].status,'stale');assert.equal(JSON.stringify(first.bundle),serialized);assert.equal(JSON.stringify(second.bundle).includes('server-token'),false);
 });
 test('private and inaccessible repositories do not become zero commits',async()=>{
  await assert.rejects(observe('https://github.com/a/private','t',async()=>response({private:true})),/public/);

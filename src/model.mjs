@@ -1,4 +1,5 @@
 // Shared browser / capture contract. 中文：数据失败不等于零，历史快照不重算。
+import { validLocation } from './locations.mjs';
 export const STAGES = ['land', 'foundation', 'frame', 'cottage', 'townhouse', 'decorated'];
 export function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -32,6 +33,13 @@ export function validateManifest(event) {
   assert(Number.isFinite(event.refreshSeconds) && event.refreshSeconds >= 30, 'refreshSeconds must be at least 30');
   validateRule(event.rule);
   assert(!event.collectionType || ['personal', 'hackathon'].includes(event.collectionType), 'Invalid collection type');
+  if (event.deployment !== undefined) {
+    const deployment = event.deployment;
+    assert(deployment && typeof deployment.slug === 'string' && deployment.slug.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(deployment.slug), 'Invalid deployment slug');
+    const createdAt = Date.parse(deployment.createdAt);
+    assert(typeof deployment.createdAt === 'string' && Number.isFinite(createdAt) && new Date(createdAt).toISOString() === deployment.createdAt, 'Deployment creation time must be a canonical UTC timestamp');
+  }
+  if(event.residentMap){assert(typeof event.residentMap.enabled==='boolean'&&typeof event.residentMap.fetchProfiles==='boolean','Invalid resident map setting');assert(!(event.collectionType==='personal'&&event.residentMap.enabled),'Resident map is only available for multi-builder collections');}
   const ids = new Set(), repos = new Set(), plots = new Set();
   for (const p of event.projects) {
     assert(typeof p.id === 'string' && /^[a-z0-9-]+$/.test(p.id) && !ids.has(p.id), `Invalid/duplicate project id: ${p.id}`);
@@ -42,6 +50,8 @@ export function validateManifest(event) {
     assert(!plots.has(key), `Duplicate plot: ${key}`);
     assert(typeof p.name === 'string' && p.name.length && typeof p.description === 'string' && p.builder && typeof p.builder.name === 'string', `Missing project text: ${p.id}`);
     for (const link of [p.homepage, p.builder.url, p.builder.avatar]) assert(!link || safeUrl(link), `Unsafe link: ${p.id}`);
+    if(event.residentMap?.enabled&&p.builder.location)assert(validLocation(p.builder.location),`Invalid coarse location: ${p.id}`);
+    if(event.residentMap?.enabled&&p.builder.locationText)assert(typeof p.builder.locationText==='string'&&p.builder.locationText.length<=160,`Invalid public location text: ${p.id}`);
     ids.add(p.id); repos.add(repo); plots.add(key);
   }
   if (event.rule.mode === 'custom') {
@@ -71,12 +81,24 @@ export function makeRecord(project, metrics, rule, observedAt, previous, customS
     : { projectId: project.id, plot: { ...project.plot }, status: 'unknown', observedAt: null, metrics: null, score: null, stage: null, rule: null };
   return { projectId: project.id, plot: { ...project.plot }, status: 'fresh', observedAt, metrics, ...calculate(metrics, rule, customScore), rule: structuredClone(rule) };
 }
+// The founding view is a visual starting point, never a zero-valued GitHub observation.
+export function baselineSnapshot(event, createdAt) {
+  validateManifest(event);
+  assert(Number.isFinite(Date.parse(createdAt)), 'Invalid baseline creation time');
+  return {
+    id: `baseline-${crypto.randomUUID()}`, kind: 'baseline', label: 'Town founded', capturedAt: createdAt,
+    projects: event.projects.map(project => ({ projectId: project.id, plot: { ...project.plot }, status: 'baseline', observedAt: null, metrics: null, score: null, stage: 'land', rule: null })),
+  };
+}
 export function validateSnapshots(event, history) {
   validateManifest(event);
   assert(history?.schemaVersion === 1 && history.eventId === event.id && history.sampleData === event.sampleData && Array.isArray(history.snapshots) && history.snapshots.length, 'Snapshot event/sample/schema mismatch or empty history');
   const ids = new Set(); let lastTime = -Infinity;
   for (const snapshot of history.snapshots) {
     assert(typeof snapshot.id === 'string' && snapshot.id.length && !ids.has(snapshot.id), 'Duplicate/invalid snapshot id'); ids.add(snapshot.id);
+    assert(snapshot.kind === undefined || ['baseline', 'capture'].includes(snapshot.kind), 'Invalid snapshot kind');
+    const baseline = snapshot.kind === 'baseline';
+    assert(!baseline || snapshot === history.snapshots[0], 'The baseline can only be the first snapshot');
     const time = Date.parse(snapshot.capturedAt);
     assert(Number.isFinite(time) && time > lastTime, 'Snapshots must have increasing timestamps'); lastTime = time;
     assert(Array.isArray(snapshot.projects) && snapshot.projects.length === event.projects.length, 'Snapshot must cover every project');
@@ -85,10 +107,12 @@ export function validateSnapshots(event, history) {
       const p = event.projects.find(p => p.id === record.projectId);
       assert(p && !records.has(p.id), 'Unknown or duplicate snapshot project'); records.add(p.id);
       assert(record.plot?.x === p.plot.x && record.plot?.z === p.plot.z, `Plot moved: ${p.id}`);
-      assert(['fresh', 'stale', 'unknown'].includes(record.status), 'Invalid observation status');
-      if (record.status === 'unknown') {
+      if (baseline) {
+        assert(record.status === 'baseline' && record.stage === 'land' && record.metrics === null && record.score === null && record.observedAt === null && record.rule === null, 'Baseline records are stage-one visuals without GitHub observations');
+      } else if (record.status === 'unknown') {
         assert(record.metrics === null && record.score === null && record.stage === null && record.observedAt === null && record.rule === null, 'Unknown observations must not invent data');
       } else {
+        assert(['fresh', 'stale'].includes(record.status), 'Invalid observation status');
         assert(Number.isFinite(Date.parse(record.observedAt)) && Date.parse(record.observedAt) <= time, 'Invalid observation time');
         const result = calculate(record.metrics, record.rule, record.score);
         assert(result.score === record.score && result.stage === record.stage, 'Saved stage/score does not match its recorded rule');
