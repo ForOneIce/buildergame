@@ -10,6 +10,23 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Homepage refinement 0031
+
+Status: implemented; revision-specific build, asset validation, twelve tracked Node tests and all three browser scripts passed. Final human visual acceptance remains pending. [The complete eleven-point instruction](../prompts/0031-refine-homepage-and-building-showcase.md) refines the implemented interface above and supersedes the earlier entrance table where they differ.
+
+- Keep the shared wood logo level. On the homepage, the account control shows only its avatar/person symbol, with the original account action available as a hover/focus hint and accessible name.
+- Use the single introduction “A home for GitHub builders. Let’s watch each other grow.” Remove the redundant headline and wallet/guest sentence. The map and planning objects remain usable buttons; show their action text as hover/focus hints instead of permanent labels.
+- Replace the homepage's town scene with one accepted building shown at a time, cycling through stages 1–5, and the caption “Keep building. Keep growing.” Reuse the locked GLBs without changes to geometry or growth rules. Pause/play and direct stage buttons remain accessible; reduced motion starts paused and permits manual selection.
+- Under “Who can create a town?”, show two noninteractive descriptions: an individual hand and a community hand ring, each with a short explanation. These are explanatory content, not buttons or mode selectors.
+- Move all three sample-terrain tours into creation. Selecting flat, valley or clouds updates a labeled thumbnail in the site's upper-left plan area without resetting the form. Opening a sample and returning to the plan preserves the draft and the selected collection mode/terrain.
+- Remove the homepage backup/configuration button. Retain real import/export and restore behavior in the existing creation and town workflows.
+
+The DOM contract uses `#home-showcase` with visible-stage/readiness markers and native stage/play controls, plus `#terrain-thumbnail` inside `.site-plan` and a return-to-plan action for sample visits. These markers support focused regression checks; the displayed building and usable form are the acceptance outcomes. Original hand illustrations and terrain thumbnails are project-authored assets, not another external resource pack.
+
+Executed acceptance checks extended the shared-interface and landscape journeys: desktop/narrow/Chinese layouts; no old homepage copy or clickable audience cards; labeled icon entries and login hover/focus hints; one real building with automatic/manual stage switching and reduced motion; terrain thumbnails and sample return retaining personal/hackathon drafts; existing capture/backup/card/player flows and all ten building fingerprints. The broader browser journey also passed mocked-deployer publication opt-out and active-town preservation regression. Actual desktop/mobile English/Chinese homepage and Chinese mobile planning screenshots were inspected. The canvas reserves room for showcase controls; preview return preserves publication opt-out. All three terrain PNG dimensions/output hashes and five source hashes matched. Account, repository and capture transport is mocked; real OAuth, remote publication, physical devices and human visual acceptance remain unverified. [Exact commands, results and limits](../docs/verification.md).
+
+中文简注：首页展示单栋建筑的成长；地形游览回到建镇表单，保留已填内容。
+
 ## Observable problem
 
 `main.ts` switches from the homepage `.brand` header to `gameHeader()` only in town mode. `style.css` defines a pale marketing page with green flat controls, `map-ui.css` introduces blue glass and a wood logo, and its project dialog introduces lavender surfaces and a purple action button. Typography, icon strokes, spacing and control depth change at these boundaries. Layers in `style.css`, `town.css` and `map-ui.css` override the same general selectors. A fourth stylesheet of overrides would preserve this fragmentation.

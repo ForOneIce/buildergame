@@ -30,5 +30,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0028 — Contextual cursors and a door greeting](0028-playful-context-cursors.md)
 - [0029 — Let game objects explain the actions](0029-object-based-game-interface.md)
 - [0030 — Implement the shared game interface](0030-implement-shared-game-interface.md)
+- [0031 — Refine the homepage and single-building showcase](0031-refine-homepage-and-building-showcase.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

@@ -2,6 +2,8 @@ import './ui/theme.css';
 import './style.css';
 import {objectArt,sitePlan} from './ui/planning';
 import {icon} from './ui/icons';
+import {builderSymbol} from './ui/builder-symbols';
+import {createHomeShowcase} from './home-showcase';
 import {gameHeader,gameLayout,projectCard} from './game-ui';
 import {localProgress,saveProgress} from './player-progress';
 import { createTown } from './town';
@@ -34,6 +36,9 @@ let weights = { ...defaultRule.weights };
 let returnFocus: HTMLElement | null = null;
 let cancelArrival: (()=>void)|undefined, doorTimer: ReturnType<typeof setTimeout>|undefined;
 let entryFromCard=false;
+let homeShowcase:ReturnType<typeof createHomeShowcase>|undefined;
+let terrainPreview:{bundle:Bundle;snapshotIndex:number;published:boolean}|null=null;
+let publishDraft:boolean|undefined;
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const date = (s: string) => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }).format(new Date(s));
 const stage = (s: string | null) => ({ land:t('Open land','空地'), foundation:t('Foundation','地基'), frame:t('Timber frame','木架'), cottage:t('Cottage','小屋'), townhouse:t('Townhouse','楼房'), decorated:t('Garden house','花园屋') }[s || ''] || t('Awaiting data','等待数据'));
@@ -46,13 +51,13 @@ function notice(text: string, error = false) { const el=$('#notice');el.textCont
 function download(value: unknown, name: string) { const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); }
 function exportTown() { download(publicBundle(bundle),'town.json');notice(t('Backup downloaded. Add town.json to public/data/ in your deployment repository, then rebuild.','备份已下载。将 town.json 放入部署仓库的 public/data/，然后重新构建。')); }
 function stop() { if(timer)clearInterval(timer);timer=undefined; }
-function navigate(to: typeof screen) { stop();screen=to;render(); }
+function navigate(to: typeof screen) { stop();if(terrainPreview&&to!=='town'){bundle=terrainPreview.bundle;snapshotIndex=terrainPreview.snapshotIndex;published=terrainPreview.published;terrainPreview=null;}screen=to;render(); }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang); }
+function header() { return gameHeader(t,session,lang,screen==='welcome'); }
 
 function render() {
-  cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
+  homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
   document.body.classList.remove('project-detail-open');document.body.dataset.screen=screen;document.body.classList.toggle('town-view',screen==='town');
   scene?.dispose();scene=undefined;stop();document.documentElement.lang=lang==='en'?'en':'zh-CN';document.title=`Buildergame · ${t('Your repos, your town','你的仓库，你的小镇')}`;
   app.innerHTML=header()+`<div id="notice" class="notice" role="status" aria-live="polite" hidden></div>`+(screen==='welcome'?welcome():screen==='setup'?setup():screen==='success'?success():town())+`<input type="file" id="import" accept=".json,application/json" hidden><dialog id="detail" class="paper-panel" aria-labelledby="detail-title"><button class="close hud-button icon-button" id="close" aria-label="${t('Close','关闭')}">×</button><div id="detail-body"></div></dialog><dialog id="project-entry" class="paper-panel" aria-labelledby="entry-title"><button class="close hud-button icon-button" id="close-entry" aria-label="${t('Close','关闭')}">×</button><div class="entry-door" aria-hidden="true"><span></span></div><h2 id="entry-title"></h2><p id="entry-status" role="status"></p><div id="entry-actions"></div></dialog>`;
@@ -72,18 +77,14 @@ function render() {
   document.querySelector('[data-create]')?.addEventListener('click',()=>{imported=null;usePrevious=false;title='';navigate('setup');});
   document.querySelectorAll<HTMLElement>('[data-mode]').forEach(el=>el.onclick=()=>{collection=el.dataset.mode as typeof collection;imported=null;usePrevious=false;if(screen!=='setup')title='';navigate('setup');});
   document.querySelectorAll<HTMLElement>('[data-enter]').forEach(el=>el.onclick=()=>navigate('town'));
-  if(screen==='welcome'){
-    const choices=document.createElement('div');choices.className='sample-landscapes';
-    choices.innerHTML=(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>'<button data-sample-landscape="'+mode+'">'+[t('Explore flat town','游览平地城镇'),t('Explore valley','游览山谷'),t('Explore cloud town','游览云端城镇')][i]+'</button>').join('');
-    document.querySelector('.hero-fine')?.after(choices);
-    choices.querySelectorAll<HTMLElement>('button').forEach(button=>button.onclick=()=>{bundle=sampleTown() as Bundle;const mode=button.dataset.sampleLandscape as Landscape;bundle.event.landscape=mode;if(mode!=='flat'){bundle.event.id+='-'+mode;bundle.history.eventId=bundle.event.id;}published=false;snapshotIndex=bundle.history.snapshots.length-1;navigate('town');});
-  }
   document.querySelectorAll<HTMLElement>('[data-create],[data-mode],#capture').forEach(el=>el.dataset.cursor='build');document.querySelectorAll<HTMLElement>('[data-enter],[data-sample-landscape]').forEach(el=>el.dataset.cursor='walk');
   if(screen==='setup')bindSetup();if(screen==='town')bindTown();
-  if(screen==='welcome'){try{const miniature=sampleTown();scene=createTown($('#island-preview'),miniature.event.projects.slice(0,4) as Project[],()=>navigate('town'));scene.update({...miniature.history.snapshots[2],projects:miniature.history.snapshots[2].projects.slice(0,4)} as Bundle['history']['snapshots'][number]);}catch{/* Text entry points remain available. */}}
+  if(screen==='welcome'){try{homeShowcase=createHomeShowcase($('#home-showcase'),{lang});}catch{$('#home-showcase').innerHTML='<p class="showcase-fallback">'+t('The building preview is unavailable in this browser.','此浏览器暂时无法显示建筑预览。')+'</p>';}}
 }
 function welcome() {
-  return `<main class="landing"><section class="hero"><div class="hero-copy paper-panel"><p class="eyebrow">${t('A PLACE FOR WHAT YOU BUILD','为你的创造，留一处位置')}</p><h1>${t('Your work<br>has a home.','让每个作品，<br>在这里安家。')}</h1><p class="hero-description">${t('Turn public GitHub projects into a living town. Meet the builders. Come back to see what grows.','把公开 GitHub 项目变成生动的小镇。认识开发者，再回来看看新的成长。')}</p><div class="hero-buttons paired-actions"><button class="button object-entry" data-enter>${objectArt('map')}<span class="entry-label">${bundle.event.sampleData?t('Explore sample town','探索示例小镇'):t('Enter the town','进入小镇')}</span></button><button class="button object-entry" data-create>${objectArt('plan')}<span class="entry-label">${t('Create town','新建城镇')}</span></button></div><p class="hero-fine">${t('No wallet needed. Explore as a guest.','无需钱包，以访客身份探索。')}</p></div><div class="hero-art"><div class="island-preview" id="island-preview"></div><span class="floating-note">${t('One repository. One home.','一个仓库，一处家园。')}</span></div></section><section class="choose"><div class="section-head"><h2>${t('Who will live here?','谁在这里安家？')}</h2></div><div class="mode-cards paired-actions"><button class="mode-card button" data-mode="personal"><span class="small-plan">${objectArt('plan')}</span><strong>${t('My builder town','我的开发者小镇')}</strong><span>${t('A home for your public projects.','为你的公开作品安一个家。')}</span></button><button class="mode-card button" data-mode="hackathon"><span class="small-plan">${objectArt('map')}</span><strong>${t('A community town','社群与黑客松小镇')}</strong><span>${t('Bring an event’s builders together.','让活动中的开发者聚在一起。')}</span></button></div><button class="button backup-entry" data-import>${t('Open a backup or configuration','打开备份或配置文件')}</button></section><footer><span>Buildergame · ${t('A home for what you build','为创造而建的小镇')}</span><span>${t('Sample town uses fictional project data.','示例小镇采用虚构项目数据。')}</span></footer></main>`;
+  const exploreLabel=bundle.event.sampleData?t('Explore sample town','探索示例小镇'):t('Enter the town','进入小镇');
+  const createLabel=t('Create town','新建城镇');
+  return `<main class="landing"><section class="hero"><div class="hero-copy paper-panel"><h1 class="hero-description">${t('A home for GitHub builders. Let’s watch each other grow.','为github builder打造的家园，让我们一起见证彼此的成长。')}</h1><div class="hero-buttons paired-actions"><button class="button object-entry hinted-control" data-enter aria-label="${exploreLabel}" aria-describedby="explore-hint">${objectArt('map')}<span class="control-hint" id="explore-hint" role="tooltip">${exploreLabel}</span></button><button class="button object-entry hinted-control" data-create aria-label="${createLabel}" aria-describedby="create-hint">${objectArt('plan')}<span class="control-hint" id="create-hint" role="tooltip">${createLabel}</span></button></div></div><div class="hero-art"><div id="home-showcase" class="home-showcase" aria-label="${t('One building growing through five construction stages','一栋建筑的五阶段成长展示')}"></div><p class="floating-note">${t('Keep building. Keep growing.','持续构建，持续成长')}</p></div></section><section class="choose"><div class="section-head"><h2>${t('Who can create a town?','谁能新建城镇？')}</h2></div><div class="builder-audiences"><article class="builder-audience"><div class="builder-symbol">${builderSymbol('personal')}</div><h3>${t('Individual builders','个人开发者')}</h3><p>${t('A home for your public projects.','为你的公开作品安一个家。')}</p></article><article class="builder-audience"><div class="builder-symbol">${builderSymbol('community')}</div><h3>${t('Communities & hackathons','社群与黑客松')}</h3><p>${t('Bring your builders’ projects together.','让活动中的开发者聚在一起。')}</p></article></div></section><footer><span>Buildergame · ${t('A home for what you build','为创造而建的小镇')}</span></footer></main>`;
 }
 
 function setup() {
@@ -91,6 +92,11 @@ function setup() {
 }
 function repositoryChoices() {return repositories.length?repositories.map(r=>`<label class="repo-choice"><input type="checkbox" data-repo="${escape(r.repository)}" ${checked.has(r.repository)?'checked':''}><span><strong>${escape(r.name)}</strong><small>${escape(r.description)}</small></span></label>`).join(''):`<div class="empty-repos">⌘<p>${t('Your public projects will appear here.','你的公开项目将在这里显示。')}</p></div>`;}
 function bindCheckboxes() {document.querySelectorAll<HTMLInputElement>('[data-repo]').forEach(e=>e.onchange=()=>{e.checked?checked.add(e.dataset.repo!):checked.delete(e.dataset.repo!);imported=null;usePrevious=false;$('#selected-count').textContent=`${checked.size} ${t('selected','已选择')}`;});}
+function updateTerrainThumbnail(){
+  const thumbnail=document.querySelector<HTMLImageElement>('#terrain-thumbnail');if(!thumbnail)return;
+  thumbnail.src=import.meta.env.BASE_URL+'ui/landscapes/'+landscape+'.png';
+  thumbnail.alt=t({flat:'Flat town preview',valley:'Valley town preview',clouds:'Cloud town preview'}[landscape],{flat:'平地城镇缩略图',valley:'山谷城镇缩略图',clouds:'云端城镇缩略图'}[landscape]);
+}
 function currentConfiguration(): TownEvent {
   const name=title.trim();if(!name)throw Error(t('Give your town a name.','请为小镇起个名字。'));
   if(imported){const result=structuredClone(imported);result.name=name;if(!usePrevious)result.landscape=landscape;return cleanEvent(result) as TownEvent;}
@@ -105,8 +111,16 @@ function bindSetup() {
   picker.innerHTML='<label for="landscape">'+t('Town landscape','城镇地形')+'</label><select id="landscape" '+(usePrevious?'disabled':'')+'>'+(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>'<option value="'+mode+'" '+(landscape===mode?'selected':'')+'>'+[t('Flat · concrete roads','平地 · 水泥路面'),t('Valley · slopes, gravel & water','山谷 · 缓坡、碎石与水流'),t('Clouds · floating districts & steps','云端 · 漂浮片区与云朵阶梯')][i]+'</option>').join('')+'</select><p class="helper">'+t('Chosen once for this town. Future snapshots keep the same landscape.','建镇时确定，之后的快照保持同一地形。')+'</p>';
   document.querySelector('.growth')!.before(picker);
   const landscapeChoices=document.createElement('div');landscapeChoices.className='landscape-choices';landscapeChoices.innerHTML=(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>`<button type="button" class="button landscape-choice" data-landscape-choice="${mode}" aria-pressed="${landscape===mode}" ${usePrevious?'disabled':''}>${icon(['map','mountain','cloud'][i])}<span>${[t('Flat','平地'),t('Valley','山谷'),t('Clouds','云端')][i]}</span></button>`).join('');picker.append(landscapeChoices);picker.querySelector('select')!.classList.add('sr-only');picker.querySelector('select')!.tabIndex=-1;picker.querySelector('select')!.setAttribute('aria-hidden','true');landscapeChoices.setAttribute('role','group');landscapeChoices.setAttribute('aria-label',t('Town landscape','城镇地形'));
-  const changeLandscape=(value:Landscape)=>{landscape=value;if(imported&&!usePrevious)imported.landscape=landscape;picker.querySelector('select')!.value=value;document.querySelector<HTMLElement>('.site-plan')!.dataset.landscape=landscape;landscapeChoices.querySelectorAll<HTMLElement>('button').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.landscapeChoice===value)));};
+  const changeLandscape=(value:Landscape)=>{landscape=value;if(imported&&!usePrevious)imported.landscape=landscape;picker.querySelector('select')!.value=value;document.querySelector<HTMLElement>('.site-plan')!.dataset.landscape=landscape;updateTerrainThumbnail();landscapeChoices.querySelectorAll<HTMLElement>('button').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.landscapeChoice===value)));};
   picker.querySelector('select')!.onchange=e=>changeLandscape((e.target as HTMLSelectElement).value as Landscape);landscapeChoices.querySelectorAll<HTMLElement>('button').forEach(el=>el.onclick=()=>changeLandscape(el.dataset.landscapeChoice as Landscape));
+  const samples=document.createElement('div');samples.className='sample-landscapes';samples.setAttribute('role','group');samples.setAttribute('aria-label',t('Explore example landscapes','游览示例地形'));
+  samples.innerHTML=(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>`<button class="button" data-cursor="walk" data-sample-landscape="${mode}">${[t('Explore flat town','游览平地城镇'),t('Explore valley','游览山谷'),t('Explore cloud town','游览云端城镇')][i]}</button>`).join('');
+  document.querySelector('.setup-drawing')!.append(samples);
+  samples.querySelectorAll<HTMLElement>('button').forEach(button=>button.onclick=()=>{terrainPreview={bundle,snapshotIndex,published};bundle=sampleTown() as Bundle;const mode=button.dataset.sampleLandscape as Landscape;bundle.event.landscape=mode;if(mode!=='flat'){bundle.event.id+='-'+mode;bundle.history.eventId=bundle.event.id;}published=false;snapshotIndex=bundle.history.snapshots.length-1;navigate('town');});
+  updateTerrainThumbnail();
+  const publishInput=$<HTMLInputElement>('#publish');
+  publishInput.checked=session.isDeployer&&(publishDraft??true);
+  publishInput.onchange=()=>publishDraft=publishInput.checked;
   $('#back').onclick=()=>navigate('welcome');$<HTMLInputElement>('#town-name').oninput=e=>title=(e.target as HTMLInputElement).value;
   if(collection==='hackathon')$<HTMLTextAreaElement>('#repositories').oninput=e=>{repoText=(e.target as HTMLTextAreaElement).value;imported=null;usePrevious=false;};
   else {
@@ -202,6 +216,7 @@ function bindTown() {
   toggle.onclick=()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));};
   document.querySelector('#scene canvas')?.setAttribute('aria-label',t('Interactive town. Use the project directory for keyboard access.','交互小镇。可通过项目列表使用键盘访问全部项目。'));
   $('#manage').onclick=()=>{if(bundle.event.sampleData){imported=null;usePrevious=false;title='';}else{imported=structuredClone(bundle.event);weights={...bundle.event.rule.weights};title=bundle.event.name;collection=bundle.event.collectionType||'hackathon';repoText=bundle.event.projects.map(p=>p.repository).join('\n');repositories=bundle.event.projects.map(p=>({repository:p.repository,name:p.name,description:p.description,builder:p.builder}));checked.clear();repositories.forEach(r=>checked.add(r.repository));nextPage=null;usePrevious=true;}navigate('setup');};
+  if(terrainPreview){const back=document.createElement('button');back.id='return-to-plan';back.className='hud-button';back.innerHTML=icon('plan')+'<span>'+t('Back to plan','返回规划图')+'</span>';back.setAttribute('aria-label',t('Back to plan','返回规划图'));back.onclick=()=>navigate('setup');$('#manage').before(back);$('#manage').hidden=true;}
   $<HTMLInputElement>('#search').oninput=e=>{filter=(e.target as HTMLInputElement).value;list();};
   $<HTMLInputElement>('#timeline').oninput=e=>{stop();$('#play').textContent='▶';showSnapshot(Number((e.target as HTMLInputElement).value));};
   $<HTMLButtonElement>('#play').disabled=bundle.history.snapshots.length<2;

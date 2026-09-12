@@ -2,6 +2,24 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Homepage refinement 0031
+
+The [eleven-point homepage revision](../prompts/0031-refine-homepage-and-building-showcase.md) is implemented. The homepage presents concise builder copy, a level logo, labeled icon actions, noninteractive hand illustrations and one building cycling through the five accepted stages. Terrain tours and thumbnails appear in the planner, and returning from a tour preserves the draft, publication opt-out and active town. The showcase canvas reserves space for its stage controls.
+
+Executed checks on 2026-09-12 (UTC):
+
+- `node node_modules/typescript/bin/tsc --noEmit` passed.
+- `node scripts/validate.mjs` passed: nine sample projects, three snapshots and all ten locked building fingerprints.
+- `node node_modules/vite/bin/vite.js build` passed with the existing shared Three.js chunk-size advisory.
+- `node --test tests/data.test.mjs tests/api.test.mjs tests/landscape.test.mjs tests/player.test.mjs` passed all twelve tracked tests.
+- Extended `tests/unified-ui-check.cjs` passed without page errors, including concise English/Chinese homepage content, icon hover/focus hints, noninteractive audiences, stage 1–5 autoplay and loopback, manual keyboard selection, reduced-motion pause/play, selected-terrain thumbnails, and sample-tour return preserving personal and hackathon drafts. Its existing shared-screen, loading, capture, backup, card, player and responsive journeys also passed.
+- `tests/map-ui-check.cjs` passed without page errors: three landscapes, cards, guest progress, language/mobile controls, legacy imports, minimap selection and queued player synchronization.
+- `tests/browser-check.cjs` passed without page errors, including the added mocked-deployer publication opt-out and active-town preservation regressions as well as its existing creation, capture, import/export and reload journeys.
+- Actual desktop/mobile English/Chinese homepage and Chinese mobile planning screenshots were inspected. The three terrain PNG dimensions and output hashes, plus all five source hashes in their [manifest](../public/ui/landscapes/manifest.json), matched.
+- After the full browser runs, a final cursor attribute correction kept footprint cursors on the relocated terrain-tour buttons. TypeScript and production build passed again; a focused Chrome check confirmed all three tour cursors and the planner's axe cursor. The equivalent assertion was added to the shared-interface script and its syntax checked; the full runs above preceded this final attribute-only correction.
+
+Account, repository and capture transports use fictional fixtures and mocked responses. These checks do not establish real OAuth, remote publication, physical-device verification or final human visual acceptance. Earlier sections below retain results for their own revisions.
+
 ## Shared game interface
 
 The application now uses the same wooden header and controls, cream reading surfaces and transparent teal world panels across its entrance, planning desk, capture result and town. Creation opens a kraft-paper plan with native repository fields and illustrated landscape choices. Town entry unfolds a map while the actual building assets load, with an option to explore during loading. Project cards are concise; the separate opening-door dialog offers a deliberate external link. The five accepted building appearances are unchanged.

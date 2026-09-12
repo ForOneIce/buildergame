@@ -8,19 +8,19 @@ try{fs.mkdirSync('private/qa',{recursive:true});const page=await browser.newPage
 await page.route('**/api/session',route=>route.fulfill({json:{configured:false,playerConfigured:false,authenticated:false,isDeployer:false,login:null,avatar:null}}));
 await page.route('**/api/town',route=>route.fulfill({json:null}));
 for(const mode of ['flat','valley','clouds']){
- await page.goto('http://127.0.0.1:5173/',{waitUntil:'domcontentloaded'});await page.locator(`[data-sample-landscape="${mode}"]`).click();
+ await page.goto('http://127.0.0.1:5173/',{waitUntil:'domcontentloaded'});await page.locator('[data-create]').click();await page.locator(`[data-sample-landscape="${mode}"]`).click();
  await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
  await page.screenshot({path:`private/qa/map-${mode}.png`});
  await page.locator('#next-project').click();await page.locator('#detail[open]').waitFor();assert.ok((await page.locator('#detail-title').textContent()).trim());assert.equal(await page.locator('#detail [data-visit]').isDisabled(),true);assert.equal(await page.locator('#detail .card-metrics').count(),0);await page.screenshot({path:`private/qa/info-${mode}.png`});await page.locator('#close').click();
  assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),mode);
  await page.locator('#language').click();await townReady(page);assert.match(await page.locator('.exploration-panel').innerText(),/你的探索/);await page.locator('#language').click();await townReady(page);
 }
-await page.goto('http://127.0.0.1:5173/');await page.locator('[data-sample-landscape="flat"]').click();await townReady(page);assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);
+await page.goto('http://127.0.0.1:5173/');await page.locator('[data-create]').click();await page.locator('[data-sample-landscape="flat"]').click();await townReady(page);assert.match(await page.locator('#visited-count').textContent(),/^1 \/ 9$/);
 await page.setViewportSize({width:390,height:844});await page.locator('#reset').click();await page.waitForTimeout(400);await page.screenshot({path:'private/qa/map-mobile.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 assert.equal(await page.getByRole('button',{name:'Projects',exact:true}).getAttribute('id'),'show-projects');
 assert.equal(await page.getByRole('button',{name:'Sign in with GitHub',exact:true}).getAttribute('id'),'player-login');
 await page.locator('#show-projects').click();await page.locator('[data-project="sample-8"]').click();await page.screenshot({path:'private/qa/info-mobile.png'});await page.locator('#close').click();
-await page.locator('#home').click();await page.locator('[data-mode="hackathon"]').click();await page.locator('#landscape').selectOption('valley');await page.locator('#town-name').fill('Valley example');await page.locator('#repositories').fill('https://github.com/example/project');
+await page.locator('#home').click();await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();await page.locator('[data-landscape-choice="valley"]').click();await page.locator('#town-name').fill('Valley example');await page.locator('#repositories').fill('https://github.com/example/project');
 const download=page.waitForEvent('download');await page.locator('#export-config').click();await(await download).saveAs('private/qa/valley.config.json');assert.equal(require('../private/qa/valley.config.json').landscape,'valley');
 
 const {sampleTown}=await import('../src/sample.mjs');
@@ -33,7 +33,7 @@ function fictionalFixture(count,id){
 const legacy=fictionalFixture(1,'legacy-test-fixture');
 // Legacy backups predate the landscape field. A previously selected mode must not leak into their locked settings.
 for(const selectedMode of ['valley','clouds']){
- await page.locator('#landscape').selectOption(selectedMode);
+ await page.locator(`[data-landscape-choice="${selectedMode}"]`).click();
  await page.locator('#import').setInputFiles({name:'legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(legacy))});
  await townReady(page);assert.equal(await page.locator('#scene').getAttribute('data-landscape'),'flat');
  if(selectedMode==='valley'){
@@ -44,7 +44,7 @@ for(const selectedMode of ['valley','clouds']){
   assert.equal(await page.locator('#visited-count').textContent(),'1 / 1');await page.locator('#close').click();
  }
  await page.locator('#manage').click();assert.equal(await page.locator('#landscape').inputValue(),'flat');assert.equal(await page.locator('#landscape').isDisabled(),true);
- await page.locator('#home').click();await page.locator('[data-mode="hackathon"]').click();
+ await page.locator('#home').click();await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();
 }
 await page.close();
 

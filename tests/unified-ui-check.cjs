@@ -46,6 +46,118 @@ async function screenshot(page, screen, width) {
   await page.screenshot({ path: `${output}/unified-${screen}-${width}.png`, fullPage: screen !== 'town', animations: 'disabled' });
 }
 
+async function welcomePresentation(page, width) {
+  const home = page.locator('.landing');
+  assert.match(await home.textContent(), /A home for GitHub builders\. Let’s watch each other grow\./);
+  assert.match(await home.textContent(), /Who can create a town\?/);
+  assert.match(await home.textContent(), /Keep building\. Keep growing\./);
+  assert.doesNotMatch(await home.textContent(), /Your work has a home|One repository, one home|No wallet needed|Explore as a guest|Who lives here/i);
+  assert.equal(await home.locator('[data-mode], [data-import], [data-sample-landscape]').count(), 0, 'Homepage leaves mode selection, backup and terrain tours to setup');
+  assert.equal(await home.locator('.builder-audience').count(), 2);
+  assert.equal(await home.locator('.builder-audience svg').count(), 2);
+  assert.equal(await home.locator('.builder-audience button, .builder-audience a, .builder-audience [role="button"], .builder-audience [tabindex]').count(), 0, 'Audience descriptions are noninteractive');
+  const tilt = await page.locator('.wood-logo').evaluate(element => {
+    const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+    return { x: matrix.b, y: matrix.c };
+  });
+  assert.ok(Math.abs(tilt.x) < .001 && Math.abs(tilt.y) < .001, 'The shared logo stays level');
+  assert.equal(await page.locator('#player-login .profile-copy').count(), 0, 'Homepage profile has no permanent text block');
+  for (const selector of ['[data-enter]', '[data-create]', '#player-login']) {
+    const control = page.locator(selector).first();
+    assert.ok(await control.getAttribute('aria-label'), `${selector}: icon action keeps an accessible name`);
+    await page.locator('#home').focus();
+    await page.mouse.move(0, 0);
+    await page.waitForFunction(selector => {
+      const hint = document.querySelector(selector).querySelector('[role="tooltip"]');
+      return hint && (getComputedStyle(hint).visibility === 'hidden' || Number(getComputedStyle(hint).opacity) === 0);
+    }, selector);
+    await control.focus();
+    await page.waitForFunction(selector => {
+      const hint = document.querySelector(selector).querySelector('[role="tooltip"]');
+      return hint && getComputedStyle(hint).visibility !== 'hidden' && Number(getComputedStyle(hint).opacity) > .9;
+    }, selector);
+    if (width === 1440) {
+      await page.locator('#home').focus();
+      await control.hover();
+      await page.waitForFunction(selector => {
+        const hint = document.querySelector(selector).querySelector('[role="tooltip"]');
+        return hint && getComputedStyle(hint).visibility !== 'hidden' && Number(getComputedStyle(hint).opacity) > .9;
+      }, selector);
+    }
+  }
+  await page.locator('#home').focus();
+  await page.mouse.move(0, 0);
+  const showcase = page.locator('#home-showcase');
+  await page.locator('#home-showcase[data-showcase-ready="true"]').waitFor({ timeout: 60000 });
+  assert.equal(await showcase.locator('canvas').count(), 1, 'Homepage renders one dedicated building canvas');
+  assert.equal(await home.locator('#scene, #island-preview').count(), 0, 'Homepage no longer contains a town scene');
+  assert.equal(await showcase.locator('[data-showcase-stage]').count(), 5);
+  if (width === 360) {
+    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Reduced motion starts with autoplay paused');
+    const stage = await showcase.getAttribute('data-stage');
+    await page.waitForTimeout(4200);
+    assert.equal(await showcase.getAttribute('data-stage'), stage, 'A reduced-motion visitor sees a stable building');
+  }
+  if (width === 1440) {
+    await showcase.locator('[data-showcase-stage="1"]').click();
+    await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="1"]').waitFor({ timeout: 60000 });
+    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Manual selection pauses the cycle');
+    await showcase.locator('.showcase-toggle').click();
+    for (const stage of [2, 3, 4, 5, 1]) {
+      await page.locator(`#home-showcase[data-showcase-ready="true"][data-stage="${stage}"]`).waitFor({ timeout: 60000 });
+      assert.equal(await showcase.locator(`[data-showcase-stage="${stage}"]`).getAttribute('aria-pressed'), 'true');
+    }
+  }
+  await showcase.locator('[data-showcase-stage="5"]').focus();
+  await page.keyboard.press('Enter');
+  await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="5"]').waitFor({ timeout: 60000 });
+  assert.equal(await showcase.getAttribute('data-playing'), 'false');
+  if (width === 360) {
+    assert.equal(await showcase.locator('canvas').evaluate(element => element.getAnimations().length), 0);
+    await showcase.locator('.showcase-toggle').click();
+    await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="1"]').waitFor({ timeout: 60000 });
+    await showcase.locator('.showcase-toggle').click();
+    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Reduced-motion visitors can explicitly play and pause');
+  }
+}
+
+async function plannerPreviews(page, width) {
+  assert.equal(await page.locator('.setup-page [data-sample-landscape]').count(), 3);
+  for(const cursor of await page.locator('[data-sample-landscape]').evaluateAll(buttons=>buttons.map(button=>getComputedStyle(button).cursor))) assert.match(cursor,/steps\.png/, 'Terrain tours keep the exploration cursor inside the planning form');
+  const sources = new Set();
+  for (const mode of ['flat', 'valley', 'clouds']) {
+    await page.locator(`[data-landscape-choice="${mode}"]`).click();
+    assert.equal(await page.locator('#landscape').inputValue(), mode);
+    await page.waitForFunction(() => {
+      const image = document.querySelector('#terrain-thumbnail');
+      return image.complete && image.naturalWidth > 0;
+    });
+    const thumbnail = page.locator('#terrain-thumbnail');
+    sources.add(await thumbnail.getAttribute('src'));
+    assert.ok(await thumbnail.getAttribute('alt'), 'Terrain thumbnail has descriptive text');
+    const position = await thumbnail.evaluate(image => {
+      const imageBox = image.getBoundingClientRect(), planBox = image.closest('.site-plan').getBoundingClientRect();
+      return { left: imageBox.left - planBox.left, top: imageBox.top - planBox.top, width: planBox.width, height: planBox.height };
+    });
+    assert.ok(position.left >= 0 && position.top >= 0 && position.left < position.width / 2 && position.top < position.height / 2, 'Selected terrain preview sits in the upper-left plan area');
+    assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
+    assert.match(await page.locator('#repositories').inputValue(), /fixture-project/);
+    if (width === 1440) {
+      await page.locator(`[data-sample-landscape="${mode}"]`).click();
+      await townReady(page);
+      assert.equal(await page.locator('#scene').getAttribute('data-landscape'), mode);
+      await page.locator('#return-to-plan').click();
+      await page.locator('#town-name').waitFor();
+      assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
+      assert.match(await page.locator('#repositories').inputValue(), /fixture-project/);
+      assert.equal(await page.locator('[data-mode="hackathon"]').getAttribute('aria-pressed'), 'true');
+      assert.equal(await page.locator('#landscape').inputValue(), mode, 'Returning from a terrain tour retains the draft terrain');
+    }
+  }
+  assert.equal(sources.size, 3, 'Each selected terrain has its own thumbnail');
+  await page.locator('[data-landscape-choice="valley"]').click();
+}
+
 async function delayedTownArrival(page) {
   let release, reached, timeout;
   const gate = new Promise(resolve => { release = resolve; });
@@ -162,8 +274,21 @@ async function installMocks(page, makeRecord) {
         const captures = await installMocks(page, makeRecord);
         await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
         await header(page, 'welcome');
+        await welcomePresentation(page, width);
         await layout(page, 'welcome');
         await screenshot(page, 'welcome', width);
+        if (width === 360) {
+          await page.locator('#language').click();
+          await page.locator('#home-showcase[data-showcase-ready="true"]').waitFor({ timeout: 60000 });
+          assert.match(await page.locator('.landing').textContent(), /为github builder打造的家园，让我们一起见证彼此的成长。/);
+          assert.match(await page.locator('.landing').textContent(), /谁能新建城镇？/);
+          assert.match(await page.locator('.floating-note').textContent(), /持续构建，持续成长/);
+          assert.equal(await page.locator('[data-create]').getAttribute('aria-label'), '新建城镇');
+          await layout(page, 'Chinese welcome');
+          await screenshot(page, 'welcome-zh', width);
+          await page.locator('#language').click();
+          await page.locator('#home-showcase[data-showcase-ready="true"]').waitFor({ timeout: 60000 });
+        }
 
         if (width === 1440) {
           assert.equal(await page.locator('[data-enter]').first().getAttribute('data-cursor'), 'walk');
@@ -223,12 +348,13 @@ async function installMocks(page, makeRecord) {
         }
 
         await page.locator('#home').click();
+        await page.locator('[data-create]').click();
         await page.locator('[data-mode="hackathon"]').first().click();
         await page.locator('#town-name').waitFor();
         await header(page, 'setup');
         await page.locator('#town-name').fill(`Interface fixture ${width}`);
         await page.locator('#repositories').fill('https://github.com/fixture-builder/fixture-project');
-        await page.locator('#landscape').selectOption('valley');
+        await plannerPreviews(page, width);
         if (width === 1440) {
           assert.match(await page.locator('body').evaluate(element => getComputedStyle(element).cursor), /tool_axe_single\.png/);
           assert.equal(await page.locator('#town-name').evaluate(element => getComputedStyle(element).cursor), 'text');
@@ -242,6 +368,7 @@ async function installMocks(page, makeRecord) {
           assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
           assert.match(await page.locator('#repositories').inputValue(), /fixture-project/);
           assert.equal(await page.locator('#landscape').inputValue(), 'valley');
+          assert.match(await page.locator('#terrain-thumbnail').getAttribute('alt'), /山谷/);
           await layout(page, 'Chinese setup');
           await screenshot(page, 'setup-zh', width);
         }
@@ -295,22 +422,33 @@ async function installMocks(page, makeRecord) {
           await townReady(page);
           assert.match(await page.locator('#snapshot-count').innerText(), /^3\s*\/\s*3$/);
           await page.locator('#home').click();
+          await page.locator('[data-create]').click();
           await page.locator('[data-mode="personal"]').first().click();
           await page.locator('#username').fill('fixture-builder');
           await page.locator('#load-repos').click();
           await page.locator('[data-repo]').check();
           await page.locator('#town-name').fill('Personal interface fixture');
+          await page.locator('[data-landscape-choice="clouds"]').click();
+          await page.locator('[data-sample-landscape="valley"]').click();
+          await townReady(page);
+          await page.locator('#return-to-plan').click();
+          assert.equal(await page.locator('[data-mode="personal"]').getAttribute('aria-pressed'), 'true');
+          assert.equal(await page.locator('#town-name').inputValue(), 'Personal interface fixture');
+          assert.equal(await page.locator('#username').inputValue(), 'fixture-builder');
+          assert.equal(await page.locator('[data-repo]').isChecked(), true);
+          assert.equal(await page.locator('#landscape').inputValue(), 'clouds', 'Previewing another terrain does not change the personal draft');
           await page.locator('#capture').click();
           await page.locator('.success-page').waitFor();
           assert.equal(captures.length, 2);
           assert.equal(captures[1].event.collectionType, 'personal');
+          assert.equal(captures[1].event.landscape, 'clouds');
         }
       } finally {
         await context.close();
       }
     }
     assert.deepEqual(errors, [], 'No browser page errors');
-    console.log('Shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, reduced motion, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
+    console.log('Refined homepage, five-stage autoplay/manual/reduced-motion showcase, planner thumbnails and draft-preserving terrain tours, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
   } finally {
     await browser.close();
   }

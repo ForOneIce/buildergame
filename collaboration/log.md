@@ -1,5 +1,14 @@
 # Human–AI collaboration log
 
+## 0031 — Refine the homepage and building growth presentation
+
+- 2026-09-12 (UTC): the human supplied eleven specific homepage changes: level logo, icon account entry and action hints, concise builder copy, noninteractive hand-based audience illustrations, a single-building five-stage cycle, and terrain tours/thumbnails moved into creation. [Complete instruction and labeled translation](../prompts/0031-refine-homepage-and-building-showcase.md).
+- The independent showcase module and original hand/terrain artwork were saved in local commit `59c3eb3`. A final terrain-button cursor correction passed a focused browser check and a new TypeScript/build run; [verification](../docs/verification.md) distinguishes this from the preceding complete browser runs.
+- Codex implemented the homepage/header refinement, single-building showcase, original hand illustrations and rendered terrain thumbnails, and extended existing browser journeys. [Specification and file boundaries](../specs/0011-shared-game-interface.md#homepage-refinement-0031). The showcase reserves room for its controls; terrain tours retain the form, publication opt-out and active town. Locked models and organizer scoring remain unchanged.
+- Executed checks: TypeScript without emit, sample validation (nine projects, three snapshots and ten locked GLBs), Vite production build and all twelve tracked data/API/landscape/player tests passed. Vite retains the shared Three.js chunk-size advisory. Extended `tests/unified-ui-check.cjs`, `tests/map-ui-check.cjs` and `tests/browser-check.cjs` passed without page errors; the latter includes mocked-deployer publication opt-out and active-town preservation regressions.
+- Actual desktop/mobile English/Chinese homepage and Chinese mobile planning screenshots were inspected. All three PNG dimensions/output hashes and five source hashes in the terrain manifest matched. [Executed scope and limits](../docs/verification.md).
+- Account, repository and capture transport is mocked. Real OAuth, remote publication, physical devices and final human visual acceptance remain unverified. No new asset-pack dependency, paid resource or publication is part of this refinement.
+
 ## 0030 — Implement the shared interface across the application
 
 - 2026-09-12 (UTC): the human explicitly authorized implementing the redesign in the actual project. [Original instruction and translation](../prompts/0030-implement-shared-game-interface.md). This supersedes the earlier preview-only restriction without implying separate visual acceptance of every prototype detail.

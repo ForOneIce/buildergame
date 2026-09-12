@@ -6,6 +6,12 @@ Implementation update: the eleven selected artwork files are vendored at `public
 
 > 中文简注：先统一首页、建镇流程和小镇界面的视觉语言；素材包只提供外观，不等于已经实现交互的组件库。
 
+## Original artwork added for homepage refinement 0031
+
+The refinement adds original individual-hand and community-hand-ring SVG drawings in `src/ui/builder-symbols.ts`, plus `flat.png`, `valley.png` and `clouds.png` under `public/ui/landscapes/`. These 320×180 thumbnails are cropped renders of the existing real application with its accepted buildings and fictional sample data. The [capture manifest](../public/ui/landscapes/manifest.json) records source hashes, crop coordinates and file hashes. No third-party game screenshot, additional asset pack or paid imagery is used. No separate license dedication is asserted for the new drawings/renders; the existing CC0 building and Kenney notices apply to their identified assets.
+
+The homepage's `src/home-showcase.ts` reuses the five accepted full-detail GLBs in a single-building cycle with the existing Three.js package. It does not introduce another engine or change building geometry. The three PNG dimensions/output hashes and all five source hashes in the manifest matched. TypeScript, sample/asset validation, production build, twelve tracked Node tests and the three browser scripts passed for this revision. Actual desktop/mobile English/Chinese homepage and Chinese mobile planning screenshots were inspected; the showcase now reserves space for its controls. [Verification](verification.md) states the mocked-account/data and physical-device limits. These results do not establish final human visual acceptance. [Requirements and acceptance](../specs/0011-shared-game-interface.md#homepage-refinement-0031).
+
 ## Product need and evaluation scope
 
 Buildergame presents public repositories as a town that grows with recorded project activity. Its homepage, town creation flow, loading states, and town controls should feel like parts of the same game. The accepted five building stages remain unchanged. This evaluation concerns the surrounding interface, not replacement building assets or changes to growth rules.

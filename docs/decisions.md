@@ -1,5 +1,11 @@
 # Decision log
 
+## D-017 — Focus the homepage on builders and one building's growth
+
+- 2026-09-12 (UTC): the human specified eleven homepage changes, including a level logo, icon login and hover action labels, concise builder copy, noninteractive individual/community illustrations and a single building cycling through the five accepted stages. [Exact instruction](../prompts/0031-refine-homepage-and-building-showcase.md).
+- Move terrain tours into creation and show the selected terrain thumbnail on the plan. Remove the homepage backup button while preserving the existing backup workflows. Returning from a sample preview must retain the creation draft.
+- Implemented under D-016; keyboard names/focus hints, stage pause/manual controls and reduced motion support the requested presentation. Existing building assets and scoring remain unchanged. Revision-specific TypeScript, sample/asset validation, production build, twelve tracked Node tests and three browser scripts passed, including draft/active-town retention and publication opt-out. Final human visual acceptance, real OAuth, remote publication and physical-device verification remain outstanding. [Acceptance criteria](../specs/0011-shared-game-interface.md#homepage-refinement-0031), [executed checks](verification.md).
+
 ## D-016 — Implement the shared interface across the application
 
 - 2026-09-12 (UTC): the human instructed “正式开发改造项目”, authorizing application-wide implementation of the refined visual direction. [Instruction and translation](../prompts/0030-implement-shared-game-interface.md).
