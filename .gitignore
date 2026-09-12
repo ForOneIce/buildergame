@@ -15,6 +15,11 @@ node_modules/
 dist/
 build/
 coverage/
+.vite/
+.cache/
+*.tsbuildinfo
+playwright-report/
+test-results/
 .venv/
 venv/
 __pycache__/
@@ -22,5 +27,15 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# Machine-specific editor settings and temporary files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# Blender automatic backups; keep intentional source and exported models available.
+*.blend[0-9]*
 
 # Keep docs, specs, prompts, collaboration records and submission materials tracked.
