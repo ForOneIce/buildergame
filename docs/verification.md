@@ -2,6 +2,12 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Balanced introduction and shared tooltip 0034
+
+`src/main.ts` reuses `.control-hint` with `id="showcase-hint"` and `role="tooltip"`; `src/style.css` removes the introduction's character-width caps and positions the cream hint inside the illustration, 24px from its bottom. Focused Chrome checks in English/Chinese at 1440/768/360px passed: left/right introduction insets within 1px, hidden→hover-visible→hidden behavior, computed background/text/border/radius/shadow/font/padding/line-height matching the Create hint, and containment within the illustration/viewport without horizontal overflow or page errors. Desktop English/Chinese and mobile Chinese screenshots were inspected.
+
+On 2026-09-12 (UTC), TypeScript without emit and validation of nine projects, three snapshots and ten unchanged GLBs passed before a final CSS-only tooltip-width adjustment. That adjustment lets the hint use the illustration's width; a targeted mobile Chinese check confirmed one-line text, and Vite production build passed again with the existing chunk-size advisory. The complete focused checks preceded this final width adjustment; no full suite was rerun and no tests or assets were added. Human visual acceptance remains pending.
+
 ## Hover tagline and framing 0033
 
 This revision changes only `src/style.css`; no JavaScript, tests or assets changed. Focused headless Chrome checks at 1440/768/360px passed initial-hidden, hover-visible and pointer-exit-hidden caption behavior, exact Chinese wording, and no horizontal overflow or page errors. Desktop/tablet/mobile stage-5 screenshots were inspected: the full courtyard remained visible.

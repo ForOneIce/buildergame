@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0034: introduction spacing and the building hint reuse existing layout and cream tooltip styles, with no new asset, dependency or license scope. Focused checks/build validation passed; all ten GLBs remain unchanged. [Instruction](../prompts/0034-balanced-intro-and-shared-tooltip.md), [verification and check timing](../docs/verification.md).
+
 Session 0033: the CSS-only hover tagline and enlarged framing reuse the existing renderer and locked buildings. No new artwork, dependency or license scope is introduced. Focused browser/build checks passed; all ten GLBs remain unchanged. [Instruction](../prompts/0033-hover-tagline-and-larger-building.md), [verification](../docs/verification.md).
 
 Session 0032: the enlarged automatic showcase reuses the existing five-stage GLBs, Three.js renderer and homepage assets. Original framing, byte preloading/cache, on-demand parsing, 2D-frame dissolves and bounded quiet retry code were added without another external asset, dependency or license declaration. The cache retains GLB bytes, not five live 3D scenes. TypeScript, sample/asset validation, production build and the final extended shared-interface check passed; all ten GLB fingerprints remain unchanged. Other test suites were not rerun for this revision. [Verification and limits](../docs/verification.md), [instruction](../prompts/0032-silent-automatic-building-showcase.md).

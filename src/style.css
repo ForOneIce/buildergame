@@ -14,15 +14,15 @@ footer{display:flex;justify-content:space-between;gap:16px 32px;flex-wrap:wrap;b
 .landing{max-width:1380px;margin:auto;padding:24px 40px 0}
 .hero{display:grid;grid-template-columns:minmax(320px,.85fr) minmax(0,1.3fr);align-items:center;gap:36px;min-height:540px}
 .hero-copy{padding:42px 36px}
-.hero-copy .hero-description{font-size:clamp(23px,2.15vw,31px);font-weight:400;line-height:1.55;letter-spacing:0;color:var(--bg-ink);max-width:22ch;margin:0 0 44px}
+.hero-copy .hero-description{font-size:clamp(23px,2.15vw,31px);font-weight:400;line-height:1.55;letter-spacing:0;color:var(--bg-ink);width:100%;max-width:none;margin:0 0 44px}
 .hero-art{position:relative;height:660px;min-width:0;margin-inline:-10px -24px}
 .home-showcase{position:absolute;inset:0;overflow:hidden}
 .showcase-canvas{display:block;width:100%;height:100%;pointer-events:none}
 .showcase-outgoing{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
 
 .showcase-fallback{padding:80px 32px;text-align:center}
-.floating-note{position:absolute;bottom:-24px;left:0;right:0;text-align:center;font-size:17px;letter-spacing:.3px;color:var(--bg-ink);margin:0;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .2s}
-.home-showcase:hover+.floating-note{visibility:visible;opacity:1}
+.floating-note.control-hint{top:auto;bottom:24px;max-width:calc(100% - 32px);margin:0}
+.home-showcase:hover+.floating-note{visibility:visible;opacity:1;transform:translate(-50%,0)}
 .hero-buttons .object-entry{min-height:136px;width:100%;max-width:100%;padding:22px 10px;border-radius:12px}
 .hero-buttons .object-entry .map-art,.hero-buttons .object-entry .planning-roll{margin:0}
 .hinted-control{position:relative;isolation:isolate}
@@ -45,7 +45,7 @@ footer{display:flex;justify-content:space-between;gap:16px 32px;flex-wrap:wrap;b
 .sample-landscapes{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 .sample-landscapes .button{flex:1;min-width:110px;font-size:14px;line-height:1.5;padding:10px}
 @media(max-width:1000px){.landing{padding:24px 24px 0}.hero{gap:16px;grid-template-columns:minmax(300px,.95fr) minmax(0,1.15fr)}.hero-copy{padding:34px 26px}.hero-art{height:580px;margin-inline:0 -8px}.hero-copy .hero-description{font-size:26px}.hero-buttons .object-entry .map-art,.hero-buttons .object-entry .planning-roll{width:106px;height:78px}.hero-buttons .plan-house{left:35px}}
-@media(max-width:760px){.landing{padding:8px 20px 0}.hero{grid-template-columns:1fr;gap:40px}.hero-art{grid-row:1;height:470px;margin-inline:-8px}.hero-copy{max-width:540px;width:100%;justify-self:center;padding:30px}.hero-copy .hero-description{font-size:25px;max-width:29ch;margin-bottom:20px}.hero-buttons.paired-actions{grid-template-columns:1fr 1fr;gap:0}.hero-buttons .object-entry{min-height:116px}.control-hint{font-size:13px;max-width:160px}.choose{padding:40px 0}.builder-audiences{gap:20px}.builder-audience{padding:0 6px}.builder-audience h3{font-size:18px}.builder-audience p{font-size:14px}.site-plan-preview img{max-width:170px}}
-@media(max-width:440px){.landing{padding:0 14px}.hero-art{height:410px}.hero-copy{padding:26px 24px}.hero-copy .hero-description{font-size:23px;line-height:1.65}.hero-buttons .object-entry .map-art,.hero-buttons .object-entry .planning-roll{width:98px;height:72px}.hero-buttons .plan-house{left:32px;top:26px}.floating-note{font-size:16px}.section-head h2{font-size:22px}.builder-audience .builder-symbol{width:100px;height:98px}.builder-audiences{gap:12px}.sample-landscapes{gap:10px}.sample-landscapes .button{min-width:100%;font-size:15px}.control-hint{max-width:140px}}
+@media(max-width:760px){.landing{padding:8px 20px 0}.hero{grid-template-columns:1fr;gap:40px}.hero-art{grid-row:1;height:470px;margin-inline:-8px}.hero-copy{max-width:540px;width:100%;justify-self:center;padding:30px}.hero-copy .hero-description{font-size:25px;margin-bottom:20px}.hero-buttons.paired-actions{grid-template-columns:1fr 1fr;gap:0}.hero-buttons .object-entry{min-height:116px}.control-hint{font-size:13px;max-width:160px}.choose{padding:40px 0}.builder-audiences{gap:20px}.builder-audience{padding:0 6px}.builder-audience h3{font-size:18px}.builder-audience p{font-size:14px}.site-plan-preview img{max-width:170px}}
+@media(max-width:440px){.landing{padding:0 14px}.hero-art{height:410px}.hero-copy{padding:26px 24px}.hero-copy .hero-description{font-size:23px;line-height:1.65}.hero-buttons .object-entry .map-art,.hero-buttons .object-entry .planning-roll{width:98px;height:72px}.hero-buttons .plan-house{left:32px;top:26px}.section-head h2{font-size:22px}.builder-audience .builder-symbol{width:100px;height:98px}.builder-audiences{gap:12px}.sample-landscapes{gap:10px}.sample-landscapes .button{min-width:100%;font-size:15px}.control-hint{max-width:140px}}
 
 .setup-drawing .sample-landscapes{grid-column:1/-1}

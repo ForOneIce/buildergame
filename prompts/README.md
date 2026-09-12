@@ -33,5 +33,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0031 — Refine the homepage and single-building showcase](0031-refine-homepage-and-building-showcase.md)
 - [0032 — Enlarge the automatic showcase and make transitions silent](0032-silent-automatic-building-showcase.md)
 - [0033 — Show the growth tagline on hover and enlarge the building](0033-hover-tagline-and-larger-building.md)
+- [0034 — Balance introduction spacing and share the tooltip style](0034-balanced-intro-and-shared-tooltip.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

@@ -1,5 +1,9 @@
 # Decision log
 
+## D-020 — Align paper spacing and share the building hint style
+
+- 2026-09-12 (UTC): [instruction 0034](../prompts/0034-balanced-intro-and-shared-tooltip.md) is implemented with full panel-content width and the existing cream `.control-hint` inside the building illustration. Focused spacing/style/hover checks and build validation passed; final width correction timing is recorded in [verification](verification.md). Human visual acceptance remains pending.
+
 ## D-019 — Reveal the growth tagline on hover
 
 - 2026-09-12 (UTC): the human requested a hover-only “Keep building. Keep growing.” tagline and further building enlargement. [Instruction 0033](../prompts/0033-hover-tagline-and-larger-building.md) replaces the permanently visible tagline through CSS-only changes. Focused hover/responsive checks, full-courtyard screenshot review and build validation passed; no full suite was rerun. Human visual acceptance remains pending. [Verification](verification.md).

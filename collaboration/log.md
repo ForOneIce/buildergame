@@ -1,5 +1,9 @@
 # Human–AI collaboration log
 
+## 0034 — Balance the introduction and share the tooltip style
+
+- 2026-09-12 (UTC): the human requested equal introduction spacing and a matching building hint. Codex updated markup/styles in `src/main.ts` and `src/style.css`; focused bilingual/responsive checks and screenshot review passed. A final tooltip-width correction passed a targeted mobile check and rebuilt successfully; TypeScript/asset validation preceded it. No full suite, new tests or assets; human visual acceptance remains pending. [Instruction](../prompts/0034-balanced-intro-and-shared-tooltip.md), [verification](../docs/verification.md).
+
 ## 0033 — Hover tagline and larger building framing
 
 - 2026-09-12 (UTC): the human requested a hover-only growth tagline and a larger homepage building. Codex changed only `src/style.css`; focused Chrome checks at 1440/768/360px and stage-5 screenshot review passed, as did TypeScript, sample/asset validation and production build. No JavaScript, tests or assets changed; no full suite was rerun. Human visual acceptance remains pending. [Instruction](../prompts/0033-hover-tagline-and-larger-building.md), [verification](../docs/verification.md).
