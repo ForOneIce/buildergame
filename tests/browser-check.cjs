@@ -1,34 +1,69 @@
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
+const baseUrl=process.env.DEMO_URL||'http://127.0.0.1:5173/';
+async function townReady(page){await page.locator('#scene[data-town-ready="true"]').waitFor({timeout:60000});await page.locator('#map-transition').waitFor({state:'hidden',timeout:60000});}
 (async()=>{
   fs.mkdirSync('private/qa',{recursive:true});
   const browser = await chromium.launch({ headless:true, ...(process.env.BROWSER_BIN?{executablePath:process.env.BROWSER_BIN}:{channel:'chrome'}), args:process.env.BROWSER_RENDERER==='software'?['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']:[] });
   try {
   const page=await browser.newPage({viewport:{width:1440,height:1000}});
-  const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:5173/',{waitUntil:'networkidle'});
+  const errors=[],progressRequests=[],captures=[],publishedTowns=new Map();let townReads=0;page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(new URL(r.url()).pathname.includes('/api/progress'))progressRequests.push(r.url());});
+  await page.route('**/api/session',route=>route.fulfill({json:{configured:false,playerConfigured:false,authenticated:false,canPublish:false,isDeployer:false,login:null,avatar:null}}));
+  await page.route('**/api/town',route=>{townReads++;return route.fulfill({json:null});});
+  await page.route('**/api/towns',route=>route.fulfill({json:{towns:[...publishedTowns.values()].map(b=>({slug:b.event.deployment.slug,name:b.event.name,townId:b.event.id}))}}));
+  const serveTown=route=>{townReads++;const slug=new URL(route.request().url()).pathname.split('/').filter(Boolean).at(-1),town=publishedTowns.get(slug);return route.fulfill({status:town?200:404,json:town||{error:'Town not found'}});};
+  await page.route('**/api/towns/*',serveTown);
+  const {makeRecord,baselineSnapshot}=await import('../src/model.mjs');
+  await page.route('**/api/capture',async route=>{
+    const input=route.request().postDataJSON();captures.push(input);const event=input.event,capturedAt=new Date(Date.UTC(2026,8,15,0,0,captures.length)).toISOString();
+    event.deployment??={slug:event.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-20260915-00000'+captures.length+'000',createdAt:capturedAt};
+    const previous=input.previous?.history.snapshots||[baselineSnapshot(event,new Date(Date.parse(capturedAt)-1).toISOString())];
+    const snapshot={id:'captured-test-'+captures.length,kind:'capture',label:input.label||'Snapshot '+(previous.filter(s=>s.kind!=='baseline').length+1),capturedAt,projects:event.projects.map(p=>makeRecord(p,{commits:10+captures.length,stars:10,forks:10},event.rule,capturedAt))};
+    const bundle={format:'buildergame/v1',event,history:{schemaVersion:1,eventId:event.id,sampleData:false,snapshots:[...previous,snapshot]}};
+    if(input.publish)publishedTowns.set(event.deployment.slug,structuredClone(bundle));
+    await route.fulfill({json:{bundle,failures:[],published:Boolean(input.publish),slug:event.deployment.slug,path:'/towns/'+event.deployment.slug+'/'}});
+  });
+  await page.goto(baseUrl,{waitUntil:'networkidle'});
   await page.locator('#home-showcase[data-showcase-ready="true"] canvas').waitFor({timeout:60000});await page.screenshot({path:'private/qa/welcome.png',fullPage:true});
   await page.getByRole('button',{name:'Explore sample town'}).click();await page.locator('#scene canvas').waitFor();
   await page.screenshot({path:'private/qa/town.png'});
   await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');assert.match(await page.locator('#snapshot-count').innerText(),/1 \/ 3/);
   await page.locator('#show-projects').click();await page.locator('[data-project="sample-3"]').click();await page.locator('#detail[open]').waitFor();assert.match(await page.locator('#detail-body').innerText(),/Garden Kit/);await page.locator('#close').click();
-  assert.equal(await page.locator('.sample-town').count(),1);assert.equal(await page.locator('#language, #player-login, #logout, [data-export]').count(),0);
+  assert.equal(await page.locator('.sample-town').count(),1);assert.equal(await page.locator('#language, #player-login').count(),2);assert.equal(await page.locator('.quest-stack, .explorer-badge, [data-export]').count(),0);
   await page.locator('#home').click();await page.locator('#language').click();await page.locator('[data-enter]').click();await page.locator('#show-projects').click();assert.match(await page.locator('#project-panel').innerText(),/认识邻居/);assert.equal(await page.locator('html').getAttribute('lang'),'zh-CN');
   await page.locator('#home').click();await page.locator('#language').click();
-  await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();await page.locator('#town-name').fill('Test event');await page.locator('#repositories').fill('https://github.com/a/one\nhttps://github.com/b/two');
+  await page.locator('[data-create]').click();await page.locator('[data-mode="hackathon"]').click();await page.locator('#town-name').fill('Test event');
+  await page.locator('#capture').click();await page.locator('#notice.error').waitFor();assert.match(await page.locator('#notice').innerText(),/at least one public repository/);assert.equal(captures.length,0);
+  await page.locator('#repositories').fill('https://github.com/a/one\nhttps://github.com/b/two');await page.locator('#snapshot-label').fill('Demo day');
   await page.screenshot({path:'private/qa/hackathon-setup.png',fullPage:true});
-  // Mock only the capture transport; the complete UI and JSON validation remain real.
-  await page.route('**/api/capture',async route=>{
-    const input=route.request().postDataJSON();const event=input.event;const snapshot={id:'captured-test',label:'Snapshot 1',capturedAt:'2026-09-11T12:00:00Z',projects:event.projects.map(p=>({projectId:p.id,plot:p.plot,status:'fresh',observedAt:'2026-09-11T12:00:00Z',metrics:{commits:10,stars:10,forks:10},score:100,stage:'cottage',rule:event.rule}))};
-    await route.fulfill({json:{bundle:{format:'buildergame/v1',event,history:{schemaVersion:1,eventId:event.id,sampleData:false,snapshots:[snapshot]}},failures:[],published:false}});
-  });
   await page.locator('#capture').click();await page.getByRole('heading',{name:'Your town is ready.'}).waitFor();await page.getByRole('button',{name:'Enter my town'}).click();assert.match(await page.locator('.town-info').innerText(),/Test event/);
+  await townReady(page);assert.equal(captures[0].label,'Demo day');const firstAddress=page.url();assert.match(new URL(firstAddress).searchParams.get('preview'),/^test-event-[a-z0-9-]+$/);assert.equal(new URL(firstAddress).pathname,new URL(baseUrl).pathname);
+  assert.equal(await page.locator('#play').isEnabled(),true);await page.locator('#timeline').fill('0');await page.locator('#timeline').dispatchEvent('input');
+  await page.locator('#show-projects').click();assert.ok((await page.locator('#project-list .project-card em').allTextContents()).every(text=>text.includes('Open land')));await page.locator('#close-projects').click();
+  await page.locator('#play').click();await page.waitForFunction(()=>document.querySelector('#timeline').value==='1');assert.match(await page.locator('#snapshot-label').innerText(),/Demo day/);
   assert.equal(await page.locator('#language, #player-login').count(),2,'Real towns retain language and account controls');
   const downloadPromise=page.waitForEvent('download');await page.locator('.map-nav [data-export]').click();const download=await downloadPromise;await download.saveAs('private/qa/backup.json');
-  const backup=JSON.parse(fs.readFileSync('private/qa/backup.json'));assert.equal(backup.format,'buildergame/v1');assert.equal(backup.event.name,'Test event');assert.equal(backup.event.projects.length,2);assert.equal(backup.history.snapshots.length,1);
-  await page.reload({waitUntil:'networkidle'});await page.getByRole('button',{name:'Enter the town'}).click();assert.match(await page.locator('.town-info').innerText(),/Test event/);
-  await page.locator('#home').click();await page.locator('#import').setInputFiles('private/qa/backup.json');await page.locator('#scene canvas').waitFor();assert.match(await page.locator('#snapshot-count').innerText(),/1 \/ 1/);assert.match(await page.locator('.town-info').innerText(),/Test event/);
+  const backup=JSON.parse(fs.readFileSync('private/qa/backup.json'));assert.equal(backup.format,'buildergame/v1');assert.equal(backup.event.name,'Test event');assert.equal(backup.event.projects.length,2);assert.equal(backup.history.snapshots.length,2);assert.equal(backup.history.snapshots[0].kind,'baseline');assert.equal(download.suggestedFilename(),backup.event.deployment.slug+'.json');
+  await page.reload({waitUntil:'networkidle'});await townReady(page);assert.equal(page.url(),firstAddress);assert.match(await page.locator('.town-info').innerText(),/Test event/);
+  const legacyLive={...backup,event:{...backup.event,mode:'live',refreshSeconds:30}};
+  await page.locator('#home').click();await page.locator('#import').setInputFiles({name:'legacy-live.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(legacyLive))});await townReady(page);assert.match(await page.locator('#snapshot-count').innerText(),/1 \/ 1/);assert.match(await page.locator('.town-info').innerText(),/Test event/);
+  // An authenticated non-deployer can explicitly append an occasion and publish the shared address.
+  await page.route('**/api/session',route=>route.fulfill({json:{configured:true,playerConfigured:true,authenticated:true,canPublish:true,isDeployer:false,login:'tester',avatar:null}}));
+  await page.reload({waitUntil:'domcontentloaded'});await townReady(page);await page.locator('#manage').click();
+  assert.equal(await page.locator('#town-name').getAttribute('readonly'),'');assert.equal(await page.locator('#landscape').isDisabled(),true);
+  await page.locator('#publish').check();await page.locator('#snapshot-label').fill('First public release');await page.locator('#capture').click();await page.locator('.success-page').waitFor();
+  assert.equal(captures.length,2);assert.equal(captures[1].publish,true);assert.equal(captures[1].label,'First public release');assert.deepEqual(captures[1].previous.history,backup.history);
+  const publishedAddress=new URL('towns/'+backup.event.deployment.slug+'/',baseUrl).href;
+  assert.equal(await page.locator('#published-town-url').getAttribute('href'),publishedAddress);
+  await page.locator('[data-enter]').click();await townReady(page);assert.equal(page.url(),publishedAddress);assert.match(await page.locator('#snapshot-count').innerText(),/2 \/ 2/);
+  const readCount=townReads;await page.clock.install();await page.clock.fastForward(65000);assert.equal(townReads,readCount,'Legacy live settings do not trigger background refresh');assert.equal(captures.length,2,'Snapshots change only after an explicit capture');assert.match(await page.locator('#snapshot-count').innerText(),/2 \/ 2/);
+  const shared=await browser.newPage({viewport:{width:1440,height:1000}});shared.on('pageerror',e=>errors.push(e.message));
+  await shared.route('**/api/session',route=>route.fulfill({json:{configured:false,playerConfigured:false,authenticated:false,canPublish:false,isDeployer:false,login:null,avatar:null}}));
+  await shared.route('**/api/towns/*',serveTown);await shared.route('**/api/towns',route=>route.fulfill({json:{towns:[]}}));await shared.route('**/api/town',route=>route.fulfill({json:null}));
+  await shared.goto(publishedAddress,{waitUntil:'domcontentloaded'});await townReady(shared);assert.match(await shared.locator('.town-info').innerText(),/Test event/);assert.match(await shared.locator('#snapshot-count').innerText(),/2 \/ 2/);
+  await shared.reload({waitUntil:'domcontentloaded'});await townReady(shared);assert.equal(shared.url(),publishedAddress);await shared.close();
+  await page.route('**/api/session',route=>route.fulfill({json:{configured:false,playerConfigured:false,authenticated:false,canPublish:false,isDeployer:false,login:null,avatar:null}}));await page.locator('#home').click();await page.reload({waitUntil:'domcontentloaded'});
   await page.locator('#home').click();await page.locator('[data-create]').click();await page.locator('[data-mode="personal"]').click();
   await page.route('**/api/repos?**',route=>route.fulfill({json:{owner:'tester',nextPage:null,repositories:[{repository:'https://github.com/tester/project',name:'project',description:'Public example',builder:{name:'tester',url:'https://github.com/tester'}}]}}));
   await page.locator('#username').fill('tester');await page.locator('#load-repos').click();await page.waitForFunction(()=>!document.querySelector('#load-repos').disabled);await page.locator('[data-repo]').check();await page.locator('#town-name').fill('My portfolio');await page.locator('#capture').click();await page.getByRole('heading',{name:'Your town is ready.'}).waitFor();
@@ -38,8 +73,8 @@ const assert = require('node:assert/strict');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   // A deployer's opt-out must survive collection/terrain choices without replacing the active town.
   await page.route('**/api/session',route=>route.fulfill({json:{configured:true,playerConfigured:true,authenticated:true,isDeployer:true,login:'fixture-deployer',avatar:null}}));
-  await page.route('**/api/progress**',route=>route.fulfill({json:{visited:[]}}));
   await page.reload({waitUntil:'domcontentloaded'});await page.locator('#logout').waitFor();
+  if(await page.locator('#scene').count())await page.locator('#home').click();
   await page.locator('[data-create]').click();await page.locator('#town-name').fill('Unpublished draft');
   await page.locator('#publish').uncheck();await page.locator('[data-landscape-choice="clouds"]').click();
   await page.locator('[data-mode="hackathon"]').click();await page.locator('[data-mode="personal"]').click();
@@ -53,7 +88,8 @@ const assert = require('node:assert/strict');
   assert.equal(await page.locator('#manage').isVisible(),true);assert.equal(await page.locator('.sample-tour-picker').count(),0);
   assert.equal(await page.locator('#language, #player-login, #logout, .map-nav [data-export]').count(),4,'Signed-in real towns retain account, language, sign-out and export actions');
   assert.match(await page.locator('.town-info').innerText(),/My portfolio/);
-  console.log(JSON.stringify({browserErrors:errors,passed:['welcome WebGL','sample-only simplified HUD','snapshot timeline','project dialog','captured-town JSON backup','Chinese sample via homepage language control','hackathon capture (mocked transport)','reload local snapshot','backup import','personal repository selection (mocked transport)','mobile layout','deployer draft publication opt-out and real-town actions preserved (mocked account)']},null,2));
+  assert.deepEqual(progressRequests,[]);
+  console.log(JSON.stringify({browserErrors:errors,passed:['sample random HUD and account controls','zero-project rejection before capture','baseline-to-first-capture playback','custom occasion labels','portable filename and slug route reload','explicit recapture preserves prior history','shared anonymous address in a fresh browser context','backup import','personal repository capture','mobile layout','local-only exploration','publication opt-out']},null,2));
   assert.deepEqual(errors,[]);
   } finally { await browser.close(); }
 })().catch(e=>{console.error(e);process.exit(1);});

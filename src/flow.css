@@ -1,0 +1,16 @@
+#github-connect-dialog{width:min(540px,calc(100vw - 28px));max-height:calc(100dvh - 40px);padding:28px;overflow:auto;color:var(--bg-ink);line-height:1.6}
+#github-connect-dialog::backdrop{background:#24494b80;backdrop-filter:blur(5px)}
+#github-connect-dialog .panel-title{display:flex;align-items:center;justify-content:space-between;gap:16px}
+#github-connect-dialog h2{margin:0;font-size:24px}
+#github-connect-dialog label{display:grid;gap:8px;font-weight:600}
+#github-connect-dialog input{width:100%;min-width:0;box-sizing:border-box}
+#github-token-error:empty{display:none}
+#github-token-error{color:#8f342a}
+.published-address{display:grid;justify-items:center;gap:14px;margin:22px auto;max-width:620px}
+.published-address a{overflow-wrap:anywhere}
+.success-page .config-backup{max-width:650px;margin:24px auto 0;text-align:left;line-height:1.7}
+.success-page .config-backup li+li{margin-top:10px}
+.success-page code{overflow-wrap:anywhere}
+.town-directory{padding:20px 28px;margin:12px auto 28px;max-width:700px}
+.town-directory ul{display:grid;gap:12px;padding-left:22px}
+@media(max-width:440px){#github-connect-dialog{padding:20px}.success-page .config-backup ol{padding-left:22px}.published-address{font-size:14px}}

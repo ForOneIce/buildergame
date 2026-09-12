@@ -6,14 +6,14 @@ const baseUrl = process.env.DEMO_URL || 'http://127.0.0.1:5173/';
 const output = 'private/qa';
 const viewports = [{ width: 1440, height: 1000 }, { width: 768, height: 1024 }, { width: 360, height: 800 }];
 
-async function header(page, screen, sample = false) {
+async function header(page, screen) {
   await page.locator('.map-header .wood-logo').waitFor();
   assert.equal(await page.locator('.map-header').count(), 1, `${screen}: one shared header`);
   assert.match(await page.locator('.wood-logo').innerText(), /buildergame/i);
-  for (const id of sample ? ['home'] : ['home', 'language', 'player-login']) {
+  for (const id of ['home', 'language', 'player-login']) {
     assert.equal(await page.locator(`#${id}`).isVisible(), true, `${screen}: ${id} remains available`);
   }
-  if (sample) assert.equal(await page.locator('.player-actions, #language, #player-login, #logout').count(), 0, 'The sample header keeps only the shared logo');
+  assert.equal(await page.locator('#player-login .profile-copy').count(), 0, 'All screens use the compact account control');
 }
 
 async function layout(page, label) {
@@ -27,7 +27,7 @@ async function layout(page, label) {
   );
   assert.deepEqual(clipping, [], `${label}: visible header/dialog must stay inside the viewport`);
   if (page.viewportSize().width <= 400) {
-    const small = await page.locator('.map-header button, .camera-controls button, .map-nav button, #explorer-profile').evaluateAll(buttons =>
+    const small = await page.locator('.map-header button, .camera-controls button, .map-nav button').evaluateAll(buttons =>
       buttons.filter(button => {
         const bounds = button.getBoundingClientRect();
         return bounds.width > 0 && bounds.height > 0 && (bounds.width < 44 || bounds.height < 44);
@@ -218,31 +218,27 @@ async function sampleTours(page) {
 async function sampleHud(page, sample) {
   assert.equal(await page.locator('main.sample-town').count(), 1);
   assert.equal(await page.locator('[data-export]').count(), 0, 'Sample tours do not export fictional towns');
-  const profile = page.locator('#explorer-profile');
-  assert.equal(await profile.isVisible(), true, 'The sample explorer remains visible on desktop and mobile');
-  assert.equal(await profile.evaluate(element => element.tagName), 'BUTTON');
-  assert.equal(await profile.getAttribute('aria-controls'), await page.locator('#show-exploration').getAttribute('aria-controls'));
-  const initial = await page.locator('.quest-stack').isVisible();
-  await profile.focus();
+  assert.equal(await page.locator('#explorer-profile, .explorer-badge, .quest-stack, #show-exploration, #next-project').count(), 0, 'The sample replaces progress overlays with direct random exploration');
+  await page.locator('#random-explore').focus();
   await page.keyboard.press('Enter');
-  assert.equal(await page.locator('.quest-stack').isVisible(), !initial);
-  for (const id of ['explorer-profile', 'show-exploration']) assert.equal(await page.locator(`#${id}`).getAttribute('aria-expanded'), String(!initial));
-  await page.locator('#show-exploration').click();
-  assert.equal(await page.locator('.quest-stack').isVisible(), initial);
-  for (const id of ['explorer-profile', 'show-exploration']) assert.equal(await page.locator(`#${id}`).getAttribute('aria-expanded'), String(initial));
+  await page.locator('#detail[open]').waitFor();
+  assert.ok(sample.event.projects.map(project => project.name).includes(await page.locator('#detail-title').innerText()), 'Random exploration opens an existing project');
+  await page.locator('#close').click();
+  await page.locator('#detail').waitFor({ state: 'hidden' });
+  await page.waitForFunction(() => !document.body.classList.contains('project-detail-open'));
 
   assert.equal(await page.locator('.map-nav #map-home + .camera-controls').count(), 1, 'Camera actions directly follow Town map');
-  for (const name of ['Zoom in', 'Zoom out', 'Reset camera']) assert.equal(await page.getByRole('button', { name, exact: true }).isVisible(), true);
+  for (const name of ['Zoom in', 'Zoom out', 'Reset camera']) assert.equal(await page.getByRole('button', { name, exact: true }).isVisible(), true, `${page.viewportSize().width}: ${name} remains visible after closing the project card`);
   const positions = await page.evaluate(() => {
     const box = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return { left:r.left, right:r.right, top:r.top, bottom:r.bottom }; };
-    return { profile:box('#explorer-profile'), home:box('#home'), map:box('#map-home'), camera:box('.camera-controls'), projects:box('#show-projects'), town:box('.town-info'), width:innerWidth, height:innerHeight };
+    return { map:box('#map-home'), camera:box('.camera-controls'), projects:box('#show-projects'), town:box('.town-info'), stats:box('#town-stats'), width:innerWidth, height:innerHeight };
   });
-  assert.ok(positions.profile.right <= positions.width && positions.profile.left >= positions.width / 2 && positions.profile.top >= 0 && positions.profile.bottom < positions.height / 2, 'Explorer is in the upper-right viewport');
-  assert.ok(positions.profile.left >= positions.home.right || positions.profile.top >= positions.home.bottom, 'Explorer does not overlap the logo');
   assert.ok(positions.camera.top >= positions.map.bottom - 1 && positions.camera.bottom <= positions.projects.top + 1, 'Camera actions appear below Town map and above Projects');
   assert.equal(await page.locator('.quest-stack .town-info').count(), 0, 'The town name is independent from exploration progress');
   assert.equal(await page.locator('.town-info h2, .town-info p, .town-info small').count(), 0, 'The compact town label omits the former descriptive card');
   assert.equal(await page.locator('.town-info strong').innerText(), sample.event.name);
+  assert.equal(await page.locator('.town-overview #town-stats + .town-info').count(), 1, 'Totals and town name form one lower-left group');
+  assert.ok(positions.stats.bottom <= positions.town.top && positions.stats.left < positions.width / 2, 'Totals sit immediately above the town name');
   assert.ok(positions.town.left < positions.width / 2 && positions.town.top > positions.height / 2 && positions.town.bottom <= positions.height, 'The town name remains visible in the lower-left viewport');
   for (const [selector, id, meaning] of [
     ['.town-info', 'town-name-hint', /Name your town when you create it/],
@@ -427,13 +423,14 @@ async function projectEntry(page, context, reducedMotion) {
   if (await page.locator('#project-panel').isVisible()) await page.locator('#close-projects').click();
 }
 
-async function installMocks(page, makeRecord) {
+async function installMocks(page, makeRecord, baselineSnapshot) {
   const captures = [];
   // Fictional fixtures exercise real forms and validation without GitHub credentials or publication.
   await page.route('**/api/session', route => route.fulfill({ json: {
     configured: false, playerConfigured: false, authenticated: false, isDeployer: false, login: null, avatar: null,
   } }));
   await page.route('**/api/town', route => route.fulfill({ json: null }));
+  await page.route('**/api/towns', route => route.fulfill({ json: { towns: [] } }));
   await page.route('**/api/repos?**', route => route.fulfill({ json: {
     owner: 'fixture-builder', nextPage: null, repositories: [{
       repository: 'https://github.com/fixture-builder/fixture-project', name: 'fixture-project',
@@ -448,12 +445,12 @@ async function installMocks(page, makeRecord) {
     assert.equal(request.publish, false, 'Guest capture must not publish');
     const capturedAt = '2026-09-12T00:00:00.000Z';
     const snapshot = {
-      id: `ui-fixture-${captures.length}`, label: 'Snapshot 1', capturedAt,
+      id: `ui-fixture-${captures.length}`, kind: 'capture', label: request.label || 'Snapshot 1', capturedAt,
       projects: event.projects.map(project => makeRecord(project, { commits: 10, stars: 10, forks: 10 }, event.rule, capturedAt)),
     };
     return route.fulfill({ json: { bundle: {
       format: 'buildergame/v1', event,
-      history: { schemaVersion: 1, eventId: event.id, sampleData: false, snapshots: [snapshot] },
+      history: { schemaVersion: 1, eventId: event.id, sampleData: false, snapshots: [baselineSnapshot(event, '2026-09-11T23:59:59.999Z'), snapshot] },
     }, failures: [], published: false } });
   });
   return captures;
@@ -461,7 +458,7 @@ async function installMocks(page, makeRecord) {
 
 (async () => {
   fs.mkdirSync(output, { recursive: true });
-  const { makeRecord } = await import('../src/model.mjs');
+  const { makeRecord, baselineSnapshot } = await import('../src/model.mjs');
   const { sampleTown } = await import('../src/sample.mjs');
   const sample = sampleTown();
   const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_BIN ? { executablePath: process.env.BROWSER_BIN } : { channel: 'chrome' }) });
@@ -475,7 +472,8 @@ async function installMocks(page, makeRecord) {
       try {
         const page = await context.newPage();
         page.on('pageerror', error => errors.push(`${width}: ${error.message}`));
-        const captures = await installMocks(page, makeRecord);
+        page.on('request', request => { if (new URL(request.url()).pathname.includes('/api/progress')) errors.push(`${width}: exploration must not call the server`); });
+        const captures = await installMocks(page, makeRecord, baselineSnapshot);
         if (width === 1440) delayedStage = await holdNextShowcaseStage(page);
         let staticAttempts=0;
         if(width===360)await page.route('**/models/cozy-house.glb',route=>++staticAttempts===1?route.fulfill({status:503,body:'Temporary fixture failure'}):route.continue());
@@ -537,7 +535,8 @@ async function installMocks(page, makeRecord) {
         assert.equal(await page.locator('#detail a[href]').count(), 0, 'Fictional project cannot navigate to invented destinations');
         assert.equal(await page.locator('#detail [data-visit]').isDisabled(), true);
         if (width === 1440) assert.equal(await page.locator('#detail [data-visit]').evaluate(element => getComputedStyle(element).cursor), 'not-allowed');
-        assert.match(await page.locator('#visited-count').textContent(), /^1\s*\/\s*9$/);
+        const savedVisits = await page.evaluate(() => JSON.parse(localStorage.getItem('bg-exploration:sample-town:guest') || '[]'));
+        assert.ok(savedVisits.includes(projectId), 'Project visits are saved locally');
         if (width <= 400) assert.equal(await page.locator('#project-panel').isVisible(), false, 'Mobile card replaces the directory layer');
         await layout(page, 'project card');
         await screenshot(page, 'card', width);
@@ -558,7 +557,7 @@ async function installMocks(page, makeRecord) {
           assert.match(await page.locator('#snapshot-count').innerText(), /^1\s*\/\s*3$/);
           await sampleHud(page, sample);
         }
-        if (width === 360) {
+        if (width === 1440 || width === 360) {
           await page.locator('#home').click();
           await page.locator('#language').click();
           await page.locator('[data-enter]').first().click();
@@ -568,6 +567,12 @@ async function installMocks(page, makeRecord) {
           assert.match(await page.locator('#total-stars-hint').textContent(), /所有项目数据总和/);
           await layout(page, 'Chinese sample town');
           await screenshot(page, 'town-zh', width);
+          if (width === 360) {
+            await page.setViewportSize({ width: 844, height: 390 });
+            await layout(page, 'Chinese short sample town');
+            await screenshot(page, 'sample-short-zh', 844);
+            await page.setViewportSize(viewport);
+          }
           await page.locator('#home').click();
           await page.locator('#language').click();
           await page.locator('[data-enter]').first().click();
@@ -624,7 +629,8 @@ async function installMocks(page, makeRecord) {
           await (await saving).saveAs(`${output}/unified-town-backup.json`);
           const saved = JSON.parse(fs.readFileSync(`${output}/unified-town-backup.json`, 'utf8'));
           assert.equal(saved.event.name, 'Interface fixture 1440');
-          assert.equal(saved.history.snapshots.length, 1);
+          assert.equal(saved.history.snapshots.length, 2);
+          assert.equal(saved.history.snapshots[0].kind, 'baseline');
           assert.equal(saved.event.projects.length, 1);
           assert.equal(saved.event.sampleData, false);
         }
@@ -637,7 +643,6 @@ async function installMocks(page, makeRecord) {
             configured: false, playerConfigured: true, authenticated: true, isDeployer: false,
             login: 'fixture-builder-with-a-long-public-name', avatar: null,
           } }));
-          await page.route('**/api/progress**', route => route.fulfill({ json: { visited: [] } }));
           await page.reload({ waitUntil: 'domcontentloaded' });
           await page.locator('#logout').waitFor();
           await header(page, 'signed-in narrow welcome');
@@ -694,7 +699,7 @@ async function installMocks(page, makeRecord) {
       }
     }
     assert.deepEqual(errors, [], 'No browser page errors');
-    console.log('Refined homepage, silent five-stage showcase, compact planning controls, sample-only simplified header, mobile explorer/progress controls, grouped camera actions, standalone town name, all-project total hints, tours versus real-town settings/export, retained drafts, delayed-loading isolation, responsive screens, card/focus, safe door entry, contextual cursors, EN/ZH via the homepage, mocked capture, both collection modes and captured-town backup round trip passed.');
+    console.log('Shared compact account header, direct random sample exploration, grouped camera actions, lower-left totals/name and accessible hints, local-only visits, EN/ZH desktop/mobile/short screens, existing homepage/planner/card/door flows, explicit baseline captures and captured-town backup round trip passed.');
   } finally {
     await browser.close();
   }
