@@ -10,9 +10,21 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Silent automatic showcase refinement 0032
+
+Status: implemented; TypeScript, sample/asset validation, production build and the final extended shared-interface browser check passed. Final human visual acceptance remains pending. [The original instruction and translation](../prompts/0032-silent-automatic-building-showcase.md) supersede the stage buttons, pause/play control and loading presentation described in 0031 below.
+
+The homepage's right side presents the accepted building stages at a larger scale through camera framing and available layout space. It cycles automatically from 1 through 5 and back to 1, with no stage buttons, pause control, internal caption or loading-status text. The next stage's file bytes preload while the current building remains visible. GLB bytes are cached for the five stages; each incoming model is parsed on demand. One live WebGL scene and a temporary 2D outgoing frame provide the dissolve after the next model is ready. A slow next-model request retains the current building without a status popup.
+
+Reduced-motion entry shows a stable stage-5 illustration with no visible controls. Up to two silent retries can recover its failed initial load. Hiding the page cancels future transition timers; in-flight loading/parsing may finish. Leaving the homepage aborts requests and releases resources. These are supporting implementation choices, distinct from the human's explicit request. Existing model files and scoring are unchanged; the refinement adds no external asset or dependency.
+
+Executed checks covered no controls or status/caption text inside `#home-showcase`, normal-motion stage 1–5 playback and loopback, stage 1 remaining visible during a delayed stage-2 request, a nonempty outgoing 2D frame and incoming canvas opacity 1 during the dissolve, and a reduced-motion HTTP 503 fixture recovering on exactly two requests before staying at stage 5. The final shared-interface run also passed existing English/Chinese, 1440/768/360px, planning/capture/card/backup journeys without page errors. Desktop enlarged stage-5 and mobile stage-5 screenshots were inspected after narrow camera correction. Node unit, map-UI and broad browser scripts were not rerun for this revision; prior results remain historical. [Exact verification and limits](../docs/verification.md). Stage/readiness markers remain internal verification aids.
+
+中文简注：建筑放大、自动成长；下一阶段未加载好时保留当前建筑，不出现加载文案。
+
 ## Homepage refinement 0031
 
-Status: implemented; revision-specific build, asset validation, twelve tracked Node tests and all three browser scripts passed. Final human visual acceptance remains pending. [The complete eleven-point instruction](../prompts/0031-refine-homepage-and-building-showcase.md) refines the implemented interface above and supersedes the earlier entrance table where they differ.
+Status: implemented; revision-specific build, asset validation, twelve tracked Node tests and all three browser scripts passed. Final human visual acceptance remains pending. The later 0032 refinement above replaces this revision's manual showcase controls and loading presentation; checks below describe the 0031 revision. [The complete eleven-point instruction](../prompts/0031-refine-homepage-and-building-showcase.md) refines the implemented interface above and supersedes the earlier entrance table where they differ.
 
 - Keep the shared wood logo level. On the homepage, the account control shows only its avatar/person symbol, with the original account action available as a hover/focus hint and accessible name.
 - Use the single introduction “A home for GitHub builders. Let’s watch each other grow.” Remove the redundant headline and wallet/guest sentence. The map and planning objects remain usable buttons; show their action text as hover/focus hints instead of permanent labels.

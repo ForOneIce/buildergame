@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## 0032 — Enlarge the automatic showcase and make transitions silent
+
+- 2026-09-12 (UTC): the human requested larger building presentation on the homepage's right side, automatic stage cycling, removal of the five stage buttons and pause control, and natural loading transitions without text. [Exact instruction and translation](../prompts/0032-silent-automatic-building-showcase.md).
+- Codex implemented the override to 0031 in camera/layout framing and `src/home-showcase.ts`. The renderer preloads/caches GLB file bytes, parses the incoming stage on demand, and fades a temporary 2D outgoing frame over one live WebGL scene. A static stage 5 on reduced-motion entry is a supporting choice; implementation review added up to two silent retries for initial static-load failures. Page visibility stops future timers, while in-flight work may finish. Existing building assets and organizer growth rules remain unchanged.
+- TypeScript without emit, sample validation (nine projects, three snapshots and ten unchanged locked GLBs) and Vite production build passed; Vite retains the shared Three.js chunk-size advisory. The final extended `tests/unified-ui-check.cjs` run passed without page errors, including automatic cycling, delayed-asset continuity, outgoing-frame pixels/incoming opacity and reduced-motion HTTP 503 recovery on exactly two requests, plus the existing bilingual/responsive creation/card/backup journeys.
+- Desktop enlarged stage-5 and mobile stage-5 screenshots were inspected; narrow camera framing was corrected before the final run. Node unit, map-UI and broad browser scripts were not rerun for this revision. Fixture transports, physical-device and human-review limits remain explicit in [verification](../docs/verification.md). Final human visual acceptance remains pending. [Acceptance criteria](../specs/0011-shared-game-interface.md#silent-automatic-showcase-refinement-0032).
+
 ## 0031 — Refine the homepage and building growth presentation
 
 - 2026-09-12 (UTC): the human supplied eleven specific homepage changes: level logo, icon account entry and action hints, concise builder copy, noninteractive hand-based audience illustrations, a single-building five-stage cycle, and terrain tours/thumbnails moved into creation. [Complete instruction and labeled translation](../prompts/0031-refine-homepage-and-building-showcase.md).

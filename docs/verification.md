@@ -2,6 +2,20 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Silent automatic showcase 0032
+
+The [0032 revision](../prompts/0032-silent-automatic-building-showcase.md) is implemented: larger automatic building presentation, no stage/pause controls or loading copy, and a static stage 5 on reduced-motion entry. It preloads and caches the five GLBs as file bytes, parsing an incoming stage on demand. One live WebGL scene renders the current building; a temporary 2D copy of the outgoing frame fades over it. Hiding the page cancels future transition timers; an in-flight request or parse may finish. Disposal aborts requests and clears resources. Initial reduced-motion load failures have up to two silent retries.
+
+Executed checks on 2026-09-12 (UTC):
+
+- `node node_modules/typescript/bin/tsc --noEmit` passed.
+- `node scripts/validate.mjs` passed: nine sample projects, three snapshots and all ten unchanged locked GLBs.
+- `node node_modules/vite/bin/vite.js build` passed with the existing shared Three.js chunk-size advisory.
+- The final extended `tests/unified-ui-check.cjs` run passed without page errors. It observed stage 1–5 playback and loopback, retained stage 1 during a delayed next-model request, no controls/status text, a nonempty outgoing 2D frame and incoming canvas opacity 1 during the dissolve. A reduced-motion HTTP 503 fixture recovered silently on the second request and remained at stage 5. Existing English/Chinese, 1440/768/360px, planning, capture, card, backup and shared-screen journeys also passed.
+- Desktop enlarged stage-5 and mobile stage-5 screenshots were inspected. Narrow-screen camera framing was adjusted to avoid clipping before the final run.
+
+The Node unit tests, `tests/map-ui-check.cjs` and `tests/browser-check.cjs` were not rerun for 0032; their earlier results below remain historical. GitHub transports and the failure case use fixtures. These checks do not establish real OAuth, remote publication, physical-device performance or final human visual acceptance.
+
 ## Homepage refinement 0031
 
 The [eleven-point homepage revision](../prompts/0031-refine-homepage-and-building-showcase.md) is implemented. The homepage presents concise builder copy, a level logo, labeled icon actions, noninteractive hand illustrations and one building cycling through the five accepted stages. Terrain tours and thumbnails appear in the planner, and returning from a tour preserves the draft, publication opt-out and active town. The showcase canvas reserves space for its stage controls.

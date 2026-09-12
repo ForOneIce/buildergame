@@ -1,5 +1,11 @@
 # Decision log
 
+## D-018 — Use a large automatic showcase with silent transitions
+
+- 2026-09-12 (UTC): the human requested a larger homepage building showcase with automatic stage cycling, no five-stage/pause buttons and no loading text. [Exact instruction](../prompts/0032-silent-automatic-building-showcase.md). This replaces the corresponding 0031 presentation and D-017's manual showcase controls.
+- Implemented with cached GLB bytes, on-demand incoming-model parsing, one live WebGL scene and a temporary outgoing 2D frame. Enlarged framing retains the locked models. Reduced-motion entry shows static stage 5 with up to two quiet initial-load retries. Page visibility cancels future timers; in-flight work may finish until disposal.
+- TypeScript, sample/asset validation, production build and the final extended shared-interface check passed, including cycle/delayed-frame continuity and a mocked first-load failure recovered on the second request. Stage-5 desktop/mobile screenshots were inspected. Other suites were not rerun for 0032. No new assets or scoring changes; final human visual acceptance remains pending. [Acceptance criteria](../specs/0011-shared-game-interface.md#silent-automatic-showcase-refinement-0032), [verification](verification.md).
+
 ## D-017 — Focus the homepage on builders and one building's growth
 
 - 2026-09-12 (UTC): the human specified eleven homepage changes, including a level logo, icon login and hover action labels, concise builder copy, noninteractive individual/community illustrations and a single building cycling through the five accepted stages. [Exact instruction](../prompts/0031-refine-homepage-and-building-showcase.md).

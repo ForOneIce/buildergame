@@ -4,50 +4,24 @@ import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import {release} from './town-assets';
 
 type ShowcaseOptions={lang?:'en'|'zh';intervalMs?:number};
-const stages=[
-  {file:'stage-1',en:'Open land',zh:'空地'},
-  {file:'stage-2',en:'Foundation',zh:'地基'},
-  {file:'stage-3',en:'Timber frame',zh:'木架'},
-  {file:'stage-4',en:'Cottage',zh:'小屋'},
-  {file:'cozy-house',en:'Garden house',zh:'花园屋'},
-];
+const stages=['stage-1','stage-2','stage-3','stage-4','cozy-house'];
 
-/** One accepted plot at a time; no town map or extra terrain is generated. */
+/** A quiet, automatic illustration using the five accepted building models. */
 export function createHomeShowcase(host:HTMLElement,options:ShowcaseOptions={}) {
-  const lang=options.lang||'en',t=(en:string,zh:string)=>lang==='en'?en:zh;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
   const interval=Math.max(1000,options.intervalMs??3500);
-  let disposed=false,playing=!reducedMotion.matches,stage=0,requestedStage=1,generation=0;
-  let model:THREE.Group|undefined,request:AbortController|undefined;
+  let disposed=false,playing=!reducedMotion.matches,busy=false,stage=0,staticRetries=0;
+  let model:THREE.Group|undefined,outgoing:HTMLCanvasElement|undefined;
   let autoTimer:ReturnType<typeof setTimeout>|undefined,transition:Animation|undefined;
+  const request=new AbortController(),bytes=new Map<number,Promise<ArrayBuffer>>();
 
-  // Construct the renderer before modifying the host so the caller can provide a fallback.
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
   renderer.setClearColor(0x000000,0);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  const canvas=renderer.domElement;canvas.className='showcase-canvas';
-  canvas.setAttribute('role','img');canvas.setAttribute('aria-label',t('A repository plot growing through five building stages','仓库地块经历五个建设阶段'));
-  canvas.setAttribute('aria-hidden','true');
-  host.append(canvas);host.dataset.showcaseReady='loading';host.dataset.stage='0';
-
-  const status=document.createElement('div');status.className='showcase-status';status.setAttribute('role','status');
-  const statusCopy=document.createElement('span');statusCopy.textContent=t('Preparing a place to grow…','正在准备生长的地方…');
-  const retry=document.createElement('button');retry.type='button';retry.className='showcase-retry button';retry.textContent=t('Retry','重试');retry.hidden=true;
-  status.append(statusCopy,retry);host.append(status);
-
-  const controls=document.createElement('div');controls.className='showcase-controls';
-  controls.setAttribute('role','group');controls.setAttribute('aria-label',t('Building stages','建设阶段'));
-  const stageButtons=stages.map((item,index)=>{
-    const button=document.createElement('button');button.type='button';button.className='showcase-stage';
-    button.dataset.showcaseStage=String(index+1);button.textContent=String(index+1);
-    button.setAttribute('aria-label',t(`Stage ${index+1}: ${item.en}`,`阶段 ${index+1}：${item.zh}`));
-    button.setAttribute('aria-pressed','false');button.title=item[lang];
-    button.addEventListener('click',()=>showStage(index+1));controls.append(button);return button;
-  });
-  const toggle=document.createElement('button');toggle.type='button';toggle.className='showcase-toggle';
-  const caption=document.createElement('span');caption.className='showcase-caption';
-  controls.append(toggle,caption);host.append(controls);
+  const canvas=renderer.domElement;canvas.className='showcase-canvas';canvas.setAttribute('aria-hidden','true');
+  host.setAttribute('role','img');host.append(canvas);
+  host.dataset.showcaseReady='loading';host.dataset.stage='0';host.dataset.playing=String(playing);
 
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(32,1,.1,100);
@@ -58,52 +32,59 @@ export function createHomeShowcase(host:HTMLElement,options:ShowcaseOptions={}) 
   const fill=new THREE.DirectionalLight('#e2ebff',1.1);fill.position.set(6,5,-4);scene.add(fill);
   const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(room,.06);
   scene.environment=environment.texture;scene.environmentIntensity=.28;room.dispose();pmrem.dispose();
-  // An invisible shadow receiver keeps the isolated model grounded on the page.
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.ShadowMaterial({color:'#655742',opacity:.17}));
   shadow.rotation.x=-Math.PI/2;shadow.position.y=-.2;shadow.receiveShadow=true;scene.add(shadow);
   const loader=new GLTFLoader();
 
-  function updateControls() {
-    host.dataset.playing=String(playing);toggle.textContent=playing?t('Pause','暂停'):t('Play','播放');
-    toggle.setAttribute('aria-label',playing?t('Pause building growth','暂停建筑成长'):t('Play building growth','播放建筑成长'));
-    stageButtons.forEach((button,index)=>button.setAttribute('aria-pressed',String(index+1===stage)));
-    caption.textContent=stage?stages[stage-1][lang]:t('Five stages. One home.','五个阶段，同一个家。');
-  }
   function renderFrame(){if(!disposed&&!document.hidden)renderer.render(scene,camera);}
   function resize() {
     if(disposed)return;
-    const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight-controls.offsetHeight-16);
-    // Reserve room below the model so the courtyard never overlaps stage controls.
-    renderer.setSize(width,height);camera.aspect=width/height;camera.updateProjectionMatrix();
-    // The largest accepted courtyard defines all five views; a stage change never reframes it.
+    transition?.finish();outgoing?.remove();outgoing=undefined;
+    const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight);
+    renderer.setSize(width,height);camera.aspect=width/height;
+    camera.zoom=THREE.MathUtils.clamp(.8+camera.aspect*.25,1.02,1.12);camera.updateProjectionMatrix();
+    // One fixed camera preserves the plot's position throughout its growth. 固定视角。
     const fit=Math.max(1,1/camera.aspect*1.05);
     camera.position.set(13*fit,10.8*fit,16.9*fit);camera.lookAt(0,1.95,0);renderFrame();
   }
   function clearAuto(){clearTimeout(autoTimer);autoTimer=undefined;}
-  function schedule() {
-    clearAuto();if(disposed||!playing||document.hidden||host.dataset.showcaseReady!=='true')return;
-    autoTimer=setTimeout(()=>{autoTimer=undefined;void loadStage(stage%5+1);},interval);
+  function assetBytes(next:number) {
+    let pending=bytes.get(next);
+    if(!pending){
+      pending=fetch(import.meta.env.BASE_URL+'models/'+stages[next-1]+'.glb',{signal:request.signal})
+        .then(response=>{if(!response.ok)throw Error('Building asset unavailable');return response.arrayBuffer();})
+        .catch(error=>{bytes.delete(next);throw error;});
+      bytes.set(next,pending);
+    }
+    return pending;
   }
-  async function fade(out:boolean) {
-    if(reducedMotion.matches||document.hidden||disposed)return;
-    const animation=canvas.animate(out?[{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.985)'}]:[{opacity:0,transform:'scale(.985)'},{opacity:1,transform:'scale(1)'}],{duration:out?140:220,easing:'ease-out',fill:'forwards'});
+  function schedule(next=stage%5+1) {
+    clearAuto();if(disposed||document.hidden||busy)return;
+    if(!playing){
+      // Quietly recover a failed first load without starting a reduced-motion carousel.
+      if(!model&&staticRetries<2)autoTimer=setTimeout(()=>{autoTimer=undefined;++staticRetries;void loadStage(5);},2000*(staticRetries+1));
+      return;
+    }
+    // Fetch ahead while the current building stays on screen. 不用加载文案打断观看。
+    void assetBytes(next).catch(()=>{});
+    autoTimer=setTimeout(()=>{autoTimer=undefined;void loadStage(next);},interval);
+  }
+  async function dissolve(previous:HTMLCanvasElement|undefined) {
+    if(reducedMotion.matches||document.hidden||disposed){previous?.remove();return;}
+    const surface=previous||canvas;
+    const animation=surface.animate(previous?[{opacity:1},{opacity:0}]:[{opacity:0},{opacity:1}],{duration:650,easing:'ease-in-out',fill:'forwards'});
     transition=animation;
-    try{await animation.finished;}catch{/* Cancellation is expected on another selection or disposal. */}
-    if(transition===animation)transition=undefined;animation.cancel();
+    try{await animation.finished;}catch{/* Navigation can cancel an in-flight transition. */}
+    if(transition===animation)transition=undefined;
+    animation.cancel();previous?.remove();if(outgoing===previous)outgoing=undefined;
   }
   async function loadStage(next:number) {
-    if(disposed)return;
-    clearAuto();requestedStage=next;const id=++generation;
-    request?.abort();transition?.cancel();request=new AbortController();
-    host.dataset.showcaseReady='loading';retry.hidden=true;status.hidden=false;
-    statusCopy.textContent=t('Preparing this chapter…','正在准备这个阶段…');
-    let incoming:THREE.Group|undefined;
+    if(disposed||busy)return;
+    busy=true;clearAuto();let incoming:THREE.Group|undefined;
     try{
-      const response=await fetch(`${import.meta.env.BASE_URL}models/${stages[next-1].file}.glb`,{signal:request.signal});
-      if(!response.ok)throw new Error('Building asset unavailable');
-      const bytes=await response.arrayBuffer();if(disposed||id!==generation)return;
-      incoming=(await loader.parseAsync(bytes,new URL(`${import.meta.env.BASE_URL}models/`,document.baseURI).href)).scene;
-      if(disposed||id!==generation){release([incoming]);return;}
+      const source=await assetBytes(next);if(disposed)return;
+      incoming=(await loader.parseAsync(source,new URL(import.meta.env.BASE_URL+'models/',document.baseURI).href)).scene;
+      if(disposed){release([incoming]);return;}
       incoming.traverse(object=>{
         if(!(object instanceof THREE.Mesh))return;
         object.castShadow=object.receiveShadow=true;
@@ -112,35 +93,40 @@ export function createHomeShowcase(host:HTMLElement,options:ShowcaseOptions={}) 
           if(material instanceof THREE.MeshPhysicalMaterial&&material.name.startsWith('Felt')){material.sheen=.6;material.sheenRoughness=.9;}
         }
       });
-      if(model)await fade(true);
-      if(disposed||id!==generation){release([incoming]);return;}
-      const previous=model;model=incoming;scene.add(model);if(previous){scene.remove(previous);release([previous]);}
-      stage=next;host.dataset.stage=String(stage);updateControls();renderFrame();
-      if(previous)await fade(false);
-      if(disposed||id!==generation)return;
-      host.dataset.showcaseReady='true';status.hidden=true;schedule();
+      // Keep a rendered frame above the new scene so a transition never fades to an empty page.
+      if(model&&!reducedMotion.matches&&!document.hidden){
+        renderFrame();const frame=document.createElement('canvas');frame.width=canvas.width;frame.height=canvas.height;
+        const context=frame.getContext('2d');
+        if(context){context.drawImage(canvas,0,0);frame.className='showcase-outgoing';frame.setAttribute('aria-hidden','true');host.append(frame);outgoing=frame;}
+      }
+      const previous=model;model=incoming;scene.add(model);
+      if(previous){scene.remove(previous);release([previous]);}
+      stage=next;host.dataset.stage=String(stage);host.dataset.showcaseReady='transitioning';renderFrame();
+      await dissolve(outgoing);if(disposed)return;
+      host.dataset.showcaseReady='true';
     }catch(error){
       if(incoming&&incoming!==model)release([incoming]);
-      if(disposed||id!==generation||(error instanceof DOMException&&error.name==='AbortError'))return;
-      host.dataset.showcaseReady='error';statusCopy.textContent=t('This stage could not load. Choose another or retry.','这个阶段加载失败，请切换其他阶段或重试。');retry.hidden=false;
+      if(disposed)return;
+      bytes.delete(next);
+      // A failed stage leaves the last good building visible; the next chapter can still load.
+      host.dataset.showcaseReady=model?'true':'error';
+    }finally{
+      busy=false;if(!disposed)schedule(next%5+1);
     }
   }
-  function pause(){playing=false;clearAuto();updateControls();}
-  function resume(){if(disposed)return;playing=true;updateControls();if(host.dataset.showcaseReady==='error')void loadStage(requestedStage);else schedule();}
-  function showStage(next:number){if(!Number.isInteger(next)||next<1||next>5||disposed)return;pause();if(stage===next&&host.dataset.showcaseReady==='true')return;void loadStage(next);}
   function visibility(){if(document.hidden){clearAuto();transition?.finish();}else{renderFrame();schedule();}}
-  function motionPreference(){if(reducedMotion.matches){pause();transition?.finish();}}
-  toggle.addEventListener('click',()=>playing?pause():resume());retry.addEventListener('click',()=>void loadStage(requestedStage));
+  function motionPreference(){
+    playing=!reducedMotion.matches;host.dataset.playing=String(playing);
+    if(playing)schedule();else{clearAuto();transition?.finish();}
+  }
   document.addEventListener('visibilitychange',visibility);reducedMotion.addEventListener('change',motionPreference);
-  const observer=new ResizeObserver(resize);observer.observe(host);resize();updateControls();void loadStage(1);
-
+  const observer=new ResizeObserver(resize);observer.observe(host);resize();void loadStage(playing?1:5);
   return {
-    pause,resume,showStage,
     dispose(){
-      if(disposed)return;disposed=true;++generation;clearAuto();request?.abort();transition?.cancel();
+      if(disposed)return;disposed=true;clearAuto();request.abort();transition?.cancel();bytes.clear();
       observer.disconnect();document.removeEventListener('visibilitychange',visibility);reducedMotion.removeEventListener('change',motionPreference);
       if(model)release([model]);release([shadow]);sun.shadow.dispose();environment.dispose();renderer.dispose();
-      canvas.remove();status.remove();controls.remove();
+      canvas.remove();outgoing?.remove();host.removeAttribute('role');
       delete host.dataset.stage;delete host.dataset.showcaseReady;delete host.dataset.playing;
     },
   };

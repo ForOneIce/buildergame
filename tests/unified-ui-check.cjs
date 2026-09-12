@@ -46,7 +46,51 @@ async function screenshot(page, screen, width) {
   await page.screenshot({ path: `${output}/unified-${screen}-${width}.png`, fullPage: screen !== 'town', animations: 'disabled' });
 }
 
-async function welcomePresentation(page, width) {
+function assertSilentShowcase(showcase) {
+  return Promise.all([
+    showcase.locator('button, [role="button"], [role="status"], .showcase-caption, .showcase-status').count(),
+    showcase.textContent(),
+  ]).then(([controls, text]) => {
+    assert.equal(controls, 0, 'The building showcase has no stage controls, caption or loading status');
+    assert.equal(text.trim(), '', 'Building transitions do not show loading copy');
+  });
+}
+
+async function holdNextShowcaseStage(page) {
+  let release, reached;
+  const gate = new Promise(resolve => { release = resolve; });
+  const arrived = new Promise(resolve => { reached = resolve; });
+  await page.route('**/models/stage-2.glb', async route => {
+    reached();
+    await gate;
+    if (!page.isClosed()) await route.continue();
+  });
+  return {
+    release,
+    async check() {
+      let timer;
+      try {
+        await Promise.race([arrived, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(Error('Stage 2 preload did not reach the held route')), 15000);
+        })]);
+        const showcase = page.locator('#home-showcase');
+        assert.equal(await showcase.getAttribute('data-stage'), '1');
+        // Wait past the normal dwell: a slow next asset must not hide the current building.
+        await page.waitForTimeout(4300);
+        assert.equal(await showcase.getAttribute('data-stage'), '1');
+        assert.equal(await showcase.locator('canvas').isVisible(), true);
+        assert.equal(await showcase.locator('canvas').evaluate(canvas => getComputedStyle(canvas).opacity), '1');
+        await assertSilentShowcase(showcase);
+        await page.screenshot({ path: `${output}/unified-showcase-delayed-1440.png`, animations: 'disabled' });
+      } finally {
+        clearTimeout(timer);
+        release();
+      }
+    },
+  };
+}
+
+async function welcomePresentation(page, width, delayedStage) {
   const home = page.locator('.landing');
   assert.match(await home.textContent(), /A home for GitHub builders\. Let’s watch each other grow\./);
   assert.match(await home.textContent(), /Who can create a town\?/);
@@ -91,33 +135,30 @@ async function welcomePresentation(page, width) {
   await page.locator('#home-showcase[data-showcase-ready="true"]').waitFor({ timeout: 60000 });
   assert.equal(await showcase.locator('canvas').count(), 1, 'Homepage renders one dedicated building canvas');
   assert.equal(await home.locator('#scene, #island-preview').count(), 0, 'Homepage no longer contains a town scene');
-  assert.equal(await showcase.locator('[data-showcase-stage]').count(), 5);
+  await assertSilentShowcase(showcase);
   if (width === 360) {
-    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Reduced motion starts with autoplay paused');
-    const stage = await showcase.getAttribute('data-stage');
+    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Reduced motion disables automatic cycling');
+    assert.equal(await showcase.getAttribute('data-stage'), '5', 'Reduced motion shows the completed building');
     await page.waitForTimeout(4200);
-    assert.equal(await showcase.getAttribute('data-stage'), stage, 'A reduced-motion visitor sees a stable building');
+    assert.equal(await showcase.getAttribute('data-stage'), '5', 'A reduced-motion visitor sees a stable completed building');
+    assert.equal(await showcase.locator('canvas').evaluate(element => element.getAnimations().length), 0);
+  } else {
+    assert.equal(await showcase.getAttribute('data-playing'), 'true', 'The decorative showcase cycles automatically');
   }
   if (width === 1440) {
-    await showcase.locator('[data-showcase-stage="1"]').click();
-    await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="1"]').waitFor({ timeout: 60000 });
-    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Manual selection pauses the cycle');
-    await showcase.locator('.showcase-toggle').click();
+    await delayedStage.check();
+    const outgoing=showcase.locator('.showcase-outgoing');
+    await outgoing.waitFor({timeout:15000});
+    assert.equal(await outgoing.evaluate(canvas=>{
+      const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+      for(let i=3;i<pixels.length;i+=4)if(pixels[i]>0)return true;
+      return false;
+    }),true,'The outgoing layer contains the previous building, not a blank frame');
+    assert.equal(await showcase.locator('.showcase-canvas').evaluate(canvas=>getComputedStyle(canvas).opacity),'1','The incoming building stays visible beneath the dissolve');
     for (const stage of [2, 3, 4, 5, 1]) {
       await page.locator(`#home-showcase[data-showcase-ready="true"][data-stage="${stage}"]`).waitFor({ timeout: 60000 });
-      assert.equal(await showcase.locator(`[data-showcase-stage="${stage}"]`).getAttribute('aria-pressed'), 'true');
+      await assertSilentShowcase(showcase);
     }
-  }
-  await showcase.locator('[data-showcase-stage="5"]').focus();
-  await page.keyboard.press('Enter');
-  await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="5"]').waitFor({ timeout: 60000 });
-  assert.equal(await showcase.getAttribute('data-playing'), 'false');
-  if (width === 360) {
-    assert.equal(await showcase.locator('canvas').evaluate(element => element.getAnimations().length), 0);
-    await showcase.locator('.showcase-toggle').click();
-    await page.locator('#home-showcase[data-showcase-ready="true"][data-stage="1"]').waitFor({ timeout: 60000 });
-    await showcase.locator('.showcase-toggle').click();
-    assert.equal(await showcase.getAttribute('data-playing'), 'false', 'Reduced-motion visitors can explicitly play and pause');
   }
 }
 
@@ -268,13 +309,18 @@ async function installMocks(page, makeRecord) {
     for (const viewport of viewports) {
       const width = viewport.width;
       const context = await browser.newContext({ viewport, reducedMotion: width === 360 ? 'reduce' : 'no-preference' });
+      let delayedStage;
       try {
         const page = await context.newPage();
         page.on('pageerror', error => errors.push(`${width}: ${error.message}`));
         const captures = await installMocks(page, makeRecord);
+        if (width === 1440) delayedStage = await holdNextShowcaseStage(page);
+        let staticAttempts=0;
+        if(width===360)await page.route('**/models/cozy-house.glb',route=>++staticAttempts===1?route.fulfill({status:503,body:'Temporary fixture failure'}):route.continue());
         await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
         await header(page, 'welcome');
-        await welcomePresentation(page, width);
+        await welcomePresentation(page, width, delayedStage);
+        if(width===360)assert.equal(staticAttempts,2,'Reduced motion quietly retries an unavailable initial model');
         await layout(page, 'welcome');
         await screenshot(page, 'welcome', width);
         if (width === 360) {
@@ -444,11 +490,12 @@ async function installMocks(page, makeRecord) {
           assert.equal(captures[1].event.landscape, 'clouds');
         }
       } finally {
+        delayedStage?.release();
         await context.close();
       }
     }
     assert.deepEqual(errors, [], 'No browser page errors');
-    console.log('Refined homepage, five-stage autoplay/manual/reduced-motion showcase, planner thumbnails and draft-preserving terrain tours, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
+    console.log('Refined homepage, silent five-stage autoplay with delayed-asset continuity and static reduced-motion showcase, planner thumbnails and draft-preserving terrain tours, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
   } finally {
     await browser.close();
   }
