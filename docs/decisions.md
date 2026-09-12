@@ -1,10 +1,17 @@
 # Decision log
 
+## D-013 — Review free wood, paper and teal materials before global application
+
+- 2026-09-12 (UTC): the human selected wooden identity, cream paper and highly transparent teal floating panels, with free Kenney Adventure UI assets and no paid resources.
+- Sequence is explicit: first revise the interactive visual proposal; apply the result globally only after the human confirms its appearance. This approves a material direction, not the finished layout or runtime migration.
+- Preview implementation choice: embed six unchanged SVG originals from the verified Kenney Adventure UI 1.1 archive (CC0-1.0), with CSS sizing and a transparent teal surface. The standalone proposal remains outside the repository; the application and locked building models remain untouched.
+- Source/verification boundaries: [project instructions](../prompts/0023-preview-material-direction.md), [selected files and license](ui-kit-research.md), [review criteria](../specs/0011-shared-game-interface.md). Human acceptance of the revised preview is pending.
+
 ## D-012 — Unify the interface across the complete town journey
 
 - Human requirement: the homepage and town preview must share a consistent game visual language appropriate to Buildergame, with no abrupt visual boundary.
 - Research scope: assess reusable management-game UI components before the next visual implementation. Existing five building assets remain locked.
-- Wood/paper/blue material variants, an icon family and component extraction are AI proposals in [0011](../specs/0011-shared-game-interface.md), not confirmed adoption decisions. [Source assessment](ui-kit-research.md).
+- At the research stage, wood/paper/blue material variants, an icon family and component extraction were AI proposals in [0011](../specs/0011-shared-game-interface.md). D-013 records the subsequent human material selection and preview-only scope; broader component integration is still pending. [Source assessment](ui-kit-research.md).
 
 ## D-011 — Preserve accepted buildings while revising landscapes and player UI
 

@@ -1,6 +1,6 @@
 # Shared game UI: reusable source evaluation
 
-Research date: 2026-09-12. Status: proposal; no candidate below has been adopted, installed, purchased, or added to the application's assets by this research.
+Research date: 2026-09-12. Status: Kenney Adventure UI selected for the standalone visual proposal only; global application awaits human confirmation. No paid resource, new dependency or application asset has been added by this research and preview iteration.
 
 > 中文简注：先统一首页、建镇流程和小镇界面的视觉语言；素材包只提供外观，不等于已经实现交互的组件库。
 
@@ -18,16 +18,31 @@ The proposed direction is a shared set of native DOM components and CSS tokens, 
 
 ## Game-oriented visual assets
 
-The Kenney counts, versions and licenses below were read from official product pages. Previews were visually inspected during this research. Download archives were not retrieved, so their internal formats, sprite layouts, source-file contents and ready-made nine-slice metadata remain unverified. File counts are the site's asset counts, not counts of working web components.
+The Kenney counts, versions and licenses below were initially read from official product pages and their previews inspected. In the subsequent preview iteration, the selected Adventure archive and its license were retrieved and inspected; the verified archive identifies version 1.1, superseding the earlier v1.0 product-page observation. Other candidate archives remain uninspected. File counts are the site's asset counts, not counts of working web components.
 
 | Candidate | Observed availability | Visual assessment and proposed use | Integration effort estimate |
 | --- | --- | --- | --- |
-| [Kenney UI Pack – Adventure](https://kenney.nl/assets/ui-pack-adventure) | 130 files, v1.0; Creative Commons CC0; free download with optional donation. Page tags include button, panel, slider and interface. | Best fit among the inspected packs. Wood, paper and stone frames, circular minimap rings, banners and progress bars provide a coherent adventure-game vocabulary. Select one restrained family rather than mixing all materials. | Medium: inspect the downloaded package if selected, prepare scalable borders, define control states, and integrate the shared surfaces throughout the application. |
+| [Kenney UI Pack – Adventure](https://kenney.nl/assets/ui-pack-adventure) | Site advertises 130 items; downloaded archive identifies v1.1 and CC0-1.0. Free download with optional donation. Archive contains SVG, PNG and spritesheets. | Human-selected for the preview. Wood and cream frames, a matching button and medallion support the chosen natural management-game style; a transparent-center frame allows a CSS teal surface beneath it. | Medium for later integration: scalable borders, control states and responsive behavior still require implementation. Six unchanged SVG files are embedded in the proposal only. |
 | [Kenney UI Pack](https://kenney.nl/assets/ui-pack) | 430 files, v2.0; Creative Commons CC0; free download with optional donation. | Broad collection of colorful beveled controls. Useful for control anatomy and state coverage; its generic casual-game appearance needs stronger art direction to match the existing town. | Medium: more selection and recoloring work to prevent unrelated button families appearing together. |
 | [Kenney Fantasy UI Borders](https://kenney.nl/assets/fantasy-ui-borders) | 140 files, v1.0; Creative Commons CC0; free download with optional donation. | Thin ornate frames could support a title plaque or a special project card. Repeated ornamental borders would compete with the town and make everyday forms busy. | Low for one accent; medium if used as the basis for responsive containers. |
 | [Game-icons.net](https://game-icons.net/) | Homepage observed 4,180 icons, SVG and PNG. [License guidance](https://game-icons.net/about.html): CC BY 3.0, with attribution to each icon's original author. | Building, place and resource imagery is useful for larger illustrated badges. Many icons are too detailed for small navigation controls. Select a few compatible motifs rather than importing the entire catalog. | Low for a few assets, plus an author/source attribution record and contrast checks at actual display size. |
 
 CC0 permits flexible reuse, but source and version should still be recorded in the project's reuse disclosure when a pack is actually adopted. For CC BY material, record the individual asset URL, author and any modification as part of its attribution. Screenshots and artwork from proprietary commercial games are not reusable assets in this plan.
+
+### Selected standalone-preview assets
+
+Verified source: Kenney's [Adventure UI page](https://kenney.nl/assets/ui-pack-adventure) and [official archive](https://kenney.nl/media/pages/assets/ui-pack-adventure/9a877376bc-1723597274/kenney_ui-pack-adventure.zip), retrieved 2026-09-12. The archive identifies Adventure UI 1.1 by Kenney and includes `License.txt` with [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/). Archive SHA-256: `982e8ab66842509ee9214f9c2038e594cbe029f19d1dc177fecaad3b41a67ed3`.
+
+| Original archive file | Role in the proposal |
+| --- | --- |
+| `Vector/panel_brown_dark_corners_a.svg` | Wooden identity sign with corner details |
+| `Vector/panel_brown_dark.svg` | Plain wooden panel |
+| `Vector/panel_brown.svg` | Cream paper with a wood frame |
+| `Vector/button_brown.svg` | Matching cream button with a wood rim |
+| `Vector/panel_border_brown.svg` | Transparent-center wood frame over the teal CSS surface |
+| `Vector/round_brown.svg` | Round player medallion |
+
+These six SVG originals are embedded without modifying their source content in the local visual proposal outside the repository. CSS sizing, frame slicing, transparency and interaction states are Codex adaptations, not features supplied by the asset pack. Only the teal surface uses alpha 0.24; dark label text retains its own opacity. Slices are implementation choices based on inspection, not official pack metadata. No paid resource is used, and global integration remains conditional on the human's review of this preview. Other inspected files are candidates, not adopted assets.
 
 ## Functional icons and controls
 
@@ -63,7 +78,7 @@ Neither a decorative frame nor an accessible component library makes the whole a
 
 ## Proposed shared visual system
 
-The strongest fit is a restrained town-management interface: warm wood for identity, light cream for readable content, lantern-gold primary actions, restrained moss-green status accents, and a blue translucent variation for lightweight controls over the scene. These should be variations of the same component shapes and spacing, not separate site and game themes. See [the shared interface proposal](../specs/0011-shared-game-interface.md) for screen and component contracts.
+The selected direction is a restrained town-management interface: warm wood for identity, light cream for readable content and highly transparent teal panels for lightweight controls over the scene. Lantern-gold primary actions and restrained moss-green status accents are supporting AI proposals. These should be variations of the same component shapes and spacing, not separate site and game themes. See [the shared interface proposal](../specs/0011-shared-game-interface.md) for screen and component contracts.
 
 Start with shared tokens for colors, typography, spacing, radii, border depth, shadows, focus rings and motion. Build a small set of reusable surfaces and controls: panel, button, icon button, tab, field, metric badge, progress indicator, dialog and notification. Use the same components in the homepage, setup workflow and town HUD.
 
@@ -76,8 +91,8 @@ Recommended order:
 3. Apply the same components across the existing screens; remove conflicting legacy rules as each surface is migrated.
 4. Verify English and Chinese text expansion, keyboard access, mobile layout and scene readability. Recheck existing creation, snapshot and exploration journeys.
 
-The asset pack choice remains open. An original CSS/SVG frame inspired by general wood-and-paper materials could also meet the need without adopting a pack. Any subsequent third-party asset use must be registered only after the exact files and license are checked.
+The human selected free Kenney Adventure UI materials for the preview and explicitly requested review before global application. The chosen archive files and license are recorded above. No other pack, icon family or functional library is selected by that decision.
 
 ## Evidence and limits
 
-Official web pages and the indicated raw license files were read using HTTP requests. Kenney official previews were visually inspected. No archive contents were inspected, no candidates were installed, and no integration or bundle-size benchmark was run. Some live icon counts and package versions may change after the research date. A documentation review and visual recommendation are not evidence that a skin has been implemented or approved by the user.
+Official web pages and the indicated raw license files were read using HTTP requests; Kenney official previews were visually inspected. The initial research did not retrieve archives. The follow-up preview iteration inspected the official Adventure UI 1.1 archive and its license, and selected the six originals above. No runtime integration or bundle-size benchmark was run for this documentation update. Some live icon counts and package versions may change after the research date. Preview QA and human visual confirmation are separate checks; selecting a material direction does not establish global skin implementation or acceptance.

@@ -1,5 +1,13 @@
 # Human–AI collaboration log
 
+## 0023 — Preview selected materials before global integration
+
+- 2026-09-12 (UTC), visual-proposal iteration: the human selected free Kenney Adventure UI wood elements, cream paper and highly transparent teal floating panels. The human then specified that the revised proposal must be shown first and confirmed before application across the product.
+- Codex inspected the selected archive/license and adapted the standalone three-screen English/Chinese proposal using six unchanged SVG originals from Adventure UI 1.1 (CC0-1.0), original CSS and the existing fictional town screenshot. A teal surface alpha of 0.24 is a preview design choice, with text opacity kept independent. No paid material is used.
+- Outputs: [project instructions](../prompts/0023-preview-material-direction.md), revised [shared interface specification](../specs/0011-shared-game-interface.md), [exact source register](../docs/ui-kit-research.md) and contribution/decision records. The preview is stored outside the repository; no public link to local source or inspection artifacts is required.
+- Boundary: the application, dependencies and locked five-stage building models remain unchanged. Preview controls remain illustrative, and do not perform real authentication, capture or publishing. Global migration and human acceptance of the revised appearance are pending.
+- Verification: the local source manifest was read and its six selected filenames, version, license and archive checksum were reconciled with the reuse record. Scoped `git diff --check` passed, and all 114 local Markdown links across eight changed records resolved. Browser inspection confirmed all three preview screens, sample-card opening and the Chinese toggle; screenshots were reviewed for material rendering and desktop layout. The fragment contains six embedded SVGs, no unresolved asset placeholders and is below 1 MB. Runtime regression tests were not rerun for this preview-only iteration; responsive and full accessibility checks remain for global integration.
+
 ## 0022 — Research a shared game interface
 
 - 2026-09-12 (UTC), visual research: the human identified a disconnect between the homepage and town controls, asked for a consistent game visual language and an evaluation of reusable management-game UI components.

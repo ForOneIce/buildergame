@@ -1,6 +1,6 @@
 # Shared game interface proposal
 
-Date: 2026-09-12. Status: AI proposal for visual review; not an implemented skin. Human requirement: [0022](../prompts/0022-unified-game-ui.md). Verified source candidates: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md) and [0023](../prompts/0023-preview-material-direction.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
 
 ## Observable problem
 
@@ -8,9 +8,9 @@ Date: 2026-09-12. Status: AI proposal for visual review; not an implemented skin
 
 ## Art direction
 
-Use the town's handcrafted architecture as the interface's material reference. Recommended composition: **wooden identity, cream reading surfaces, blue world controls, lantern-gold primary actions and restrained moss-green status accents**. These are semantic material variants with shared geometry, not separate themes per screen. The references already combine wood signs, blue HUD panels and light project cards; consistency does not require every surface to be wood.
+Use the town's handcrafted architecture as the interface's material reference. The human selected **wooden identity, cream reading surfaces and highly transparent teal world controls**, using free assets only. Kenney Adventure UI is selected for the standalone preview; lantern-gold and restrained moss-green accents remain AI supporting design choices. These are semantic material variants with shared geometry, not separate themes per screen. The references already combine wood signs, floating HUD panels and light project cards; consistency does not require every surface to be wood.
 
-Alternative for comparison: a paper-led homestead interface replaces most blue control surfaces with cream panels. It gives strong continuity and reading comfort, but can obscure more of the world and weaken the blue/cream contrast in `map_en`. A highly ornamental RPG skin and an all-pixel UI are lower-fit options for the accepted soft 3D buildings.
+The earlier paper-led alternative is historical comparison material. The current preview should emphasize the selected wood, cream and transparent teal combination. Keep text opacity independent of panel opacity so transparency does not fade labels; the preview starts the teal surface at alpha 0.24, subject to review against the actual background. A highly ornamental RPG skin and an all-pixel UI remain lower-fit options for the accepted soft 3D buildings.
 
 The game metaphor remains connected to real use: repositories are plots, snapshots are the town's history, and exploration means discovering projects. Do not invent currency, energy, daily chores or experience levels to make the interface look more like a management game.
 
@@ -23,7 +23,7 @@ The game metaphor remains connected to real use: repositories are plots, snapsho
 | Entrance | Town gate with a real town view, concise introduction, Explore sample / Create town / Import backup actions | Same wood logo, account/language controls, paper panel and primary button |
 | Collection setup | Planning desk with readable form sections, personal/community selection and illustrated landscape choices | Same field, tab, button, repository row and status components |
 | Capture and success | An opening notice over the same world background; real measured progress where available, otherwise an indeterminate loading state | Same progress ribbon, notification and explicit local/published state |
-| Town exploration | Light blue HUD variants around the town; collapse secondary panels to leave the world visible | Same player medallion, icon buttons, project row and snapshot ribbon |
+| Town exploration | Transparent teal HUD variants around the town; collapse secondary panels to leave the world visible | Same player medallion, icon buttons, project row and snapshot ribbon |
 | Project information | A cream visitor card that looks related to setup panels | Same title scale, avatar, metrics, link button and focus treatment |
 
 Changing landscape affects the world background, not the interface brand. Keep the logo and account entry in predictable locations. On capable devices, later implementation can keep the scene canvas alive between screen states; use a lightweight town poster where maintaining the full scene would be costly. Both should share one composition.
@@ -33,7 +33,7 @@ Changing landscape affects the world background, not the interface brand. Keep t
 | Component | Variants and expected behavior |
 | --- | --- |
 | `WorldShell` | Shared brand/account/language chrome; entrance, desk and world layouts |
-| `GamePanel` | Paper and blue HUD variants; shared radii, warm edges, inset highlights, spacing and shadow direction |
+| `GamePanel` | Paper and transparent teal HUD variants; shared radii, warm edges, inset highlights, spacing and shadow direction |
 | `GameButton` / `GameIconButton` | Primary, secondary and quiet; default, hover, pressed, selected, disabled, loading and keyboard-focus states |
 | `TownTicket` | Personal/community and terrain selections; consistent thumbnail, title, selection indicator and hit area |
 | `RepositoryRow` / `BuilderCard` | Search/list/detail share avatar medallion, title hierarchy, stage label and meaningful metrics |
@@ -47,7 +47,7 @@ Use one functional SVG icon family such as selected Lucide icons. Give any large
 
 ## Implementation approach and effort
 
-Retain Three.js for the world and native DOM for the interface. Candidate Kenney artwork can speed up borders and decorative controls after archive inspection; it supplies no browser behavior. Use native `<dialog>`, inputs and buttons, shared CSS tokens and small TypeScript render helpers. CSS nine-slice `border-image` can preserve illustrated corners at changing panel sizes. Simple surfaces can remain original CSS/SVG. No new game engine, React migration or broad component library is needed solely for this redesign.
+Retain Three.js for the world and native DOM for the interface. Kenney Adventure UI 1.1 has now been inspected and six original SVG files are used only in the revised standalone proposal; they supply no browser behavior. After human approval of that result, native `<dialog>`, inputs and buttons, shared CSS tokens and small TypeScript render helpers can support global integration. CSS nine-slice `border-image` can preserve illustrated corners at changing panel sizes. Simple surfaces can remain original CSS/SVG. No new game engine, React migration or broad component library is needed solely for this redesign.
 
 Suggested module boundaries are `ui/tokens.css`, `ui/components.css` and shared rendering helpers, with screen-specific composition kept separate. Migrate selectors and remove superseded declarations in each step. These paths describe a proposal; files have not been created.
 
@@ -72,4 +72,6 @@ License cost can remain zero with original surfaces, CC0 candidates and selected
 
 ## This study's output boundary
 
-An in-conversation interactive concept compares entrance, planning desk and neighborhood using shared material tokens; it also offers a paper-led surface alternative. It is original HTML/CSS with a crop from the project's fictional sample screenshot, not an imported kit or a working product replacement. Mocked controls do not authenticate, fetch repositories, save settings or publish anything. The existing application and dependencies are unchanged by this study.
+The standalone interactive proposal compares entrance, planning desk and neighborhood using shared material tokens, with English as the default and a Chinese toggle. Its HTML/CSS surrounds a crop from the project's fictional sample screenshot. The current revision embeds six unchanged SVG originals from Kenney Adventure UI 1.1: wooden sign/frame variants, a cream panel, a matching button, a transparent-center frame and a round medallion. The exact files and source/license evidence are recorded in [UI kit research](../docs/ui-kit-research.md).
+
+The proposal is stored outside the repository and remains a review artifact. Mocked controls do not authenticate, fetch repositories, save settings or publish anything. The human explicitly requires confirmation of the revised appearance before it is applied globally. The existing application, dependencies and locked building models are unchanged by this iteration. Preview verification and visual acceptance must be recorded separately; neither is implied by selecting the materials.
