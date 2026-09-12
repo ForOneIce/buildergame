@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0036: homepage header alignment reuses existing controls/styles with no new asset, dependency or license scope. Focused checks passed. [Instruction](../prompts/0036-align-homepage-header-top-edges.md), [results and limits](log.md#0036--align-homepage-header-top-edges).
+
 Session 0035: homepage action reordering reuses existing buttons, artwork and styles; no new assets or dependencies. Focused checks and TypeScript passed. [Instruction](../prompts/0035-create-before-explore.md), [results](log.md#0035--place-create-before-explore).
 
 Session 0034: introduction spacing and the building hint reuse existing layout and cream tooltip styles, with no new asset, dependency or license scope. Focused checks/build validation passed; all ten GLBs remain unchanged. [Instruction](../prompts/0034-balanced-intro-and-shared-tooltip.md), [verification and check timing](../docs/verification.md).

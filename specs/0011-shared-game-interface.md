@@ -10,6 +10,10 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Homepage header alignment 0036
+
+[Instruction 0036](../prompts/0036-align-homepage-header-top-edges.md) is implemented with two homepage-scoped rules in `src/map-ui.css`, aligning the header/action group and the account's visible guest icon at the top. English/Chinese checks at 1440/760/360px and screenshot review passed matching edges, usable targets and no overflow; setup remains centered. [Results and limits](../collaboration/log.md#0036--align-homepage-header-top-edges).
+
 ## Homepage action order 0035
 
 [Instruction 0035](../prompts/0035-create-before-explore.md) is implemented: Create left, Explore right, with existing artwork/hints/actions and matching keyboard order. Focused English/Chinese checks at 1440/360px and TypeScript passed; [results](../collaboration/log.md#0035--place-create-before-explore).

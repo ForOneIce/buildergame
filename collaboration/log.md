@@ -1,5 +1,9 @@
 # Human–AI collaboration log
 
+## 0036 — Align homepage header top edges
+
+- 2026-09-12 18:16 (UTC): Codex implemented [0036](../prompts/0036-align-homepage-header-top-edges.md) with two homepage-scoped `src/map-ui.css` rules: top-align the header/action group and account contents, with zero account top padding. Focused Playwright/headless Chrome checks via `node -` passed in English/Chinese at 1440/760/360px: logo/language/account/guest-icon tops matched at 28/20/18px respectively, targets were at least 44×44, and no horizontal overflow or page errors occurred. Desktop/mobile screenshots, account hover hint, Create navigation and unchanged centered setup alignment passed inspection. An initial navigation check timed out using the incorrect `#create-town` selector; the corrected `[data-create]` check passed. Full suite, TypeScript, production build and authenticated-session checks were not run for this CSS-only revision.
+
 ## 0035 — Place Create before Explore
 
 - 2026-09-12 (UTC): Codex implemented [0035](../prompts/0035-create-before-explore.md), placing Create left and Explore right. Focused Chrome checks in English/Chinese at 1440/360px passed DOM/visual order, plan/map artwork, Create hover hint, Tab order and both destinations (setup form and ready town), without page errors; TypeScript without emit passed. No production-build or full-suite rerun, new tests or assets for this DOM reorder.

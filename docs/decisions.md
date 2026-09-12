@@ -1,5 +1,9 @@
 # Decision log
 
+## D-022 — Align homepage header controls at the top
+
+- 2026-09-12 (UTC): [instruction 0036](../prompts/0036-align-homepage-header-top-edges.md) is implemented with homepage-only top alignment for the logo, language/account controls and guest icon. Focused desktop/mobile English/Chinese checks passed; setup retains centered alignment. [Results and limits](../collaboration/log.md#0036--align-homepage-header-top-edges).
+
 ## D-021 — Put Create before Explore
 
 - 2026-09-12 (UTC): [instruction 0035](../prompts/0035-create-before-explore.md) is implemented with Create left, Explore right and matching DOM/keyboard order. Existing artwork/actions remain; focused Chrome and TypeScript checks passed. [Results](../collaboration/log.md#0035--place-create-before-explore).

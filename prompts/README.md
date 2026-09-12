@@ -35,5 +35,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0033 — Show the growth tagline on hover and enlarge the building](0033-hover-tagline-and-larger-building.md)
 - [0034 — Balance introduction spacing and share the tooltip style](0034-balanced-intro-and-shared-tooltip.md)
 - [0035 — Place Create before Explore on the homepage](0035-create-before-explore.md)
+- [0036 — Align homepage header button top edges](0036-align-homepage-header-top-edges.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.
