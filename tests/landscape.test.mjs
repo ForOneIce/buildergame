@@ -3,6 +3,24 @@ import assert from 'node:assert/strict';
 import {sampleTown} from '../src/sample.mjs';
 import {configuration,publicBundle,assertAppend} from '../src/bundle.mjs';
 import {groundHeight,plotPosition} from '../src/landscape.mjs';
+
+test('initial collections expand without collisions or changing earlier plot assignments',()=>{
+ let previous=[];
+ for(const count of [1,9,50,200]){
+  const event=configuration({name:'Generated town',repositories:Array.from({length:count},(_,i)=>`https://github.com/example/repo-${i}`)});
+  const plots=event.projects.map(p=>p.plot);
+  assert.deepEqual(plots.slice(0,previous.length),previous);
+  const occupied=new Set(plots.map(p=>`${p.x},${p.z}`));assert.equal(occupied.size,count);
+  // The actual configuration generator produces a connected street grid.
+  for(const p of plots.slice(1))assert.ok([[1,0],[-1,0],[0,1],[0,-1]].some(([x,z])=>occupied.has(`${p.x+x},${p.z+z}`)));
+  for(const mode of ['flat','valley','clouds']){
+   const positions=plots.map(p=>plotPosition(p,mode));
+   assert.equal(new Set(positions.map(p=>`${p.x},${p.y},${p.z}`)).size,count);
+   assert.ok(positions.every(p=>Object.values(p).every(Number.isFinite)));
+  }
+  previous=plots;
+ }
+});
 test('landscape round-trips, defaults to flat and cannot change inside a town',()=>{
  const b=sampleTown();assert.doesNotThrow(()=>publicBundle(b));
  for(const landscape of ['flat','valley','clouds']){const copy=structuredClone(b);copy.event.landscape=landscape;assert.equal(publicBundle(copy).event.landscape,landscape);if(landscape!=='flat')assert.throws(()=>assertAppend(b,copy),/Landscape is fixed/);}

@@ -5,15 +5,16 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { appearance, PLOT_SPACING, release, townAssets } from './town-assets';
-import type { Project, Snapshot } from './types';
+import { appearance, release, townAssets } from './town-assets';
+import {createLandscape} from './terrain';
+import type { Landscape, Project, Snapshot } from './types';
 import './town.css';
 
-export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void) {
+export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void, landscape: Landscape = 'flat') {
   const zh = document.documentElement.lang.startsWith('zh');
   const t = (en: string, cn: string) => zh ? cn : en;
   let disposed = false, dirty = true;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#e9eedc');
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(landscape==='clouds'?'#bddbef':'#b8d9df');
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -38,36 +39,15 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   ao.updateGtaoMaterial({ radius: .35, thickness: 1, distanceExponent: 1.6, distanceFallOff: .9, samples: 8 });
   ao.blendIntensity = .78; composer.addPass(ao); const output = new OutputPass(); composer.addPass(output);
   const assets = townAssets(scene, projects.length, () => { dirty = true; }); retry.onclick = () => assets.retry();
-  const xs = projects.length ? projects.map(p => p.plot.x * PLOT_SPACING) : [0];
-  const zs = projects.length ? projects.map(p => p.plot.z * PLOT_SPACING) : [0];
-  const minX = Math.min(...xs), maxX = Math.max(...xs), minZ = Math.min(...zs), maxZ = Math.max(...zs);
-  const center = new THREE.Vector3((minX + maxX) / 2, 0, (minZ + maxZ) / 2);
-  const width = maxX - minX + 18, depth = maxZ - minZ + 18;
-  const terrain = new THREE.Group(); scene.add(terrain);
-  const mats = new Map<string, THREE.MeshStandardMaterial>();
-  function box(w: number, h: number, d: number, x: number, y: number, z: number, color: string) {
-    if (!mats.has(color)) mats.set(color, new THREE.MeshStandardMaterial({ color, roughness: 1 }));
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mats.get(color));
-    mesh.position.set(x, y, z); mesh.receiveShadow = true; terrain.add(mesh); return mesh;
-  }
-  // Continuous planted ground; fixed plots have room for the largest courtyard.
-  box(width + 18, .12, depth + 18, center.x, -.29, center.z, '#b1bd82');
-  box(width, .10, depth, center.x, -.20, center.z, '#9fae72');
-  for (const z of new Set(zs.map(z => z + 6))) {
-    box(width, .04, 2.3, center.x, -.13, z, '#baa77d');
-    box(width, .04, 1.85, center.x, -.10, z, '#d6c6a1');
-  }
-  for (const x of new Set(xs.map(x => x + 6))) {
-    box(2.3, .04, depth, x, -.13, center.z, '#baa77d');
-    box(1.85, .04, depth, x, -.09, center.z, '#d6c6a1');
-  }
+  const layout=createLandscape(projects,landscape);
+  const {center,width,depth}=layout;const terrain=layout.group;scene.add(terrain);
+  host.dataset.landscape=landscape;
   const signGeometry = new THREE.PlaneGeometry(1, 1), hitGeometry = new THREE.BoxGeometry(4.8, 5.6, 4.6);
   const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const hitTargets: THREE.Object3D[] = [], avatars: HTMLImageElement[] = [];
   const buildings = new Map<string, { root: THREE.Group; sign: THREE.Mesh; marker: THREE.Mesh; stage: number; progress: number }>();
   for (const p of projects) {
-    const root = new THREE.Group(); root.position.set(p.plot.x * PLOT_SPACING, 0, p.plot.z * PLOT_SPACING); scene.add(root);
-    box(1.2, .04, 2.75, root.position.x - 1.25, -.08, root.position.z + 4.6, '#d6c6a1');
+    const root = new THREE.Group(); const pos=layout.positions.get(p.id)!;root.position.set(pos.x,pos.y,pos.z); scene.add(root);
     const canvas = document.createElement('canvas'); canvas.width = 768; canvas.height = 320;
     const ctx = canvas.getContext('2d')!, texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
     const drawSign = (avatar?: HTMLImageElement) => {
@@ -106,7 +86,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
 
   function reset() {
     camera.aspect = Math.max(1, host.clientWidth) / Math.max(1, host.clientHeight); camera.updateProjectionMatrix();
-    const distance = Math.max((width + depth * .45) / camera.aspect, depth + width * .42) / (2 * Math.tan(THREE.MathUtils.degToRad(18))) * 1.05;
+    const distance = Math.max((width + depth * .45) / camera.aspect, depth + width * .42) / (2 * Math.tan(THREE.MathUtils.degToRad(18))) * (camera.aspect < .8 ? .94 : .84);
     controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.6, .88, 1).normalize().multiplyScalar(distance));
     controls.maxDistance = Math.max(80, distance * 2); controls.update(); dirty = true;
   }
@@ -118,6 +98,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   const matrix = new THREE.Matrix4(), transform = new THREE.Matrix4();
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let last = performance.now(), lastBatch = 0;
+  let preview: ((data:string)=>void)|undefined;
   function batches() {
     dirty = false;
     const near = new Set([...buildings.values()].filter(b => camera.position.distanceTo(b.root.position) < 38)
@@ -148,7 +129,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     const extent = Math.min(65, Math.max(12, camera.position.distanceTo(controls.target) * .45));
     sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(new THREE.Vector3(-30, 100, 70));
     Object.assign(sun.shadow.camera, { left: -extent, right: extent, top: extent, bottom: -extent, near: 1, far: 250 });
-    sun.shadow.camera.updateProjectionMatrix(); ao.enabled = camera.position.distanceTo(controls.target) < 110;
+    sun.shadow.camera.updateProjectionMatrix(); ao.enabled = camera.position.distanceTo(controls.target) < (landscape==='clouds'?180:110);
   }
   renderer.setAnimationLoop(now => {
     const delta = Math.min((now - last) / 1000, .06); last = now; if (document.hidden) return;
@@ -156,12 +137,15 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     controls.update(); if (dirty && now - lastBatch > 80) { batches(); lastBatch = now; }
     renderer.info.autoReset = false; renderer.info.reset(); composer.render();
     host.dataset.drawCalls = String(renderer.info.render.calls); host.dataset.triangles = String(renderer.info.render.triangles);
+    if(preview){const done=preview;preview=undefined;const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const side=Math.min(renderer.domElement.width,renderer.domElement.height)*.67;canvas.getContext('2d')!.drawImage(renderer.domElement,(renderer.domElement.width-side)/2,(renderer.domElement.height-side)/2,side,side,0,0,256,256);done(canvas.toDataURL('image/png'));}
   });
   return {
     reset,
+    capturePreview(callback:(data:string)=>void){preview=callback;},
+    mapPoints: projects.map(p=>({id:p.id,...layout.positions.get(p.id)!})),
     focus(id: string) {
       const b = buildings.get(id); if (!b) return;
-      ring.visible = true; ring.position.x = b.root.position.x; ring.position.z = b.root.position.z;
+      ring.visible = true; ring.position.x = b.root.position.x; ring.position.z = b.root.position.z; ring.position.y=b.root.position.y-.025;
       controls.target.copy(b.root.position).add(new THREE.Vector3(0, 1.4, 0));
       camera.position.copy(controls.target).add(new THREE.Vector3(10, 11, 16)); controls.update(); dirty = true;
     },
