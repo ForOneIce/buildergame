@@ -1,6 +1,14 @@
-# Shared game interface proposal
+# Shared game interface
 
-Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md), [0025](../prompts/0025-readable-preview-layout.md), [0026](../prompts/0026-concise-project-popup.md) and [0027](../prompts/0027-paired-action-layout.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: application-wide implementation authorized and in progress; implementation QA pending. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md), [0025](../prompts/0025-readable-preview-layout.md), [0026](../prompts/0026-concise-project-popup.md), [0027](../prompts/0027-paired-action-layout.md), [0028](../prompts/0028-playful-context-cursors.md), [0029](../prompts/0029-object-based-game-interface.md) and [0030](../prompts/0030-implement-shared-game-interface.md). Sources: [UI assets](../docs/ui-kit-research.md) and [game-object interaction research](../docs/game-interaction-language.md).
+
+## Current implementation authorization
+
+Instruction 0030 supersedes the standalone-preview restriction and authorizes adoption across the actual application. Earlier preview descriptions below preserve the design's development history; their previous approval gate is now satisfied for implementation. This does not claim separate human approval of every prototype detail or a passing result for the new runtime changes.
+
+Apply a shared header/material system to welcome, planning, success and town views, with the object-based entry actions and contextual feedback. Keep existing data capture, both collection modes, import/export, player sessions/progress and locked building appearances intact. Ordinary project details remain concise; external project navigation requires an explicit visitor action. Actual file scope, screenshots and executed checks must be recorded after integration.
+
+Implemented foundation: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transition and cursor styling; `src/ui/icons.ts` contains original geometric icons. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced. These files are implemented; completed screen integration and passing runtime QA are not yet claimed.
 
 ## Observable problem
 
@@ -57,7 +65,7 @@ Hover and pressed feedback can adjust depth or brightness without switching an u
 
 The human requested more breathing room and a layout that reduces reading effort. In the standalone proposal, enlarge body and secondary text where needed, allow generous line height and panel padding, and use a consistent hierarchy of space between text, controls and sections. Labels should stay close to their fields; related details should form recognizable groups, with actions separated from explanatory copy.
 
-Desktop and narrow layouts should reflow without clipping text or controls. Chinese text uses normal letter spacing, with enough line height for the typeface. Preserve the brown-default and cream-selected button rule while changing spacing. This revision adds no assets and does not authorize global integration before the existing human review gate is satisfied.
+Desktop and narrow layouts should reflow without clipping text or controls. Chinese text uses normal letter spacing, with enough line height for the typeface. Preserve the brown-default and cream-selected button rule while changing spacing. The earlier typography-only revision added no assets; instruction 0030 now authorizes carrying this layout direction into the application.
 
 Current preview choices: 16px body text, 28px descriptive-paragraph line height, 13–15px secondary labels, 20–32px panel padding and at least 48px button height. Form labels sit 8px above their fields; field groups use a 24px gap. Narrow layouts stack fields and actions while retaining readable labels. The project card replaces the exploration summary in a dedicated grid area, leaving navigation unobscured. Opening/closing the card moves and restores keyboard focus. These are preview choices awaiting visual acceptance, not a global design-system release. Actual checks are recorded in [the collaboration log](../collaboration/log.md).
 
@@ -65,13 +73,25 @@ Paired horizontal action rows use two equal columns, each with a content-sized b
 
 ### Concise project popup
 
-The human requested less redundant popup content. Keep the title, close control, avatar with author name, one useful sentence about the project and one Visit project action, disabled for the fictional preview. Remove the construction-stage badge, redundant “Builder” suffix, three-metric block and repeated generic filler copy. This is a presentation change: it does not remove source metrics or alter house-growth rules. Preserve the existing button materials, readable spacing and focus behavior. The standalone preview remains subject to human review before any global application; QA for this simplification must be recorded after inspection.
+The human requested less redundant popup content. Keep the title, close control, avatar with author name, one useful sentence about the project and one Visit project action, disabled for fictional samples. Remove the construction-stage badge, redundant “Builder” suffix, three-metric block and repeated generic filler copy. This is a presentation change: it does not remove source metrics or alter house-growth rules. Preserve the existing button materials, readable spacing and focus behavior. Instruction 0030 authorizes implementation; real-application QA for this simplification must be recorded after inspection.
+
+### Contextual cursors and doorway greeting
+
+The human requested axe, footprint and gloved-hand cursors to make building, exploration and door interactions more playful. The preview plan uses native PNG cursor assets: axe in build areas and entry actions, footsteps in exploration areas and entry actions, and a white glove on door/action targets, closing during the door-opening interaction. Text fields retain the native I-beam and disabled controls retain `not-allowed` feedback; touch users do not receive custom cursors. Cursor artwork supplements action labels rather than replacing them.
+
+A responsive hotspot on the existing town poster's doorway shows “Say hi” or its Chinese equivalent. Activation plays a brief CSS door-opening effect, then opens the existing concise fictional project card. The control must support keyboard activation, visible focus and reduced-motion preferences. This is a poster-based prototype, not Three.js raycasting, a walkable interior or application-wide integration. Retain the existing button-state, spacing and review rules. Actual asset choices and QA are recorded separately.
+
+### Objects that explain actions
+
+The human requested that major controls communicate through their visual form: creating a town unfolds a physical planning drawing on kraft paper; exploration begins from a map or globe, with a map-unfolding transition. The standalone proposal chooses a folded map for that entry. Combine these with the door greeting so the action follows the object's meaning: open the map, unfold the plan, greet a neighbor.
+
+Use short visible labels and accessible names to support recognition. Keep required fields as real controls within the planning sheet and preserve clear button states, the concise project card, keyboard behavior and reduced-motion support. A transition may illustrate opening the world; it must not imply measured loading progress that is unavailable. Referenced games are design inspiration, not licensed asset sources. [Observed sources and proposed mappings](../docs/game-interaction-language.md) guide the authorized implementation.
 
 ## Implementation approach and effort
 
-Retain Three.js for the world and native DOM for the interface. Kenney Adventure UI 1.1 has now been inspected and six original SVG files are used only in the revised standalone proposal; they supply no browser behavior. After human approval of that result, native `<dialog>`, inputs and buttons, shared CSS tokens and small TypeScript render helpers can support global integration. CSS nine-slice `border-image` can preserve illustrated corners at changing panel sizes. Simple surfaces can remain original CSS/SVG. No new game engine, React migration or broad component library is needed solely for this redesign.
+Retain Three.js for the world and native DOM for the interface. Kenney Adventure UI 1.1 has been inspected and six original SVG files were selected in the standalone proposal; they supply no browser behavior. The authorized runtime implementation can use native `<dialog>`, inputs and buttons, shared CSS tokens and small TypeScript render helpers. CSS nine-slice `border-image` can preserve illustrated corners at changing panel sizes. Simple surfaces can remain original CSS/SVG. No new game engine, React migration or broad component library is needed solely for this redesign.
 
-Suggested module boundaries are `ui/tokens.css`, `ui/components.css` and shared rendering helpers, with screen-specific composition kept separate. Migrate selectors and remove superseded declarations in each step. These paths describe a proposal; files have not been created.
+Suggested module boundaries separate shared tokens/components from screen composition and rendering helpers. Migrate selectors and remove superseded declarations in each step. Exact implemented paths are recorded with the completed changes rather than treating the earlier proposed filenames as required architecture.
 
 Relative effort estimates, not delivery commitments:
 
@@ -82,7 +102,7 @@ Relative effort estimates, not delivery commitments:
 
 License cost can remain zero with original surfaces, CC0 candidates and selected permissively licensed icons. Main costs are adaptation, integration and review. Restrict imported files rather than shipping whole packs; set an asset-size budget after inspecting actual selected files. No asset or performance budget is claimed as measured by this study.
 
-## Review and later acceptance
+## Implementation acceptance criteria
 
 - The same logo, primary action shape, icon weight, panel edges and typography appear at the entrance, planning desk, success and world views.
 - Light/dark surface variants keep information readable without changing the core identity. Long project names, empty/error/loading states and stale-data labels remain usable.
@@ -92,8 +112,10 @@ License cost can remain zero with original surfaces, CC0 candidates and selected
 - Asset lock still passes. No building geometry changes are part of this UI proposal.
 - Human review determines whether the visual continuity is satisfactory; source research and a mockup are not that acceptance.
 
-## This study's output boundary
+Verification plan: production build and existing data/API/landscape/player checks, followed by focused browser journeys for shared navigation, both setup modes, capture/success, backup round trips, account presentation and project-card behavior. Inspect welcome, setup, success, town and card layouts at desktop and narrow widths in English and Chinese. Check transition completion, disabled fictional links, keyboard focus return, console errors and unchanged building fingerprints. Real GitHub OAuth requires separately configured credentials; mocked transport must be identified as such. These criteria are not passing results.
+
+## Prototype history and implementation boundary
 
 The standalone interactive proposal compares entrance, planning desk and neighborhood using shared material tokens, with English as the default and a Chinese toggle. Its HTML/CSS surrounds a crop from the project's fictional sample screenshot. The current revision embeds six unchanged SVG originals from Kenney Adventure UI 1.1: wooden sign/frame variants, a cream panel, a matching button, a transparent-center frame and a round medallion. The exact files and source/license evidence are recorded in [UI kit research](../docs/ui-kit-research.md).
 
-The proposal is stored outside the repository and remains a review artifact. Mocked controls do not authenticate, fetch repositories, save settings or publish anything. The human explicitly requires confirmation of the revised appearance before it is applied globally. The existing application, dependencies and locked building models are unchanged by this iteration. Preview verification and visual acceptance must be recorded separately; neither is implied by selecting the materials.
+The standalone proposal is stored outside the repository and remains a review artifact; its mocked controls do not authenticate, fetch repositories, save settings or publish anything. Earlier preview iterations left the application and locked building models unchanged. Instruction 0030 now authorizes application implementation. Locked building appearances and existing data semantics remain constraints; new runtime changes and their verification must be recorded separately from prototype evidence. Implementation authorization does not establish that the redesigned application is complete or visually accepted.

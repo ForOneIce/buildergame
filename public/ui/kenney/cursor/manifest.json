@@ -1,0 +1,87 @@
+{
+  "name": "Cursor Pack",
+  "version": "1.1",
+  "creator": "Kenney",
+  "creationDate": "2024-06-05",
+  "retrievedDate": "2026-09-12",
+  "pageUrl": "https://kenney.nl/assets/cursor-pack",
+  "archiveUrl": "https://kenney.nl/media/pages/assets/cursor-pack/461b29df18-1717599281/kenney_cursor-pack.zip",
+  "archiveSha256": "baa87634f3cfd294b0c83e70222053aab2f56d19f78eca4067b9b38a555269cc",
+  "license": "CC0-1.0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "licenseFile": "License.txt",
+  "licenseSha256": "a134e52b4689ed8a57f170e0dacfcba5d64351cbd0858aa2e325b8486d0ca9d6",
+  "applicationUse": "Context cursors for construction, exploration, controls, draggable surfaces and active dragging.",
+  "modifications": "None; selected assets and license copied byte-for-byte from the official archive.",
+  "notes": [
+    "Slice values and cursor hotspots are Buildergame implementation guidance based on visual inspection, not official pack metadata.",
+    "Original assets are served locally; this integration requires no remote asset service."
+  ],
+  "files": [
+    {
+      "source": "PNG/Outline/Default/tool_axe_single.png",
+      "target": "tool_axe_single.png",
+      "width": 32,
+      "height": 32,
+      "usage": "Construction controls",
+      "recommendedHotspot": [
+        10,
+        5
+      ],
+      "sha256": "ea80e04b94f6ea2685d258796aef9254d086fe918a0a7c3fb148de73dcf3c90c",
+      "bytes": 681
+    },
+    {
+      "source": "PNG/Outline/Default/steps.png",
+      "target": "steps.png",
+      "width": 32,
+      "height": 32,
+      "usage": "Exploration entry and town context; does not imply player walking",
+      "recommendedHotspot": [
+        16,
+        16
+      ],
+      "sha256": "58c6b8778fd8bcf76cf7d6acd3d430d51f3955c3922470ad6b838018431129a1",
+      "bytes": 544
+    },
+    {
+      "source": "PNG/Outline/Default/hand_point.png",
+      "target": "hand_point.png",
+      "width": 32,
+      "height": 32,
+      "usage": "Ordinary clickable controls",
+      "recommendedHotspot": [
+        9,
+        3
+      ],
+      "sha256": "1406334a710ea148bda5cf002630ad70cbd68aad3831076783aff6e029e5ed0b",
+      "bytes": 476
+    },
+    {
+      "source": "PNG/Outline/Default/hand_open.png",
+      "target": "hand_open.png",
+      "width": 32,
+      "height": 32,
+      "usage": "Door interactions and draggable surfaces",
+      "recommendedHotspot": [
+        16,
+        15
+      ],
+      "sha256": "e6e1f5e601f847320d26937d0517600179a6d5129105c86fa4463d8ec3429da6",
+      "bytes": 501
+    },
+    {
+      "source": "PNG/Outline/Default/hand_closed.png",
+      "target": "hand_closed.png",
+      "width": 32,
+      "height": 32,
+      "usage": "Door-opening and active-drag feedback",
+      "recommendedHotspot": [
+        16,
+        16
+      ],
+      "sha256": "b0c941d4d5ff92dbd5bc5951d071527f5e3e64a28c5ce2956f55707eaac42d54",
+      "bytes": 450
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 # Shared game UI: reusable source evaluation
 
-Research date: 2026-09-12. Status: Kenney Adventure UI selected for the standalone visual proposal only; global application awaits human confirmation. No paid resource, new dependency or application asset has been added by this research and preview iteration.
+Research date: 2026-09-12. Status: Kenney Adventure UI and Cursor Pack were selected for the standalone proposal; [instruction 0030](../prompts/0030-implement-shared-game-interface.md) now authorizes application integration. Records below describe source research and preview reuse, not completed runtime QA. No paid resource is selected.
+
+Implementation update: the eleven selected artwork files are now vendored at `public/ui/kenney/adventure/` and `public/ui/kenney/cursor/`, alongside the original license text and [Adventure](../public/ui/kenney/adventure/manifest.json)/[Cursor](../public/ui/kenney/cursor/manifest.json) source manifests. Asset/license hashes match their recorded originals; the directory's `.gitattributes` prevents text conversion of those originals. Shared CSS is implemented in `src/ui/theme.css`, and `src/ui/icons.ts` supplies original geometric icons instead of adding Lucide. Full application integration and browser QA remain in progress.
 
 > 中文简注：先统一首页、建镇流程和小镇界面的视觉语言；素材包只提供外观，不等于已经实现交互的组件库。
 
@@ -18,7 +20,7 @@ The proposed direction is a shared set of native DOM components and CSS tokens, 
 
 ## Game-oriented visual assets
 
-The Kenney counts, versions and licenses below were initially read from official product pages and their previews inspected. In the subsequent preview iteration, the selected Adventure archive and its license were retrieved and inspected; the verified archive identifies version 1.1, superseding the earlier v1.0 product-page observation. Other candidate archives remain uninspected. File counts are the site's asset counts, not counts of working web components.
+The Kenney counts, versions and licenses below were initially read from official product pages and their previews inspected. In the subsequent preview iteration, the selected Adventure archive and its license were retrieved and inspected; the verified archive identifies version 1.1, superseding the earlier v1.0 product-page observation. Other packs in this table remain uninspected at archive level; the later Cursor Pack inspection is recorded separately below. File counts are the site's asset counts, not counts of working web components.
 
 | Candidate | Observed availability | Visual assessment and proposed use | Integration effort estimate |
 | --- | --- | --- | --- |
@@ -42,7 +44,13 @@ Verified source: Kenney's [Adventure UI page](https://kenney.nl/assets/ui-pack-a
 | `Vector/panel_border_brown.svg` | Transparent-center wood frame over the teal CSS surface |
 | `Vector/round_brown.svg` | Round player medallion |
 
-These six SVG originals are embedded without modifying their source content in the local visual proposal outside the repository. CSS sizing, frame slicing, transparency and interaction states are Codex adaptations, not features supplied by the asset pack. Only the teal surface uses alpha 0.24; dark label text retains its own opacity. Slices are implementation choices based on inspection, not official pack metadata. No paid resource is used, and global integration remains conditional on the human's review of this preview. Other inspected files are candidates, not adopted assets.
+These six SVG originals were embedded without modifying their source content in the local visual proposal and are now vendored under `public/ui/kenney/adventure/`. CSS sizing, frame slicing, transparency and interaction states are Codex adaptations, not features supplied by the asset pack. Only the teal surface uses alpha 0.24; dark label text retains its own opacity. Slices are implementation choices based on inspection, not official pack metadata. No paid resource is used. Other inspected files remain candidates until adopted.
+
+### Contextual cursor assets
+
+For the [cursor and door-greeting request](../prompts/0028-playful-context-cursors.md), Kenney's [Cursor Pack](https://kenney.nl/assets/cursor-pack) provides the requested axe, footprints and glove family. The [official archive](https://kenney.nl/media/pages/assets/cursor-pack/461b29df18-1717599281/kenney_cursor-pack.zip), retrieved 2026-09-12, identifies version 1.1; its original `License.txt` confirms CC0-1.0 and free personal, educational and commercial reuse, with optional attribution. Archive SHA-256: `baa87634f3cfd294b0c83e70222053aab2f56d19f78eca4067b9b38a555269cc`.
+
+Selected original files are from `PNG/Outline/Default/`: `tool_axe_single.png` for construction, `steps.png` for exploration, `hand_point.png` for ordinary actions, `hand_open.png` for the doorway and `hand_closed.png` during opening. All five are now vendored unchanged under `public/ui/kenney/cursor/`. Matching SVG sources in `Vector/Outline/` were inspected but are not vendored. Cursor roles, CSS hotspots, doorway placement and animation are Codex implementation choices, not pack features; shared CSS also provides open/closed-hand variants for drag feedback. No paid source or extra icon library is needed. Actual interaction QA is separate from source/license verification.
 
 ## Functional icons and controls
 
@@ -78,7 +86,7 @@ Neither a decorative frame nor an accessible component library makes the whole a
 
 ## Proposed shared visual system
 
-The selected direction is a restrained town-management interface: warm wood for identity, light cream for readable content and highly transparent teal panels for lightweight controls over the scene. Lantern-gold primary actions and restrained moss-green status accents are supporting AI proposals. These should be variations of the same component shapes and spacing, not separate site and game themes. See [the shared interface proposal](../specs/0011-shared-game-interface.md) for screen and component contracts.
+The selected direction is a restrained town-management interface: warm wood for identity, light cream for readable content and highly transparent teal panels for lightweight controls over the scene. The human's later button-state instruction supersedes the initial gold-primary proposal: default actions are brown, and cream identifies persistent selection. Restrained moss-green status accents remain a supporting AI proposal. These should be variations of the same component shapes and spacing, not separate site and game themes. See [the shared interface proposal](../specs/0011-shared-game-interface.md) for screen and component contracts.
 
 Start with shared tokens for colors, typography, spacing, radii, border depth, shadows, focus rings and motion. Build a small set of reusable surfaces and controls: panel, button, icon button, tab, field, metric badge, progress indicator, dialog and notification. Use the same components in the homepage, setup workflow and town HUD.
 
@@ -91,8 +99,8 @@ Recommended order:
 3. Apply the same components across the existing screens; remove conflicting legacy rules as each surface is migrated.
 4. Verify English and Chinese text expansion, keyboard access, mobile layout and scene readability. Recheck existing creation, snapshot and exploration journeys.
 
-The human selected free Kenney Adventure UI materials for the preview and explicitly requested review before global application. The chosen archive files and license are recorded above. No other pack, icon family or functional library is selected by that decision.
+The human selected free Kenney Adventure UI materials for the preview and explicitly requested review before global application. The later contextual-cursor request is supported by the selected free Cursor Pack originals. Both archives and their licenses are recorded above; no functional library is adopted by these preview choices.
 
 ## Evidence and limits
 
-Official web pages and the indicated raw license files were read using HTTP requests; Kenney official previews were visually inspected. The initial research did not retrieve archives. The follow-up preview iteration inspected the official Adventure UI 1.1 archive and its license, and selected the six originals above. No runtime integration or bundle-size benchmark was run for this documentation update. Some live icon counts and package versions may change after the research date. Preview QA and human visual confirmation are separate checks; selecting a material direction does not establish global skin implementation or acceptance.
+Official web pages and the indicated raw license files were read using HTTP requests; Kenney official previews were visually inspected. The initial research did not retrieve archives. Follow-up preview work inspected the official Adventure UI 1.1 and Cursor Pack 1.1 archives and their licenses, selecting six SVG and five PNG originals respectively. No runtime integration or bundle-size benchmark was run for this documentation update. Some live icon counts and package versions may change after the research date. Preview QA and human visual confirmation are separate checks; selecting a material direction does not establish global skin implementation or acceptance.

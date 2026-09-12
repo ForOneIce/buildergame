@@ -1,0 +1,5 @@
+# Preserve original asset and license bytes recorded in each pack manifest.
+*.svg -text
+*.png binary
+# Original license files include intentional whitespace and CRLF bytes.
+License.txt -text -whitespace

@@ -1,5 +1,17 @@
 # Decision log
 
+## D-016 — Implement the shared interface across the application
+
+- 2026-09-12 (UTC): the human instructed “正式开发改造项目”, authorizing application-wide implementation of the refined visual direction. [Instruction and translation](../prompts/0030-implement-shared-game-interface.md).
+- This supersedes the preview-only restriction in D-013 through D-015. It is implementation authorization, not a claim of separate approval for every prototype detail or completed runtime QA.
+- Preserve free-asset provenance, locked buildings, organizer growth rules, existing data/account/backup behavior and English/Chinese support. Implementation is ongoing; actual browser/build results and remaining limits must be recorded after checks. [Specification](../specs/0011-shared-game-interface.md).
+
+## D-015 — Give key actions recognizable game-object forms
+
+- 2026-09-12 (UTC): the human requested research into game design language and specified a kraft-paper planning drawing for creating a town, plus a map-or-globe exploration entry with a map-unfolding transition. [Instructions](../prompts/0029-object-based-game-interface.md).
+- Preview choice: use a folded map for exploration, a physical planning sheet for setup and the existing doorway for project discovery. Concise labels support these objects instead of carrying their entire meaning. The researched games supply design references, not reused artwork.
+- Scope remains the standalone proposal, with free selected assets and original layout/illustrations. No global integration is authorized before human visual confirmation. [Research and mappings](game-interaction-language.md), [specification](../specs/0011-shared-game-interface.md).
+
 ## D-014 — Reserve cream buttons for persistent selection
 
 - 2026-09-12 (UTC): the human specified brown unselected buttons and cream selected buttons, to make control state and click targets understandable.

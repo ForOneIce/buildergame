@@ -1,0 +1,266 @@
+/* Shared materials and interaction language. 素材和基础控件统一在此。 */
+:root {
+  color-scheme: light;
+  --bg-ink: #304c43;
+  --bg-muted: #576b58;
+  --bg-paper: #fff5d5;
+  --bg-paper-edge: #b47b41;
+  --bg-wood: #a3703a;
+  --bg-wood-edge: #6d4b27;
+  --bg-gold: #d5b46c;
+  --bg-glass: rgb(61 163 154 / .24);
+  --bg-glass-strong: rgb(179 220 206 / .84);
+  --bg-focus: #8b4e16;
+  --bg-world: #b7d9d5;
+  --bg-shadow: 0 5px 16px rgb(37 86 75 / .12);
+  --bg-font: "Trebuchet MS", "Microsoft YaHei", sans-serif;
+  --bg-body-size: 16px;
+  --bg-control-size: 15px;
+  --bg-small-size: 13px;
+  --bg-control-height: 48px;
+  --bg-space: 8px;
+  --ink: var(--bg-ink);
+  --muted: var(--bg-muted);
+  --cream: var(--bg-paper);
+  --teal: #397d72;
+  --line: rgb(109 75 39 / .23);
+  --kenney-logo: url('/ui/kenney/adventure/panel_brown_dark_corners_a.svg');
+  --kenney-wood: url('/ui/kenney/adventure/panel_brown_dark.svg');
+  --kenney-paper: url('/ui/kenney/adventure/panel_brown.svg');
+  --kenney-button: url('/ui/kenney/adventure/button_brown.svg');
+  --kenney-frame: url('/ui/kenney/adventure/panel_border_brown.svg');
+  --kenney-round: url('/ui/kenney/adventure/round_brown.svg');
+  --bg-cursor-axe: url('/ui/kenney/cursor/tool_axe_single.png');
+  --bg-cursor-steps: url('/ui/kenney/cursor/steps.png');
+  --bg-cursor-point: url('/ui/kenney/cursor/hand_point.png');
+  --bg-cursor-open: url('/ui/kenney/cursor/hand_open.png');
+  --bg-cursor-closed: url('/ui/kenney/cursor/hand_closed.png');
+}
+
+body {
+  font-family: var(--bg-font);
+  font-size: var(--bg-body-size);
+  line-height: 1.6;
+  color: var(--bg-ink);
+  background: var(--bg-world);
+}
+
+.ui-icon { display: inline-block; width: 1.35em; height: 1.35em; vertical-align: -.2em; flex-shrink: 0; }
+button, input, textarea, select { font: inherit; }
+button, a, summary { touch-action: manipulation; }
+:is(button, a, input, textarea, select, summary):focus-visible { outline: 3px solid var(--bg-focus); outline-offset: 4px; }
+button:disabled, [aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+
+.button, .game-button, .hud-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--bg-control-height);
+  min-width: 0;
+  padding: 9px 15px;
+  border: 6px solid transparent;
+  border-image: var(--kenney-wood) 8 fill / 6px stretch;
+  border-radius: 2px;
+  background: none;
+  color: #fff3d3;
+  font-size: var(--bg-control-size);
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  box-shadow: 0 3px rgb(109 75 39 / .24);
+  transition: transform .12s, box-shadow .12s, filter .12s;
+}
+.button.primary, .button.dark, .game-button.primary {
+  background: none;
+  border-color: transparent;
+  color: #fff3d3;
+}
+.hud-button.active, .hud-button[aria-pressed="true"],
+.game-button[aria-pressed="true"], .button[aria-pressed="true"] {
+  border-image-source: var(--kenney-button);
+  border-image-slice: 6 fill;
+  background: none;
+  color: var(--bg-ink);
+  box-shadow: 0 1px rgb(109 75 39 / .24);
+}
+.hud-button.small { min-height: 44px; padding: 6px 10px; font-size: var(--bg-small-size); }
+.button:active:not(:disabled), .game-button:active:not(:disabled), .hud-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px rgb(109 75 39 / .24);
+}
+@media (hover: hover) {
+  .button:hover:not(:disabled), .game-button:hover:not(:disabled), .hud-button:hover:not(:disabled) { filter: brightness(1.07); }
+}
+
+.paper-panel {
+  background: none;
+  border: 8px solid transparent;
+  border-image: var(--kenney-paper) 8 fill / 8px stretch;
+  border-radius: 3px;
+  padding: 28px;
+  color: var(--bg-ink);
+  box-shadow: var(--bg-shadow);
+}
+.hud-glass {
+  background: var(--bg-glass);
+  background-clip: padding-box;
+  border: 9px solid transparent;
+  border-image: var(--kenney-frame) 16 / 9px stretch;
+  border-radius: 3px;
+  color: var(--bg-ink);
+  box-shadow: var(--bg-shadow);
+  backdrop-filter: blur(5px) saturate(1.08);
+}
+.wood-logo {
+  border: 12px solid transparent;
+  border-image: var(--kenney-logo) 16 fill / 12px stretch;
+  border-radius: 2px;
+  background: none;
+  color: #fff7df;
+  text-shadow: 0 2px #714f35;
+  box-shadow: 0 4px 5px rgb(56 91 76 / .19);
+  font-family: var(--bg-font);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 5px 12px 9px;
+  text-align: left;
+  transform: rotate(-2deg);
+}
+.wood-logo strong { font-weight: 500; }
+.wood-logo small { display: block; margin-top: 8px; font-size: 12px; letter-spacing: 1.4px; text-align: center; }
+.wood-logo .ui-icon { width: 22px; height: 22px; }
+.profile-chip { display: inline-flex; align-items: center; gap: 10px; padding: 7px 12px; text-align: left; }
+.profile-chip img, .guest-face {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  color: var(--bg-ink);
+  box-shadow: 0 0 0 2px var(--bg-wood-edge);
+}
+.guest-face { display: inline-grid; place-items: center; background: var(--kenney-round) center / 100% 100% no-repeat; box-shadow: none; }
+.profile-copy { min-width: 0; }
+.profile-copy strong { display: block; font-size: 14px; font-weight: 500; line-height: 1.4; }
+.profile-copy small { display: block; font-size: 12px; line-height: 1.5; color: var(--bg-muted); margin-top: 3px; }
+
+/* Object entry points keep short labels; their silhouettes suggest the action. */
+.object-entry, .button.object-entry, .game-button.object-entry {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-width: 0;
+  padding: 14px 8px;
+  border: 0;
+  border-image: none;
+  background: none;
+  color: var(--bg-ink);
+  box-shadow: none;
+  text-align: center;
+  text-decoration: none;
+}
+.object-label, .object-entry-label {
+  display: block;
+  padding: 8px 12px;
+  border: 6px solid transparent;
+  border-image: var(--kenney-wood) 8 fill / 6px stretch;
+  color: #fff3d3;
+  line-height: 1.4;
+  box-shadow: 0 3px rgb(109 75 39 / .16);
+}
+.map-art {
+  position: relative;
+  display: flex;
+  width: 126px;
+  height: 88px;
+  perspective: 500px;
+  transform: rotate(-7deg);
+  filter: drop-shadow(0 7px 4px rgb(74 91 67 / .19));
+  transition: transform .18s;
+}
+.map-fold {
+  display: block;
+  position: relative;
+  width: 33.333%;
+  height: 100%;
+  border: 1px solid #855d32;
+  background: linear-gradient(25deg, transparent 47%, #fbefd0 48% 52%, transparent 53%), linear-gradient(135deg, #bbcd91 0 24%, #d1ae71 25% 62%, #b1c1a0 63%);
+  transform: skewY(-12deg);
+}
+.map-fold:nth-child(2) { transform: skewY(12deg); filter: brightness(.91); }
+.map-route { position: absolute; left: 13px; right: 12px; top: 55%; border-top: 3px dotted #846044; transform: rotate(-20deg); }
+.map-art > .ui-icon { position: absolute; right: 18px; top: 20px; color: #824636; width: 24px; height: 24px; fill: #fff3d1; }
+.planning-roll, .plan-roll {
+  position: relative;
+  display: block;
+  width: 126px;
+  height: 88px;
+  margin: 0 6px;
+  background: linear-gradient(90deg, #90613c22, transparent 15% 85%, #90613c22), repeating-linear-gradient(0deg, transparent 0 15px, #66594335 15px 16px), repeating-linear-gradient(90deg, #d1ae71 0 15px, #66594335 15px 16px);
+  border: 1px solid #956b3f;
+  transform: rotate(6deg);
+  box-shadow: 0 7px 8px rgb(74 91 67 / .19);
+  transition: transform .18s;
+}
+.planning-roll::before, .planning-roll::after, .plan-roll::before, .plan-roll::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  bottom: -7px;
+  left: -5px;
+  width: 15px;
+  background: linear-gradient(90deg, #9a6a3e, #e0be83 45%, #bf8e57);
+  border: 1px solid #8f6039;
+  border-radius: 7px;
+}
+.planning-roll::after, .plan-roll::after { left: auto; right: -5px; }
+.planning-roll > .ui-icon, .plan-roll > .ui-icon { position: absolute; left: 41px; top: 25px; width: 44px; height: 36px; color: #625f44; }
+.object-entry:hover :is(.map-art, .planning-roll, .plan-roll), .object-entry:focus-visible :is(.map-art, .planning-roll, .plan-roll) { transform: translateY(-4px) rotate(0); }
+
+.map-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 36px;
+  padding: 24px;
+  background: rgb(183 217 213 / .96);
+  color: var(--bg-ink);
+  cursor: progress;
+}
+.map-transition .map-art { width: 228px; height: 150px; transform: none; filter: drop-shadow(0 18px 12px rgb(74 91 67 / .19)); }
+.map-transition .map-art > .ui-icon { top: 32px; right: 32px; width: 34px; height: 34px; }
+.map-transition .map-route { left: 24px; right: 24px; }
+.map-transition .map-fold { transform: none; animation: map-open-center .58s ease-out both; }
+.map-transition .map-fold:first-child { transform-origin: right center; animation-name: map-open-left; }
+.map-transition .map-fold:nth-child(3) { transform-origin: left center; animation-name: map-open-right; }
+.map-transition p { max-width: 34ch; font-size: 16px; line-height: 1.6; text-align: center; }
+@keyframes map-open-left { from { transform: rotateY(155deg); } to { transform: rotateY(0); } }
+@keyframes map-open-right { from { transform: rotateY(-155deg); } to { transform: rotateY(0); } }
+@keyframes map-open-center { from { transform: scaleX(.88); } to { transform: scaleX(1); } }
+
+@media (hover: hover) and (pointer: fine) {
+  body[data-screen="setup"] { cursor: var(--bg-cursor-axe) 10 5, auto; }
+  body[data-screen="town"] { cursor: var(--bg-cursor-steps) 16 16, auto; }
+  button, a[href], summary, select, [role="button"] { cursor: var(--bg-cursor-point) 9 3, pointer; }
+  [data-cursor="build"], .cursor-build { cursor: var(--bg-cursor-axe) 10 5, pointer; }
+  [data-cursor="walk"], .cursor-walk { cursor: var(--bg-cursor-steps) 16 16, pointer; }
+  [data-cursor="grab"], .cursor-grab { cursor: var(--bg-cursor-open) 16 15, grab; }
+  [data-cursor="grabbing"], .cursor-grabbing { cursor: var(--bg-cursor-closed) 16 16, grabbing; }
+  [data-cursor="visit"], .cursor-visit { cursor: var(--bg-cursor-open) 16 15, pointer; }
+  input, textarea { cursor: text; }
+  input[type="checkbox"], input[type="radio"], input[type="range"] { cursor: var(--bg-cursor-point) 9 3, pointer; }
+  button:disabled, [aria-disabled="true"] { cursor: not-allowed; }
+  .map-transition { cursor: progress; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button, .game-button, .hud-button, .map-art, .planning-roll, .plan-roll { transition: none; }
+  .map-transition .map-fold { animation: none; transform: none; }
+}

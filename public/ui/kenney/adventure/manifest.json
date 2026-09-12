@@ -1,0 +1,82 @@
+{
+  "name": "UI Pack - Adventure",
+  "version": "1.1",
+  "creator": "Kenney",
+  "creationDate": "2024-08-13",
+  "retrievedDate": "2026-09-12",
+  "pageUrl": "https://kenney.nl/assets/ui-pack-adventure",
+  "archiveUrl": "https://kenney.nl/media/pages/assets/ui-pack-adventure/9a877376bc-1723597274/kenney_ui-pack-adventure.zip",
+  "archiveSha256": "982e8ab66842509ee9214f9c2038e594cbe029f19d1dc177fecaad3b41a67ed3",
+  "license": "CC0-1.0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "licenseFile": "License.txt",
+  "licenseSha256": "593b79956190ca70b37ce5d0d1c71dd4b5fb4027d4d1d29a91814e950a36e6bd",
+  "applicationUse": "Shared wooden logo, button, cream paper, translucent HUD frame and avatar medallion.",
+  "modifications": "None; selected assets and license copied byte-for-byte from the official archive.",
+  "notes": [
+    "Slice values and cursor hotspots are Buildergame implementation guidance based on visual inspection, not official pack metadata.",
+    "Original assets are served locally; this integration requires no remote asset service."
+  ],
+  "files": [
+    {
+      "source": "Vector/panel_brown.svg",
+      "target": "panel_brown.svg",
+      "width": 64,
+      "height": 64,
+      "usage": "Cream paper with plain wood frame",
+      "suggestedSlice": 8,
+      "sha256": "dded438c7b82b4e4d7ba3fd33e74e6e027757247fcb78efdd1001dea1164fea8",
+      "bytes": 641
+    },
+    {
+      "source": "Vector/panel_brown_dark.svg",
+      "target": "panel_brown_dark.svg",
+      "width": 64,
+      "height": 64,
+      "usage": "Solid wood panel",
+      "suggestedSlice": 8,
+      "sha256": "37ac9f8800348da62e51d1e756bd6ae225fe99efc9ddd1f0e5366e8355135add",
+      "bytes": 544
+    },
+    {
+      "source": "Vector/panel_brown_dark_corners_a.svg",
+      "target": "panel_brown_dark_corners_a.svg",
+      "width": 64,
+      "height": 64,
+      "usage": "Solid wood panel with metal corners",
+      "suggestedSlice": 16,
+      "sha256": "83064e4ef629bade17df4bd634c5125942a8ee7f3697fb9823b9e20117bbc147",
+      "bytes": 3507
+    },
+    {
+      "source": "Vector/panel_border_brown.svg",
+      "target": "panel_border_brown.svg",
+      "width": 64,
+      "height": 64,
+      "usage": "Transparent center with wood and metal frame",
+      "suggestedSlice": 16,
+      "sha256": "2bd004c0ee296e8a7cc757f0cdf2ef59522414a3bac4e3a1cc6f05157c9b2bf4",
+      "bytes": 3858
+    },
+    {
+      "source": "Vector/button_brown.svg",
+      "target": "button_brown.svg",
+      "width": 48,
+      "height": 24,
+      "usage": "Cream button with wood rim",
+      "suggestedSlice": 6,
+      "sha256": "822b39af4d2e34ad4434b74e87680978acdb4ec9f35bc3963e4f654244f067e0",
+      "bytes": 962
+    },
+    {
+      "source": "Vector/round_brown.svg",
+      "target": "round_brown.svg",
+      "width": 64,
+      "height": 64,
+      "usage": "Cream round medallion with wood rim",
+      "suggestedSlice": null,
+      "sha256": "5d22b2d4053eeb2d6af80d2a85f11479563ecbf796b941341d619665c2e978aa",
+      "bytes": 1450
+    }
+  ]
+}

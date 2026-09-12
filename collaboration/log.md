@@ -1,5 +1,27 @@
 # Human–AI collaboration log
 
+## 0030 — Begin application-wide interface implementation
+
+- 2026-09-12 (UTC): the human explicitly authorized implementing the redesign in the actual project. [Original instruction and translation](../prompts/0030-implement-shared-game-interface.md). This supersedes the earlier preview-only restriction without implying separate visual acceptance of every prototype detail.
+- Codex is integrating shared materials/header, planning-sheet setup, folded-map entry, contextual cursors and concise project interactions while preserving the locked buildings and current data/account/backup flows. [Scope and acceptance criteria](../specs/0011-shared-game-interface.md).
+- Foundation implemented: `src/ui/theme.css` defines shared surfaces/states, original map/plan-entry illustrations, transitions and contextual cursors; `src/ui/icons.ts` supplies original geometric icons with no Lucide dependency. Six Adventure UI 1.1 SVGs and five Cursor Pack 1.1 PNGs are vendored under `public/ui/kenney/`, with both original licenses, source manifests and `.gitattributes`. The eleven assets and two licenses match all recorded SHA-256 values. Full interface integration and browser QA are still in progress.
+- Verification preparation: added `tests/unified-ui-check.cjs` for shared chrome, actual town readiness, three viewport widths, card/focus behavior, language, mocked capture and backup round trips. Its JavaScript syntax check passed; the browser journey has not yet run. Scoped whitespace checks passed and 160 local links across eight changed records resolved.
+- Verification status: implementation ongoing; new runtime QA has not yet been completed. Prior preview results and existing application test results remain historical evidence, not passing results for this revision. No remote publication is part of this instruction.
+
+## 0029 — Express actions through game objects
+
+- 2026-09-12 (UTC): the human requested game-interface research and controls whose forms communicate their meaning, then specified kraft-paper planning drawings and a map-or-globe exploration entry with unfolding feedback. [Grouped instructions and translation](../prompts/0029-object-based-game-interface.md).
+- Codex recorded a standalone-preview direction: planning sheet, folded-map entry/unfolding transition, existing door greeting and concise supporting labels. [Research and practical mappings](../docs/game-interaction-language.md) distinguish observed sources from Buildergame proposals; referenced game artwork is not reused.
+- Research evidence: Nintendo and Minecraft explanatory pages plus the community Stardew Valley Wiki were read for documented object/tool interactions and state feedback. No live game session or comprehensive screenshot analysis was performed; the study does not rank popularity or establish usability outcomes.
+- Outputs: prompt/index, research, specification, decision and contribution records. The preview-only review gate and existing concise card/button rules continue. No runtime or global integration; actual preview QA is pending.
+
+## 0028 — Add contextual cursor and door interaction details
+
+- 2026-09-12 (UTC): the human requested an axe cursor for town creation, footprints for exploration and a gloved hand with a greeting over doors. [Original instruction and translation](../prompts/0028-playful-context-cursors.md).
+- Codex documented a preview plan using contextual PNG cursors and a responsive doorway hotspot on the existing town poster. A bilingual greeting and door-opening effect lead to the concise fictional project card. Preserve native text/disabled-control feedback, touch behavior, keyboard activation and reduced motion.
+- Reuse: selected five unchanged outline PNGs from the verified official Kenney Cursor Pack 1.1 archive, CC0-1.0; matching SVG sources were inspected. [Exact files, source and checksum](../docs/ui-kit-research.md). No paid resource is used.
+- Scope remains the standalone visual proposal with the existing review gate, button materials and spacing. This does not implement Three.js door picking or change the application. Asset provenance and actual preview QA are recorded separately; no runtime test result is claimed.
+
 ## 0027 — Center paired actions
 
 - 2026-09-12 (UTC): the human requested that a two-button row place each button at the center of its half. [Instruction and translation](../prompts/0027-paired-action-layout.md).
