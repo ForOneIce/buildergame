@@ -1,0 +1,87 @@
+{
+  "title": "Buildergame landscape previews",
+  "createdDate": "2026-09-13",
+  "origin": "Rendered from Buildergame using its existing fictional sample town and accepted building assets. No third-party game screenshots or paid imagery were used.",
+  "capture": {
+    "engine": "Local application rendered with Three.js in headless Chrome through Playwright",
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "deviceScaleFactor": 1
+    },
+    "data": "sampleTown() from src/sample.mjs, latest snapshot, nine fictional projects",
+    "landscapes": [
+      "flat",
+      "valley",
+      "clouds"
+    ],
+    "ui": "HUD visibility disabled by screenshot-only CSS; runtime source and building models were not modified for these captures"
+  },
+  "processing": "Cropped to landscape content and resized to 320x180 with System.Drawing HighQualityBicubic interpolation; PNG output.",
+  "sources": [
+    {
+      "path": "src/town.ts",
+      "sha256": "7d673d3cf780ad10b6096b279ae3db874d8fd6508880f0513be520eac082c2bd"
+    },
+    {
+      "path": "src/terrain.ts",
+      "sha256": "4b70fb3a891b60aeb02dc7b900042892d1c84eb5efdd4099d013dbf17a2ffdaa"
+    },
+    {
+      "path": "src/landscape.mjs",
+      "sha256": "e2d7fb3c98ff74662fdc29416910369fa4597025ce614ab35c95472c95d40e2d"
+    },
+    {
+      "path": "src/sample.mjs",
+      "sha256": "70e158cbe4619ff6e568f13f9de87ef920c6a6da2272d5f29e461c3c523a2c0c"
+    },
+    {
+      "path": "public/models/buildings.lock.json",
+      "sha256": "12dc26192c39e8094e39efb4857fc17069d9a70fa4cfae01dc97500b37fab0a5"
+    }
+  ],
+  "files": [
+    {
+      "file": "flat.png",
+      "landscape": "flat",
+      "width": 320,
+      "height": 180,
+      "crop": {
+        "x": 200,
+        "y": 145,
+        "width": 896,
+        "height": 504
+      },
+      "sourceCaptureSha256": "52fe0b143b2842b0b2b4963dbe5674d8741f2809deaded995ad50b16f7f7485b",
+      "sha256": "ef365125a1722674a7989b17df15dd8d99f92eb8e7aac7ba0eeef787e587c8cd"
+    },
+    {
+      "file": "valley.png",
+      "landscape": "valley",
+      "width": 320,
+      "height": 180,
+      "crop": {
+        "x": 112,
+        "y": 135,
+        "width": 1008,
+        "height": 567
+      },
+      "sourceCaptureSha256": "c4b67c21e45af96c9d06b8f4b26ef66cd864b3bdd41733218f44f08db673bb91",
+      "sha256": "560afc89d653d629ba58e3898eeaa9f9f656fd54edc2d350897caeb2c252665d"
+    },
+    {
+      "file": "clouds.png",
+      "landscape": "clouds",
+      "width": 320,
+      "height": 180,
+      "crop": {
+        "x": 220,
+        "y": 120,
+        "width": 832,
+        "height": 468
+      },
+      "sourceCaptureSha256": "1e425d111f2f81b64d08866d3196147d8f5362c1c468b44eac05cfdbe2cb9209",
+      "sha256": "f63f98984f0a29a58a16d7ddc0975ae1134444e1dfd0f6403bf2aa4ffc07af66"
+    }
+  ]
+}
