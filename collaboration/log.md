@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## 0025 — Improve reading comfort in the proposal
+
+- 2026-09-12 (UTC): the human requested breathing room in typography, a more reasonable layout and less reading difficulty. [Original instruction and translation](../prompts/0025-readable-preview-layout.md).
+- Codex revised the standalone preview: 16px body text, 28px descriptive-paragraph line height, 20–32px panel padding, grouped fields, separated actions and responsive stacking. The project card occupies the exploration summary area, with separately labeled metric values and focus restoration on close. Chinese uses normal letter spacing. The brown-default/cream-selected button rule remains in effect.
+- Outputs: revised external preview, sequential prompt and index, [shared interface specification](../specs/0011-shared-game-interface.md), and contribution records. Scope remains the standalone proposal; no new assets or global integration.
+- Verification: browser review covered the entrance and desktop form, narrow form, exploration view, Chinese card and card closing. DOM measurements checked the form at 992px and 345px content widths and the Chinese card at 345px; inspected text and controls had no horizontal overflow. The card replaced the summary and remained above the timeline. Screenshots were reviewed, and the temporary browser viewport override was reset. Scoped whitespace checks passed. This is targeted preview verification, not a complete accessibility audit or a runtime regression result; human visual acceptance remains pending.
+
 ## 0024 — Clarify button selection in the proposal
 
 - 2026-09-12 (UTC): the human requested brown unselected buttons and cream selected buttons, with clear click targets and state distinctions. [Original instruction and translation](../prompts/0024-button-selection-language.md).

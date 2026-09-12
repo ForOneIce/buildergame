@@ -24,5 +24,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0022 — A consistent game interface](0022-unified-game-ui.md)
 - [0023 — Preview selected materials before global adoption](0023-preview-material-direction.md)
 - [0024 — Distinguish unselected and selected buttons](0024-button-selection-language.md)
+- [0025 — Give typography and layout room to breathe](0025-readable-preview-layout.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

@@ -1,6 +1,6 @@
 # Shared game interface proposal
 
-Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md) and [0024](../prompts/0024-button-selection-language.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
+Date: 2026-09-12. Status: material direction selected; revised standalone proposal awaiting human review before global adoption. Human requirements: [0022](../prompts/0022-unified-game-ui.md), [0023](../prompts/0023-preview-material-direction.md), [0024](../prompts/0024-button-selection-language.md) and [0025](../prompts/0025-readable-preview-layout.md). Verified source candidates and selected preview assets: [UI kit research](../docs/ui-kit-research.md).
 
 ## Observable problem
 
@@ -43,7 +43,7 @@ Changing landscape affects the world background, not the interface brand. Keep t
 
 Proposed starting tokens: paper `#FFF6DF`, ink `#304C4F`, wood `#997149`, deep blue `#294E62`, gold `#E8BE68`, moss `#718761`. Values are a proposal, not verified contrast pairs in every state. Limit corner radii to 8/12/16px, spacing to 4/8/12/16/24/32px, and button depth to 2–3px. Text content should remain on a quiet readable surface; illustrated grain belongs to borders and non-reading areas.
 
-Use one functional SVG icon family such as selected Lucide icons. Give any larger illustrative badges a defined separate role. Replace ambiguous Unicode symbols. Roundness should come from shapes and typography without relying on oversized outlines. Use a readable rounded heading treatment, 14–16px body text and at least 12px compact labels where practical. Choose and license fonts during implementation; keep text outside image assets. Support Chinese fallback, natural line height and label expansion without Latin-style letter spacing.
+Use one functional SVG icon family such as selected Lucide icons. Give any larger illustrative badges a defined separate role. Replace ambiguous Unicode symbols. Roundness should come from shapes and typography without relying on oversized outlines. Use readable rounded headings, comfortable body text and clearly legible secondary labels; the readability revision below supersedes the earlier compact sizing proposal. Choose and license fonts during implementation; keep text outside image assets. Support Chinese fallback, natural line height and label expansion without Latin-style letter spacing.
 
 ### Button selection language
 
@@ -52,6 +52,14 @@ The human requires brown for unselected buttons and cream only for selected butt
 Hover and pressed feedback can adjust depth or brightness without switching an unselected control to cream. Keyboard focus uses a separate visible outline, and must not imply persistent selection. Teal remains the translucent panel material. Reuse the already selected free assets; this state correction adds no new artwork or dependency.
 
 中文简注：棕色表示可点击，奶油色表示已选中；悬停和键盘焦点不冒充选中状态。
+
+### Readable typography and layout
+
+The human requested more breathing room and a layout that reduces reading effort. In the standalone proposal, enlarge body and secondary text where needed, allow generous line height and panel padding, and use a consistent hierarchy of space between text, controls and sections. Labels should stay close to their fields; related details should form recognizable groups, with actions separated from explanatory copy.
+
+Desktop and narrow layouts should reflow without clipping text or controls. Chinese text uses normal letter spacing, with enough line height for the typeface. Preserve the brown-default and cream-selected button rule while changing spacing. This revision adds no assets and does not authorize global integration before the existing human review gate is satisfied.
+
+Current preview choices: 16px body text, 28px descriptive-paragraph line height, 13–15px secondary labels, 20–32px panel padding and at least 48px button height. Form labels sit 8px above their fields; field groups use a 24px gap. Narrow layouts stack fields and actions while retaining readable labels. The project card replaces the exploration summary in a dedicated grid area, leaving navigation unobscured; project metrics separate each value from its label. Opening/closing the card moves and restores keyboard focus. These are preview choices awaiting visual acceptance, not a global design-system release. Actual checks are recorded in [the collaboration log](../collaboration/log.md).
 
 ## Implementation approach and effort
 
