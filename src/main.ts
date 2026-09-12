@@ -10,6 +10,7 @@ import { createTown } from './town';
 import { safeUrl, repositoryKey } from './model.mjs';
 import { publicBundle, configuration, cleanEvent, defaultRule, assertAppend } from './bundle.mjs';
 import { sampleTown } from './sample.mjs';
+import { planningDraft } from './planning-draft.mjs';
 import type { Bundle, TownEvent, Project, Landscape } from './types';
 import { projectDestination } from './links';
 import './map-ui.css';
@@ -37,7 +38,7 @@ let returnFocus: HTMLElement | null = null;
 let cancelArrival: (()=>void)|undefined, doorTimer: ReturnType<typeof setTimeout>|undefined;
 let entryFromCard=false;
 let homeShowcase:ReturnType<typeof createHomeShowcase>|undefined;
-let terrainPreview:{bundle:Bundle;snapshotIndex:number;published:boolean}|null=null;
+let planTurn:'forward'|'backward'|undefined;
 let publishDraft:boolean|undefined;
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const date = (s: string) => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }).format(new Date(s));
@@ -51,10 +52,10 @@ function notice(text: string, error = false) { const el=$('#notice');el.textCont
 function download(value: unknown, name: string) { const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); }
 function exportTown() { download(publicBundle(bundle),'town.json');notice(t('Backup downloaded. Add town.json to public/data/ in your deployment repository, then rebuild.','备份已下载。将 town.json 放入部署仓库的 public/data/，然后重新构建。')); }
 function stop() { if(timer)clearInterval(timer);timer=undefined; }
-function navigate(to: typeof screen) { stop();if(terrainPreview&&to!=='town'){bundle=terrainPreview.bundle;snapshotIndex=terrainPreview.snapshotIndex;published=terrainPreview.published;terrainPreview=null;}screen=to;render(); }
+function navigate(to: typeof screen) { stop();screen=to;render(); }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang,screen==='welcome'); }
+function header() { return gameHeader(t,session,lang,screen==='welcome'||screen==='setup'); }
 
 function render() {
   homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
@@ -71,14 +72,32 @@ function render() {
   $('#close').onclick=()=>$('#detail').dispatchEvent(new Event('dismiss'));
   $('#detail').addEventListener('dismiss',()=>{$<HTMLDialogElement>('#detail').close();});
   $('#detail').addEventListener('close',()=>{document.body.classList.remove('project-detail-open');if(!$<HTMLDialogElement>('#project-entry').open){const target=returnFocus?.isConnected?returnFocus:document.querySelector<HTMLElement>('#show-projects');target?.focus();}});
-  $<HTMLInputElement>('#import').onchange=async e=>{const file=(e.target as HTMLInputElement).files?.[0];if(!file)return;try{if(file.size>12*1024*1024)throw Error(t('Maximum file size is 12 MB','文件最大为 12 MB'));const input=JSON.parse(await file.text());if(input.format){bundle=publicBundle(input) as Bundle;snapshotIndex=bundle.history.snapshots.length-1;published=false;usePrevious=true;imported=bundle.event;screen='town';render();notice(t('Backup restored locally. Export or sign in to capture and publish.','备份已在本地恢复。可导出，或登录后抓取并发布。'));}else{imported=cleanEvent(input) as TownEvent;collection=imported.collectionType||'hackathon';title=imported.name;repoText=imported.projects.map(p=>p.repository).join('\n');weights={...imported.rule.weights};usePrevious=false;screen='setup';render();notice(t('Configuration loaded. Ready to capture.','配置已加载，可以抓取快照。'));}}catch(error){notice((error as Error).message,true);}};
+  $<HTMLInputElement>('#import').onchange=async e=>{
+    const file=(e.target as HTMLInputElement).files?.[0];if(!file)return;
+    try {
+      if(file.size>12*1024*1024)throw Error(t('Maximum file size is 12 MB','文件最大为 12 MB'));
+      const input=JSON.parse(await file.text());
+      if(input.kind==='buildergame-plan/v1'){
+        loadPlanningDraft(input);navigate('setup');notice(t('Plan restored. Continue where you left off.','图纸草稿已恢复，可以继续填写。'));
+      } else if(input.format){
+        bundle=publicBundle(input) as Bundle;snapshotIndex=bundle.history.snapshots.length-1;published=false;usePrevious=true;imported=bundle.event;navigate('town');notice(t('Backup restored locally. Export or sign in to capture and publish.','备份已在本地恢复。可导出，或登录后抓取并发布。'));
+      } else {
+        loadConfiguration(input);navigate('setup');notice(t('Configuration loaded. Ready to capture.','配置已加载，可以抓取快照。'));
+      }
+    }catch(error){notice((error as Error).message,true);}
+  };
   document.querySelectorAll<HTMLElement>('[data-import]').forEach(el=>el.onclick=()=>$<HTMLInputElement>('#import').click());
   document.querySelectorAll<HTMLElement>('[data-export]').forEach(el=>el.onclick=exportTown);
   document.querySelector('[data-create]')?.addEventListener('click',()=>{imported=null;usePrevious=false;title='';navigate('setup');});
-  document.querySelectorAll<HTMLElement>('[data-mode]').forEach(el=>el.onclick=()=>{collection=el.dataset.mode as typeof collection;imported=null;usePrevious=false;if(screen!=='setup')title='';navigate('setup');});
+  document.querySelectorAll<HTMLElement>('[data-mode]').forEach(el=>el.onclick=()=>{
+    const next=el.dataset.mode as typeof collection;if(next===collection)return;
+    const scroll=window.scrollY;planTurn=next==='hackathon'?'forward':'backward';
+    collection=next;imported=null;usePrevious=false;navigate('setup');
+    document.querySelector<HTMLElement>(`[data-mode="${next}"]`)?.focus({preventScroll:true});window.scrollTo(0,scroll);
+  });
   document.querySelectorAll<HTMLElement>('[data-enter]').forEach(el=>el.onclick=()=>navigate('town'));
-  document.querySelectorAll<HTMLElement>('[data-create],[data-mode],#capture').forEach(el=>el.dataset.cursor='build');document.querySelectorAll<HTMLElement>('[data-enter],[data-sample-landscape]').forEach(el=>el.dataset.cursor='walk');
-  if(screen==='setup')bindSetup();if(screen==='town')bindTown();
+  document.querySelectorAll<HTMLElement>('[data-create],[data-mode],#capture').forEach(el=>el.dataset.cursor='build');document.querySelectorAll<HTMLElement>('[data-enter],[data-tour-landscape]').forEach(el=>el.dataset.cursor='walk');
+  if(screen==='setup'){bindSetup();planTurn=undefined;}if(screen==='town')bindTown();
   if(screen==='welcome'){try{homeShowcase=createHomeShowcase($('#home-showcase'),{lang});}catch{$('#home-showcase').innerHTML='<p class="showcase-fallback">'+t('The building preview is unavailable in this browser.','此浏览器暂时无法显示建筑预览。')+'</p>';}}
 }
 function welcome() {
@@ -88,10 +107,57 @@ function welcome() {
 }
 
 function setup() {
-  return `<main class="setup-page planning-desk"><button class="back" id="back">← ${t('Fold away','收起图纸')}</button><div class="setup-heading"><p class="eyebrow">${t('BUILDERGAME · PLANNING DRAWING','BUILDERGAME · 小镇规划图')}</p><h1>${t('Make room for what you build.','为你的创造，规划一处家园。')}</h1><p>${t('Choose the projects. We’ll give them a place on the map.','选择项目，让它们在地图上拥有一席之地。')}</p></div><div class="planning-sheet"><div class="setup-grid"><aside class="setup-drawing">${sitePlan(imported ? imported.landscape||'flat' : landscape,t)}<p>${t('Every project keeps its address as the town grows.','每个项目保留固定地址，小镇围绕它们生长。')}</p><span class="sheet-number">01 / ${t('TOWN PLAN','小镇规划')}</span></aside><section class="setup-card"><div class="tabs"><button class="button ${collection==='personal'?'active':''}" aria-pressed="${collection==='personal'}" data-mode="personal">⌘ ${t('Personal repositories','个人仓库')}</button><button class="button ${collection==='hackathon'?'active':''}" aria-pressed="${collection==='hackathon'}" data-mode="hackathon">⚑ ${t('Hackathon collection','黑客松合集')}</button></div><label>${t('Town name','小镇名称')}<input id="town-name" maxlength="80" placeholder="${t('e.g. Maple’s workshop','例如：枫叶的工坊')}" value="${escape(title)}"></label>${collection==='personal'?`<div class="github-connect"><span class="github-symbol">⌘</span><div><strong>${session.authenticated?escape(session.login):t('Connect your GitHub','连接你的 GitHub')}</strong><p>${t('Public repositories only. No repository write permission.','仅公开仓库，不请求仓库写入权限。')}</p></div>${session.configured&&!session.authenticated?`<a class="button dark" href="${import.meta.env.BASE_URL}api/auth/login">${t('Sign in','登录')}</a>`:''}</div>${!session.configured?`<p class="helper">${t('OAuth is not configured on this deployment. You can try public data below. The deployer can enable login with the setup guide.','此部署尚未配置 OAuth。可在下方试用公开数据；部署者可按文档启用登录。')}</p>`:''}<div class="inline-fields"><label>${t('GitHub username','GitHub 用户名')}<input id="username" value="${escape(session.login||username)}" placeholder="octocat" ${session.authenticated?'readonly':''}></label><button class="button dark" id="load-repos">${t('Find repositories','查找仓库')}</button></div><div class="repo-toolbar"><span id="selected-count">${checked.size} ${t('selected','已选择')}</span><button class="text-button" id="select-all">${t('Select loaded','选择已加载仓库')}</button></div><div class="repo-choices" id="repo-choices">${repositoryChoices()}</div>${nextPage&&repositories.length?`<button class="button light" id="more">${t('Load more','加载更多')}</button>`:''}`:`<label>${t('Public GitHub repository URLs','公开 GitHub 仓库地址')}<textarea id="repositories" rows="8" placeholder="https://github.com/owner/project-one&#10;https://github.com/another/project-two">${escape(repoText)}</textarea></label><p class="helper">${t('One URL per line. Repositories can belong to different people or organizations.','每行一个地址，可来自不同个人或组织。')}</p><button class="button light" data-import>↑ ${t('Import configuration or backup','导入配置或备份')}</button><p class="helper">${t('Use examples/hackathon.config.json as a starting point.','可参考 examples/hackathon.config.json。')}</p>`}<details class="growth"><summary>${t('House growth settings','房屋成长设置')}</summary><p class="helper">${t('Your town, your values. Weighted counts are not a quality rating.','你的小镇，你的价值取向。加权数值不代表质量评级。')}</p><div class="weight-fields">${(['commits','stars','forks'] as const).map((key,i)=>`<label>${[t('Commits','累计提交'),t('Stars','星标'),t('Forks','分叉')][i]}<input data-weight="${key}" type="number" min="0" step="0.1" value="${weights[key]??0}"></label>`).join('')}</div>${imported?.rule.mode==='custom'?`<p class="helper">${t('Imported custom score table is retained. Editing weights switches to weighted mode.','保留导入的自定义评分表；修改权重将切换为加权模式。')}</p>`:''}</details><div class="capture-actions paired-actions"><button class="button primary" id="capture">✦ ${t('Create town snapshot','建立小镇快照')}</button><button class="text-button" id="export-config">${t('Export configuration','导出配置')}</button></div><label class="publish-option"><input type="checkbox" id="publish" ${session.isDeployer?'checked':'disabled'}> ${t('Publish for everyone on this deployment','发布到当前部署，供所有访客查看')}</label><p class="helper">${session.isDeployer?t('This replaces the deployment’s active town. Existing history in the same town is retained.','这会更新当前部署展示的小镇。同一小镇的已有历史会保留。'):t('Sign in as the deployer to publish here, or export a backup for static hosting.','部署者登录后可发布；也可以导出备份用于静态托管。')}</p></section></div></div></main>`;
+  return `<main class="setup-page planning-desk" aria-label="${t('Town planning sheet','小镇规划图纸')}">
+    <div class="planning-sheet" ${planTurn?`data-page-turn="${planTurn}"`:''}><div class="setup-grid">
+      <aside class="setup-drawing">${sitePlan(imported ? imported.landscape||'flat' : landscape,t)}<p>${t('Every project keeps its address as the town grows.','每个项目保留固定地址，小镇围绕它们生长。')}</p></aside>
+      <section class="setup-card" aria-label="${t('Town configuration','小镇配置')}">
+        <div class="tabs" role="group" aria-label="${t('Who is building?','谁来建镇？')}">
+          <button class="button" aria-pressed="${collection==='personal'}" data-mode="personal">${builderSymbol('personal')}<span>${t('Personal','个人')}</span></button>
+          <button class="button" aria-pressed="${collection==='hackathon'}" data-mode="hackathon">${builderSymbol('community')}<span>${t('Community','社群')}</span></button>
+        </div>
+        <label>${t('Town name','小镇名称')}<input id="town-name" maxlength="80" placeholder="${t('e.g. Maple’s workshop','例如：枫叶的工坊')}" value="${escape(title)}"></label>
+        ${collection==='personal'?`
+          <div class="github-connect">${icon('github')}<div><strong>${session.authenticated?escape(session.login):'GitHub'}</strong><p>${t('Choose the public projects you want to bring home.','选择你想在这里安家的公开项目。')}</p></div>${session.configured&&!session.authenticated?`<a class="button" href="${import.meta.env.BASE_URL}api/auth/login">${t('Sign in','登录')}</a>`:''}</div>
+          <div class="inline-fields"><label>${t('GitHub username','GitHub 用户名')}<input id="username" value="${escape(session.login||username)}" placeholder="octocat" ${session.authenticated?'readonly':''}></label><button class="button" id="load-repos">${t('Find repositories','查找仓库')}</button></div>
+          <div class="repo-toolbar"><span id="selected-count">${checked.size} ${t('selected','已选择')}</span><button class="text-button" id="select-all">${t('Select all','全选')}</button></div>
+          <div class="repo-choices" id="repo-choices">${repositoryChoices()}</div>${nextPage&&repositories.length?`<button class="button" id="more">${t('Load more','加载更多')}</button>`:''}
+        `:`
+          <label>${t('Public GitHub repository URLs','公开 GitHub 仓库地址')}<textarea id="repositories" rows="6" placeholder="https://github.com/owner/project-one&#10;https://github.com/another/project-two">${escape(repoText)}</textarea></label>
+          <p class="helper">${t('One URL per line, from any builder or organization.','每行一个地址，可以来自不同开发者或组织。')}</p>
+        `}
+        <details class="growth" open><summary>${t('House growth settings','房屋成长设置')}</summary><p class="helper">${t('Your town, your values. These weights shape the buildings.','你的小镇，你的价值取向。用权重决定建筑的成长。')}</p><div class="weight-fields">${(['commits','stars','forks'] as const).map((key,i)=>`<label>${[t('Commits','累计提交'),t('Stars','星标'),t('Forks','分叉')][i]}<input data-weight="${key}" type="number" min="0" step="0.1" value="${weights[key]??0}"></label>`).join('')}</div>${imported?.rule.mode==='custom'?`<p class="helper">${t('Your custom scores are retained. Editing weights switches to weighted growth.','保留已导入的自定义评分；修改权重将切换为加权成长。')}</p>`:''}</details>
+        <label class="publish-option"><input type="checkbox" id="publish" ${session.isDeployer?'checked':'disabled'}> ${t('Publish for everyone to explore','发布小镇，供所有人探索')}</label>
+        <p class="helper publish-hint">${session.isDeployer?t('Replaces the town on this site. Existing history in the same town is kept.','将更新此站点展示的小镇，同一小镇的历史仍会保留。'):t('The site owner can publish here. You can create a town and download its snapshot.','部署者可在此发布。你也可以创建小镇并下载快照。')}</p>
+        <div class="capture-actions"><button class="button primary" id="capture">${captureLabel()}</button></div>
+        <details class="config-backup"><summary>${t('Not ready yet?','还没准备好？')}</summary><p class="helper">${t('Save your plan locally, then load it here when you’re ready to continue. Unfinished fields are welcome.','先把图纸草稿保存在本地，准备好后再导入继续填写。不必一次填完。')}</p><div class="paired-actions"><button class="text-button" id="save-draft">${icon('download')}${t('Save draft','保存草稿')}</button><button class="text-button" data-import>${icon('upload')}${t('Load a plan','导入图纸')}</button></div><button class="text-button" id="export-config">${t('Export deployment configuration','导出部署配置')}</button></details>
+      </section>
+    </div></div>
+  </main>`;
+}
+function captureLabel() {
+  const publish=session.isDeployer&&(publishDraft??true);
+  return usePrevious?(publish?t('Update & publish town','更新并发布小镇'):t('Update town','更新小镇')):(publish?t('Create & publish town','创建并发布小镇'):t('Create town','创建小镇'));
+}
+function loadConfiguration(input: unknown) {
+  const event=cleanEvent(input) as TownEvent;
+  imported=event;collection=event.collectionType||'hackathon';title=event.name;landscape=event.landscape||'flat';
+  repoText=event.projects.map(p=>p.repository).join('\n');weights={...event.rule.weights};usePrevious=false;
+  repositories=event.projects.map(p=>({repository:p.repository,name:p.name,description:p.description,builder:p.builder}));
+  checked.clear();repositories.forEach(r=>checked.add(r.repository));nextPage=null;
+}
+function loadPlanningDraft(input: unknown) {
+  const draft=planningDraft(input);
+  collection=draft.collection;landscape=draft.landscape;title=draft.title;username=draft.username;repoText=draft.repoText;
+  weights={commits:draft.weights.commits,stars:draft.weights.stars,forks:draft.weights.forks};publishDraft=draft.publish;
+  imported=draft.configuration as TownEvent|null;usePrevious=false;nextPage=null;
+  repositories=draft.selected.map((repository:string)=>{
+    const [owner,name]=repositoryKey(repository).split('/');
+    return {repository,name,description:'',builder:{name:owner,url:`https://github.com/${owner}`}};
+  });
+  checked.clear();draft.selected.forEach((url:string)=>checked.add(url));
 }
 function repositoryChoices() {return repositories.length?repositories.map(r=>`<label class="repo-choice"><input type="checkbox" data-repo="${escape(r.repository)}" ${checked.has(r.repository)?'checked':''}><span><strong>${escape(r.name)}</strong><small>${escape(r.description)}</small></span></label>`).join(''):`<div class="empty-repos">⌘<p>${t('Your public projects will appear here.','你的公开项目将在这里显示。')}</p></div>`;}
-function bindCheckboxes() {document.querySelectorAll<HTMLInputElement>('[data-repo]').forEach(e=>e.onchange=()=>{e.checked?checked.add(e.dataset.repo!):checked.delete(e.dataset.repo!);imported=null;usePrevious=false;$('#selected-count').textContent=`${checked.size} ${t('selected','已选择')}`;});}
+function bindCheckboxes() {document.querySelectorAll<HTMLInputElement>('[data-repo]').forEach(e=>e.onchange=()=>{e.checked?checked.add(e.dataset.repo!):checked.delete(e.dataset.repo!);imported=null;usePrevious=false;$('#selected-count').textContent=`${checked.size} ${t('selected','已选择')}`;$('#capture').textContent=captureLabel();});}
 function updateTerrainThumbnail(){
   const thumbnail=document.querySelector<HTMLImageElement>('#terrain-thumbnail');if(!thumbnail)return;
   thumbnail.src=import.meta.env.BASE_URL+'ui/landscapes/'+landscape+'.png';
@@ -109,28 +175,28 @@ function bindSetup() {
   landscape=imported ? imported.landscape||'flat' : landscape;
   const picker=document.createElement('div');picker.className='landscape-picker';
   picker.innerHTML='<label for="landscape">'+t('Town landscape','城镇地形')+'</label><select id="landscape" '+(usePrevious?'disabled':'')+'>'+(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>'<option value="'+mode+'" '+(landscape===mode?'selected':'')+'>'+[t('Flat · concrete roads','平地 · 水泥路面'),t('Valley · slopes, gravel & water','山谷 · 缓坡、碎石与水流'),t('Clouds · floating districts & steps','云端 · 漂浮片区与云朵阶梯')][i]+'</option>').join('')+'</select><p class="helper">'+t('Chosen once for this town. Future snapshots keep the same landscape.','建镇时确定，之后的快照保持同一地形。')+'</p>';
-  document.querySelector('.growth')!.before(picker);
+  document.querySelector('.site-plan')!.after(picker);
   const landscapeChoices=document.createElement('div');landscapeChoices.className='landscape-choices';landscapeChoices.innerHTML=(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>`<button type="button" class="button landscape-choice" data-landscape-choice="${mode}" aria-pressed="${landscape===mode}" ${usePrevious?'disabled':''}>${icon(['map','mountain','cloud'][i])}<span>${[t('Flat','平地'),t('Valley','山谷'),t('Clouds','云端')][i]}</span></button>`).join('');picker.append(landscapeChoices);picker.querySelector('select')!.classList.add('sr-only');picker.querySelector('select')!.tabIndex=-1;picker.querySelector('select')!.setAttribute('aria-hidden','true');landscapeChoices.setAttribute('role','group');landscapeChoices.setAttribute('aria-label',t('Town landscape','城镇地形'));
   const changeLandscape=(value:Landscape)=>{landscape=value;if(imported&&!usePrevious)imported.landscape=landscape;picker.querySelector('select')!.value=value;document.querySelector<HTMLElement>('.site-plan')!.dataset.landscape=landscape;updateTerrainThumbnail();landscapeChoices.querySelectorAll<HTMLElement>('button').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.landscapeChoice===value)));};
   picker.querySelector('select')!.onchange=e=>changeLandscape((e.target as HTMLSelectElement).value as Landscape);landscapeChoices.querySelectorAll<HTMLElement>('button').forEach(el=>el.onclick=()=>changeLandscape(el.dataset.landscapeChoice as Landscape));
-  const samples=document.createElement('div');samples.className='sample-landscapes';samples.setAttribute('role','group');samples.setAttribute('aria-label',t('Explore example landscapes','游览示例地形'));
-  samples.innerHTML=(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>`<button class="button" data-cursor="walk" data-sample-landscape="${mode}">${[t('Explore flat town','游览平地城镇'),t('Explore valley','游览山谷'),t('Explore cloud town','游览云端城镇')][i]}</button>`).join('');
-  document.querySelector('.setup-drawing')!.append(samples);
-  samples.querySelectorAll<HTMLElement>('button').forEach(button=>button.onclick=()=>{terrainPreview={bundle,snapshotIndex,published};bundle=sampleTown() as Bundle;const mode=button.dataset.sampleLandscape as Landscape;bundle.event.landscape=mode;if(mode!=='flat'){bundle.event.id+='-'+mode;bundle.history.eventId=bundle.event.id;}published=false;snapshotIndex=bundle.history.snapshots.length-1;navigate('town');});
   updateTerrainThumbnail();
   const publishInput=$<HTMLInputElement>('#publish');
   publishInput.checked=session.isDeployer&&(publishDraft??true);
-  publishInput.onchange=()=>publishDraft=publishInput.checked;
-  $('#back').onclick=()=>navigate('welcome');$<HTMLInputElement>('#town-name').oninput=e=>title=(e.target as HTMLInputElement).value;
-  if(collection==='hackathon')$<HTMLTextAreaElement>('#repositories').oninput=e=>{repoText=(e.target as HTMLTextAreaElement).value;imported=null;usePrevious=false;};
+  publishInput.onchange=()=>{publishDraft=publishInput.checked;$('#capture').textContent=captureLabel();};
+  $<HTMLInputElement>('#town-name').oninput=e=>title=(e.target as HTMLInputElement).value;
+  if(collection==='hackathon')$<HTMLTextAreaElement>('#repositories').oninput=e=>{repoText=(e.target as HTMLTextAreaElement).value;imported=null;usePrevious=false;$('#capture').textContent=captureLabel();};
   else {
     $<HTMLInputElement>('#username').oninput=e=>username=(e.target as HTMLInputElement).value;
     const fetchRepos=async(page=1)=>{const button=$<HTMLButtonElement>('#load-repos');button.disabled=true;try{const data=await api(`repos?owner=${encodeURIComponent(session.login||username)}&page=${page}`);if(page===1){repositories=[];checked.clear();imported=null;usePrevious=false;}repositories.push(...data.repositories);nextPage=data.nextPage;username=data.owner;if(!title)title=`${username}'s town`;render();}catch(error){notice((error as Error).message,true);}finally{button.disabled=false;}};
     $('#load-repos').onclick=()=>void fetchRepos();if(document.querySelector('#more'))$('#more').onclick=()=>void fetchRepos(nextPage!);
-    $('#select-all').onclick=()=>{repositories.forEach(r=>checked.add(r.repository));imported=null;usePrevious=false;$('#repo-choices').innerHTML=repositoryChoices();$('#selected-count').textContent=`${checked.size} ${t('selected','已选择')}`;bindCheckboxes();};bindCheckboxes();
+    $('#select-all').onclick=()=>{repositories.forEach(r=>checked.add(r.repository));imported=null;usePrevious=false;$('#repo-choices').innerHTML=repositoryChoices();$('#selected-count').textContent=`${checked.size} ${t('selected','已选择')}`;$('#capture').textContent=captureLabel();bindCheckboxes();};bindCheckboxes();
   }
   document.querySelectorAll<HTMLInputElement>('[data-weight]').forEach(e=>e.oninput=()=>{weights[e.dataset.weight as keyof typeof weights]=Number(e.value);if(imported)imported.rule={...defaultRule,mode:'weighted',version:`linear-${weights.commits}-${weights.stars}-${weights.forks}`,weights:{...weights}};});
   $('#export-config').onclick=()=>{try{download(currentConfiguration(),'town.config.json');}catch(e){notice((e as Error).message,true);}};
+  $('#save-draft').onclick=()=>{
+    try{download(planningDraft({kind:'buildergame-plan/v1',collection,landscape,title,username:session.login||username,repoText,selected:[...checked],weights,publish:publishInput.checked,configuration:imported}),'town.plan.json');notice(t('Plan saved. Load this file here to pick up where you left off.','草稿已保存。之后在此导入文件，即可继续填写。'));}
+    catch(error){notice((error as Error).message,true);}
+  };
   $('#capture').onclick=async()=>{
     if(captureBusy)return;
     try {
@@ -215,8 +281,14 @@ function bindTown() {
   const panel=$('#project-panel');const toggle=$('#show-projects');panel.hidden=true;toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.setAttribute('aria-controls','project-panel');
   toggle.onclick=()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));};
   document.querySelector('#scene canvas')?.setAttribute('aria-label',t('Interactive town. Use the project directory for keyboard access.','交互小镇。可通过项目列表使用键盘访问全部项目。'));
-  $('#manage').onclick=()=>{if(bundle.event.sampleData){imported=null;usePrevious=false;title='';}else{imported=structuredClone(bundle.event);weights={...bundle.event.rule.weights};title=bundle.event.name;collection=bundle.event.collectionType||'hackathon';repoText=bundle.event.projects.map(p=>p.repository).join('\n');repositories=bundle.event.projects.map(p=>({repository:p.repository,name:p.name,description:p.description,builder:p.builder}));checked.clear();repositories.forEach(r=>checked.add(r.repository));nextPage=null;usePrevious=true;}navigate('setup');};
-  if(terrainPreview){const back=document.createElement('button');back.id='return-to-plan';back.className='hud-button';back.innerHTML=icon('plan')+'<span>'+t('Back to plan','返回规划图')+'</span>';back.setAttribute('aria-label',t('Back to plan','返回规划图'));back.onclick=()=>navigate('setup');$('#manage').before(back);$('#manage').hidden=true;}
+  document.querySelector('#manage')?.addEventListener('click',()=>{loadConfiguration(bundle.event);usePrevious=true;navigate('setup');});
+  document.querySelectorAll<HTMLButtonElement>('[data-tour-landscape]').forEach(button=>button.onclick=()=>{
+    if(!bundle.event.sampleData)return;
+    const mode=button.dataset.tourLandscape as Landscape;
+    const sample=sampleTown() as Bundle;sample.event.landscape=mode;
+    if(mode!=='flat'){sample.event.id+='-'+mode;sample.history.eventId=sample.event.id;}
+    bundle=sample;published=false;snapshotIndex=Math.min(snapshotIndex,bundle.history.snapshots.length-1);filter='';selected='';navigate('town');
+  });
   $<HTMLInputElement>('#search').oninput=e=>{filter=(e.target as HTMLInputElement).value;list();};
   $<HTMLInputElement>('#timeline').oninput=e=>{stop();$('#play').textContent='▶';showSnapshot(Number((e.target as HTMLInputElement).value));};
   $<HTMLButtonElement>('#play').disabled=bundle.history.snapshots.length<2;

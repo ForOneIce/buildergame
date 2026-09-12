@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0037: planner changes reuse the existing header, hand/community SVGs and paper/wood styles; `src/planning-draft.mjs` is original application code. The three original terrain previews were regenerated at 1280×720 from the same fictional scenes/framing; the updated [manifest](../public/ui/landscapes/manifest.json) records 2560×1440 source captures using locked distant buildings, crops and hashes. Asset-only commit `2868c56` contains the three PNGs and manifest. These dimensions supersede earlier thumbnails without adding external artwork, dependencies or license scope. Final validation preserved all ten GLBs; [verification](../docs/verification.md) records passing checks and limits. [Instruction](../prompts/0037-refine-town-planning-page.md).
+
 Session 0036: homepage header alignment reuses existing controls/styles with no new asset, dependency or license scope. Focused checks passed. [Instruction](../prompts/0036-align-homepage-header-top-edges.md), [results and limits](log.md#0036--align-homepage-header-top-edges).
 
 Session 0035: homepage action reordering reuses existing buttons, artwork and styles; no new assets or dependencies. Focused checks and TypeScript passed. [Instruction](../prompts/0035-create-before-explore.md), [results](log.md#0035--place-create-before-explore).

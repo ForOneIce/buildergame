@@ -18,7 +18,7 @@ async function header(page, screen) {
 async function layout(page, label) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
   assert.equal(overflow, false, `${label}: page must fit horizontally`);
-  const clipping = await page.locator('.map-header, #detail[open], #project-entry[open]').evaluateAll(elements =>
+  const clipping = await page.locator('.map-header, #detail[open], #project-entry[open], .sample-tour-picker[open] .sample-tour-options').evaluateAll(elements =>
     elements.filter(element => {
       const bounds = element.getBoundingClientRect();
       return bounds.width > 0 && (bounds.left < -1 || bounds.right > innerWidth + 1);
@@ -96,7 +96,7 @@ async function welcomePresentation(page, width, delayedStage) {
   assert.match(await home.textContent(), /Who can create a town\?/);
   assert.match(await home.textContent(), /Keep building\. Keep growing\./);
   assert.doesNotMatch(await home.textContent(), /Your work has a home|One repository, one home|No wallet needed|Explore as a guest|Who lives here/i);
-  assert.equal(await home.locator('[data-mode], [data-import], [data-sample-landscape]').count(), 0, 'Homepage leaves mode selection, backup and terrain tours to setup');
+  assert.equal(await home.locator('[data-mode], [data-import], [data-sample-landscape], [data-tour-landscape]').count(), 0, 'Homepage keeps setup options and sample-town tour controls in their destination screens');
   assert.equal(await home.locator('.builder-audience').count(), 2);
   assert.equal(await home.locator('.builder-audience svg').count(), 2);
   assert.equal(await home.locator('.builder-audience button, .builder-audience a, .builder-audience [role="button"], .builder-audience [tabindex]').count(), 0, 'Audience descriptions are noninteractive');
@@ -163,8 +163,13 @@ async function welcomePresentation(page, width, delayedStage) {
 }
 
 async function plannerPreviews(page, width) {
-  assert.equal(await page.locator('.setup-page [data-sample-landscape]').count(), 3);
-  for(const cursor of await page.locator('[data-sample-landscape]').evaluateAll(buttons=>buttons.map(button=>getComputedStyle(button).cursor))) assert.match(cursor,/steps\.png/, 'Terrain tours keep the exploration cursor inside the planning form');
+  assert.equal(await page.locator('.setup-page #back, .setup-heading, .site-plan svg, .setup-page [data-sample-landscape], .setup-page [data-tour-landscape]').count(), 0, 'Planning removes the duplicate back/introduction/drawing and sample tours');
+  assert.equal(await page.locator('#player-login .profile-copy').count(), 0, 'Setup uses the compact homepage account control');
+  const tops = await page.locator('#home, #language, #player-login, #player-login .guest-face').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+  assert.ok(Math.max(...tops) - Math.min(...tops) <= 1, 'Setup header controls share a top edge');
+  assert.equal(await page.locator('.growth').evaluate(element => element.open), true, 'Growth settings start expanded');
+  assert.equal(await page.locator('.config-backup').evaluate(element => element.open), false, 'Backup options start collapsed');
+  assert.equal(await page.locator('[data-mode] svg').count(), 2, 'Both mode choices use illustrative symbols');
   const sources = new Set();
   for (const mode of ['flat', 'valley', 'clouds']) {
     await page.locator(`[data-landscape-choice="${mode}"]`).click();
@@ -178,25 +183,107 @@ async function plannerPreviews(page, width) {
     assert.ok(await thumbnail.getAttribute('alt'), 'Terrain thumbnail has descriptive text');
     const position = await thumbnail.evaluate(image => {
       const imageBox = image.getBoundingClientRect(), planBox = image.closest('.site-plan').getBoundingClientRect();
-      return { left: imageBox.left - planBox.left, top: imageBox.top - planBox.top, width: planBox.width, height: planBox.height };
+      return { left: imageBox.left - planBox.left, top: imageBox.top - planBox.top, width: imageBox.width, planWidth: planBox.width };
     });
-    assert.ok(position.left >= 0 && position.top >= 0 && position.left < position.width / 2 && position.top < position.height / 2, 'Selected terrain preview sits in the upper-left plan area');
+    assert.ok(position.left >= 0 && position.top >= 0 && position.width >= position.planWidth * .9, 'The selected terrain fills the larger preview area');
     assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
     assert.match(await page.locator('#repositories').inputValue(), /fixture-project/);
-    if (width === 1440) {
-      await page.locator(`[data-sample-landscape="${mode}"]`).click();
-      await townReady(page);
-      assert.equal(await page.locator('#scene').getAttribute('data-landscape'), mode);
-      await page.locator('#return-to-plan').click();
-      await page.locator('#town-name').waitFor();
-      assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
-      assert.match(await page.locator('#repositories').inputValue(), /fixture-project/);
-      assert.equal(await page.locator('[data-mode="hackathon"]').getAttribute('aria-pressed'), 'true');
-      assert.equal(await page.locator('#landscape').inputValue(), mode, 'Returning from a terrain tour retains the draft terrain');
-    }
   }
   assert.equal(sources.size, 3, 'Each selected terrain has its own thumbnail');
   await page.locator('[data-landscape-choice="valley"]').click();
+  const emphasis = await page.evaluate(() => ({
+    capture: document.querySelector('#capture').getBoundingClientRect().width,
+    terrain: Math.max(...[...document.querySelectorAll('[data-landscape-choice]')].map(button => button.getBoundingClientRect().width)),
+  }));
+  assert.ok(emphasis.capture > emphasis.terrain * 1.5, 'The creation action is more prominent than the compact terrain choices');
+}
+
+async function sampleTours(page) {
+  assert.equal(await page.locator('#manage').count(), 0, 'Sample towns expose tours instead of Town settings');
+  for (const mode of ['valley', 'clouds', 'flat']) {
+    await page.locator('.sample-tour-picker > summary').click();
+    assert.equal(await page.locator('[data-tour-landscape]').count(), 3);
+    for (const cursor of await page.locator('[data-tour-landscape]').evaluateAll(buttons => buttons.map(button => getComputedStyle(button).cursor))) {
+      assert.match(cursor, /steps\.png/, 'Sample tours keep the exploration cursor');
+    }
+    await layout(page, 'sample landscape picker');
+    await page.locator(`[data-tour-landscape="${mode}"]`).click();
+    await townReady(page);
+    assert.equal(await page.locator('#scene').getAttribute('data-landscape'), mode);
+    if (await page.locator('.sample-tour-picker').evaluate(element => element.open)) await page.locator('.sample-tour-picker > summary').click();
+  }
+}
+
+async function switchPlanningMode(page, mode, width) {
+  await page.locator(`[data-mode="${mode}"]`).focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator(`[data-mode="${mode}"]`).getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('data-mode')), mode, 'Mode change restores focus to its control');
+  const animation = await page.locator('.setup-card').evaluate(element => getComputedStyle(element).animationName);
+  if (width === 360) assert.equal(animation, 'none', 'Reduced motion avoids a moving page turn');
+  else assert.notEqual(animation, 'none', 'A mode change has page-turn feedback');
+}
+
+async function incompletePlanRoundTrip(page) {
+  const title = 'Unfinished planning fixture';
+  const unfinishedUrl = 'https://github.com/fixture-builder/';
+  const path = `${output}/unfinished-town.plan.json`;
+  await page.locator('#town-name').fill(title);
+  await switchPlanningMode(page, 'personal', 1440);
+  await page.locator('#username').fill('fixture-builder');
+  await page.locator('#load-repos').click();
+  await page.waitForFunction(() => !document.querySelector('#load-repos').disabled);
+  await page.locator('[data-repo]').check();
+  await switchPlanningMode(page, 'hackathon', 1440);
+  await page.locator('#repositories').fill(unfinishedUrl);
+  await page.locator('[data-landscape-choice="clouds"]').click();
+  await page.locator('[data-weight="stars"]').fill('7');
+  assert.equal(await page.locator('.config-backup').evaluate(element => element.open), false);
+  await page.locator('.config-backup > summary').click();
+  const saving = page.waitForEvent('download');
+  await page.locator('#save-draft').click();
+  await (await saving).saveAs(path);
+  const saved = JSON.parse(fs.readFileSync(path, 'utf8'));
+  assert.equal(saved.kind, 'buildergame-plan/v1', 'An unfinished plan is distinct from a deployment configuration or captured town');
+  assert.equal(saved.repoText, unfinishedUrl, 'Saving a plan permits incomplete repository input');
+  assert.deepEqual(saved.selected, ['https://github.com/fixture-builder/fixture-project']);
+  assert.equal(saved.publish, false);
+
+  // A fresh page proves restoration comes from the exported file, not surviving form memory.
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-create]').click();
+  await page.locator('.config-backup > summary').click();
+  const choosing = page.waitForEvent('filechooser');
+  await page.locator('.config-backup [data-import]').click();
+  await (await choosing).setFiles(path);
+  await page.locator('#repositories').waitFor();
+  assert.equal(await page.locator('#scene').count(), 0, 'Restoring an unfinished plan stays in the planner');
+  assert.equal(await page.locator('#town-name').inputValue(), title);
+  assert.equal(await page.locator('#repositories').inputValue(), unfinishedUrl);
+  assert.equal(await page.locator('#landscape').inputValue(), 'clouds');
+  assert.equal(await page.locator('[data-weight="stars"]').inputValue(), '7');
+  assert.equal(await page.locator('.config-backup').evaluate(element => element.open), false);
+  await switchPlanningMode(page, 'personal', 1440);
+  assert.equal(await page.locator('#username').inputValue(), 'fixture-builder');
+  assert.equal(await page.locator('[data-repo]').isChecked(), true, 'Selected personal repositories survive file restoration');
+  await switchPlanningMode(page, 'hackathon', 1440);
+  assert.equal(await page.locator('#repositories').inputValue(), unfinishedUrl);
+}
+
+async function planningModeDrafts(page, width) {
+  await page.locator('[data-weight="stars"]').fill('7');
+  await switchPlanningMode(page, 'personal', width);
+  await page.locator('#username').fill('fixture-builder');
+  await switchPlanningMode(page, 'hackathon', width);
+  // Consecutive activations exercise interruption without waiting for each visual turn to finish.
+  await page.locator('[data-mode="personal"]').evaluate(button => button.click());
+  await page.locator('[data-mode="hackathon"]').evaluate(button => button.click());
+  assert.equal(await page.locator('#town-name').count(), 1, 'Interrupted page turns do not leave duplicate forms');
+  assert.equal(await page.locator('#town-name').inputValue(), `Interface fixture ${width}`);
+  assert.equal(await page.locator('#repositories').inputValue(), 'https://github.com/fixture-builder/fixture-project');
+  assert.equal(await page.locator('#landscape').inputValue(), 'valley');
+  assert.equal(await page.locator('[data-weight="stars"]').inputValue(), '7');
+  assert.equal(await page.locator('[data-mode="hackathon"]').getAttribute('aria-pressed'), 'true');
 }
 
 async function delayedTownArrival(page) {
@@ -352,6 +439,7 @@ async function installMocks(page, makeRecord) {
         }
         await header(page, 'town');
         await layout(page, 'town');
+        if (width === 1440 || width === 360) await sampleTours(page);
         await screenshot(page, 'town', width);
 
         await page.locator('#show-projects').click();
@@ -398,9 +486,11 @@ async function installMocks(page, makeRecord) {
         await page.locator('[data-mode="hackathon"]').first().click();
         await page.locator('#town-name').waitFor();
         await header(page, 'setup');
+        if (width === 1440) await incompletePlanRoundTrip(page);
         await page.locator('#town-name').fill(`Interface fixture ${width}`);
         await page.locator('#repositories').fill('https://github.com/fixture-builder/fixture-project');
         await plannerPreviews(page, width);
+        await planningModeDrafts(page, width);
         if (width === 1440) {
           assert.match(await page.locator('body').evaluate(element => getComputedStyle(element).cursor), /tool_axe_single\.png/);
           assert.equal(await page.locator('#town-name').evaluate(element => getComputedStyle(element).cursor), 'text');
@@ -427,10 +517,13 @@ async function installMocks(page, makeRecord) {
         assert.equal(captures.length, 1);
         assert.equal(captures[0].event.name, `Interface fixture ${width}`);
         assert.equal(captures[0].event.landscape, 'valley');
+        assert.equal(captures[0].event.rule.weights.stars, 7, 'Capture uses the retained growth settings');
         await page.locator('[data-enter]').first().click();
         await townReady(page);
         assert.match(await page.locator('.town-info').innerText(), new RegExp(`Interface fixture ${width}`));
         await header(page, 'captured town');
+        assert.equal(await page.locator('.sample-tour-picker').count(), 0, 'Captured towns retain management, not sample tours');
+        assert.equal(await page.locator('#manage').isVisible(), true);
         if (width === 1440 || width === 360) await projectEntry(page, context, width === 360);
         if (width === 360) {
           await page.locator('#language').click();
@@ -472,17 +565,17 @@ async function installMocks(page, makeRecord) {
           await page.locator('[data-mode="personal"]').first().click();
           await page.locator('#username').fill('fixture-builder');
           await page.locator('#load-repos').click();
+          await page.waitForFunction(() => !document.querySelector('#load-repos').disabled);
           await page.locator('[data-repo]').check();
           await page.locator('#town-name').fill('Personal interface fixture');
           await page.locator('[data-landscape-choice="clouds"]').click();
-          await page.locator('[data-sample-landscape="valley"]').click();
-          await townReady(page);
-          await page.locator('#return-to-plan').click();
+          await page.locator('[data-mode="hackathon"]').click();
+          await page.locator('[data-mode="personal"]').click();
           assert.equal(await page.locator('[data-mode="personal"]').getAttribute('aria-pressed'), 'true');
           assert.equal(await page.locator('#town-name').inputValue(), 'Personal interface fixture');
           assert.equal(await page.locator('#username').inputValue(), 'fixture-builder');
           assert.equal(await page.locator('[data-repo]').isChecked(), true);
-          assert.equal(await page.locator('#landscape').inputValue(), 'clouds', 'Previewing another terrain does not change the personal draft');
+          assert.equal(await page.locator('#landscape').inputValue(), 'clouds', 'Mode changes preserve the personal draft');
           await page.locator('#capture').click();
           await page.locator('.success-page').waitFor();
           assert.equal(captures.length, 2);
@@ -495,7 +588,7 @@ async function installMocks(page, makeRecord) {
       }
     }
     assert.deepEqual(errors, [], 'No browser page errors');
-    console.log('Refined homepage, silent five-stage autoplay with delayed-asset continuity and static reduced-motion showcase, planner thumbnails and draft-preserving terrain tours, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
+    console.log('Refined homepage, silent five-stage showcase, compact planning controls and larger terrain previews, sample-town tours versus real-town settings, retained mode drafts and incomplete-plan file restoration, shared header, delayed-loading isolation, real town readiness, responsive screens, concise card/focus, safe door entry, contextual cursors, EN/ZH, mocked capture, both collection modes and backup round trip passed.');
   } finally {
     await browser.close();
   }

@@ -13,6 +13,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
+Session 0037: Codex implemented the [planning-page redesign](../prompts/0037-refine-town-planning-page.md) in main/planning/header markup and styles, authored `src/planning-draft.mjs`, refreshed original terrain previews to 1280×720 and updated tests/user documentation. Sixteen Node tests, all three browser regressions and final focused/type/build/asset checks passed; [verification](../docs/verification.md) records timing, screenshot review and fixture limitations. No live OAuth, public GitHub network tests or remote publication were performed. Human visual acceptance remains pending.
+
 Session 0036: Codex implemented [homepage header alignment](../prompts/0036-align-homepage-header-top-edges.md) through two scoped CSS rules. Focused bilingual/responsive geometry, hover/navigation and screenshot checks passed; setup remained centered. Full suite, TypeScript, build and authenticated-session checks were not run. Human visual acceptance remains pending. [Results](log.md#0036--align-homepage-header-top-edges).
 
 Session 0035: Codex reordered the existing Create/Explore buttons with their illustrations, hints and actions. Focused bilingual/responsive Chrome checks and TypeScript passed; no new tests/assets or full-suite/build rerun. [Instruction](../prompts/0035-create-before-explore.md), [results](log.md#0035--place-create-before-explore).

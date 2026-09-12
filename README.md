@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. Choose one of the three sample landscapes to explore immediately, **My builder town** for a portfolio, or **A hackathon neighborhood** for a collection from multiple builders.
+Open **http://127.0.0.1:5173**. Select **Explore sample town**, then **Tour landscapes** to try flat, valley or cloud scenery. Select **Create town**, then **Personal** for your repositories or **Community** for a collection from multiple builders.
 
 For GitHub login and hosting, follow the [deployment guide](docs/deployment.md). Without OAuth configured, you can preview up to 20 public repositories; the sample town needs no credentials.
 
@@ -75,7 +75,9 @@ The experience works without wallets. Star and follow links take visitors to Git
 
 After capture, select **Enter my town** to explore. Choose **Save town** to download all recorded snapshots. Add the exported `town.json` to `public/data/` in your deployment repository and rebuild to publish a static town. **No GitHub repository writes happen automatically.**
 
-Use [the example configuration](examples/hackathon.config.json) for file-based setup. A Node deployment also lets the allowed GitHub deployer publish snapshots directly; ordinary visitors can browse without signing in.
+Not ready to capture yet? Open **Not ready yet? → Save draft** in the planner to download `town.plan.json`, then use **Load a plan** to continue later. A draft can contain unfinished fields and has no snapshots. **Export deployment configuration** produces a complete `town.config.json` for configuration import or CLI capture; a draft cannot replace that input. Use [the example configuration](examples/hackathon.config.json) for file-based setup.
+
+A Node deployment also lets the allowed GitHub deployer publish snapshots directly; ordinary visitors can browse without signing in.
 
 ### Growth at your pace
 

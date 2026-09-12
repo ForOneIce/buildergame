@@ -1,5 +1,9 @@
 # Human–AI collaboration log
 
+## 0037 — Refine the town-planning page
+
+- 2026-09-12 (UTC): Codex implemented the human's [planning-page instruction](../prompts/0037-refine-town-planning-page.md), adding compact setup/header composition, sample-only tours, page-turn feedback and incomplete-plan backup/restore. The original terrain previews were regenerated at 1280×720 and saved with their manifest in asset-only commit `2868c56`. Sixteen Node tests and all three updated browser scripts passed; QA now waits for repository refresh before selecting rows, and the broad journey was rerun after a live asset reload interrupted it. Final TypeScript, asset validation, Vite build, bilingual/responsive checks and desktop/mobile/mid-turn screenshot review passed after the last edits. [Verification](../docs/verification.md) distinguishes integration runs from final checks and records mocked-transport limits. README/deployment instructions now match the current controls and distinguish draft/configuration/snapshot files. Human visual acceptance remains pending.
+
 ## 0036 — Align homepage header top edges
 
 - 2026-09-12 18:16 (UTC): Codex implemented [0036](../prompts/0036-align-homepage-header-top-edges.md) with two homepage-scoped `src/map-ui.css` rules: top-align the header/action group and account contents, with zero account top padding. Focused Playwright/headless Chrome checks via `node -` passed in English/Chinese at 1440/760/360px: logo/language/account/guest-icon tops matched at 28/20/18px respectively, targets were at least 44×44, and no horizontal overflow or page errors occurred. Desktop/mobile screenshots, account hover hint, Create navigation and unchanged centered setup alignment passed inspection. An initial navigation check timed out using the incorrect `#create-town` selector; the corrected `[data-create]` check passed. Full suite, TypeScript, production build and authenticated-session checks were not run for this CSS-only revision.

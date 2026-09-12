@@ -1,5 +1,9 @@
 # Decision log
 
+## D-023 — Focus the planner and move tours into the sample town
+
+- 2026-09-12 (UTC): [instruction 0037](../prompts/0037-refine-town-planning-page.md) is implemented with compact planner chrome, larger terrain images, dominant creation actions, optional incomplete-plan backups and crease-based mode transitions. Sample towns get tours; real towns retain settings. Draft/reduced-motion/browser and final build/asset checks passed. [Acceptance criteria](../specs/0011-shared-game-interface.md#planning-page-refinement-0037), [verification and limits](verification.md); human visual acceptance remains pending.
+
 ## D-022 — Align homepage header controls at the top
 
 - 2026-09-12 (UTC): [instruction 0036](../prompts/0036-align-homepage-header-top-edges.md) is implemented with homepage-only top alignment for the logo, language/account controls and guest icon. Focused desktop/mobile English/Chinese checks passed; setup retains centered alignment. [Results and limits](../collaboration/log.md#0036--align-homepage-header-top-edges).

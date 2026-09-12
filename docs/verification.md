@@ -2,6 +2,18 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Planning-page refinement 0037
+
+The planner now uses compact header controls, a larger rendered terrain image, an aligned paper crease/page turn, expanded growth settings and optional backup tools. `town.plan.json` preserves incomplete input through `buildergame-plan/v1`; complete configuration and captured-town files retain their existing meanings. Three original terrain previews were regenerated at 1280×720. Sample towns expose terrain tours; real towns keep settings.
+
+Checks on 2026-09-12 (UTC):
+
+- The twelve existing data/API/landscape/player Node tests plus four planning-draft tests passed. The updated shared-interface and map browser scripts passed during integration; the broad browser journey passed after source/assets were frozen. Coverage includes mode/focus/reduced-motion and rapid-switch behavior, retained inputs, incomplete-plan save→fresh reload→file import, configuration export, both capture modes, backup/history, sample tours and real-town settings. Browser runs reported no page errors; a repository-refresh wait corrected a QA race, and the broad journey was rerun after a live asset reload.
+- After all source/asset changes, TypeScript without emit, `node scripts/validate.mjs` (nine projects, three snapshots, ten unchanged GLBs) and Vite production build passed. The known shared Three.js chunk-size advisory remains.
+- Final English/Chinese Chrome checks at 1440/760/360px found matching header tops at 28/20/18px, creation buttons taller than mode/terrain choices, 1280px source previews, no old Back/intro/line drawing, reduced-motion animation disabled, and no overflow/page errors. Terrain menus stayed within 1440×1000, 360×800 and 844×390 viewports. Desktop/mobile and mid-turn screenshots were inspected; the final sheet clipping keeps the turning paper below the header.
+
+The shared-interface/map integration runs preceded final visual refinements; the broad run and targeted checks followed them. Account, repository and capture transports use fixtures. No live OAuth, public GitHub network verification, remote publication or physical-device testing was performed; final human visual acceptance remains pending.
+
 ## Balanced introduction and shared tooltip 0034
 
 `src/main.ts` reuses `.control-hint` with `id="showcase-hint"` and `role="tooltip"`; `src/style.css` removes the introduction's character-width caps and positions the cream hint inside the illustration, 24px from its bottom. Focused Chrome checks in English/Chinese at 1440/768/360px passed: left/right introduction insets within 1px, hidden→hover-visible→hidden behavior, computed background/text/border/radius/shadow/font/padding/line-height matching the Create hint, and containment within the illustration/viewport without horizontal overflow or page errors. Desktop English/Chinese and mobile Chinese screenshots were inspected.

@@ -10,6 +10,21 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Planning-page refinement 0037
+
+Status: implemented; sixteen Node tests, the three browser regressions and final focused/type/build/asset checks passed, with timing recorded in [verification](../docs/verification.md). Human visual acceptance remains pending. [Instruction 0037](../prompts/0037-refine-town-planning-page.md) refines the existing planner and sample-town navigation:
+
+- Remove the duplicate Back control and introductory heading/copy above the sheet. Give setup the homepage's compact, top-aligned language/account controls while preserving their actions and hints.
+- Replace the line-plan drawing with the enlarged existing rendered 3D terrain preview. Align the paper's vertical crease with the actual column division; the stacked narrow layout must remain readable.
+- Move all three landscape tours to sample-town navigation in place of Town settings. Tours operate on fictional sample data; real towns retain their own settings and deployment state.
+- Use hand/community symbols related to the homepage for the two mode buttons. Open growth settings by default; make terrain choices compact and the creation/publication action dominant.
+- Collapse configuration/backup options by default with a clear resume-later hint. A separate `buildergame-plan/v1` backup can preserve incomplete input; complete configuration export and captured-town backup keep their existing meanings. Do not imply unsaved input is already backed up.
+- Animate mode changes as a page turning from the crease. Reduced-motion users receive an immediate or nonmoving transition; keyboard access, rapid switches and form values must remain reliable.
+
+Executed checks covered bilingual/responsive setup, header alignment, larger previews, expanded growth/collapsed backup options, mode/focus/reduced-motion behavior, rapid switches, retained form values, incomplete-plan download/reload/import, configuration export, capture and sample-only tours. Final desktop/mobile and mid-turn screenshots were inspected; clipping confines the turning paper to the sheet. Three terrain previews now use original 1280×720 renders, with no new external asset. All ten GLB fingerprints remain unchanged. Accounts/repositories/capture use fixtures; real OAuth, public GitHub network checks, publication and physical-device testing were not performed. [Exact results and verification timing](../docs/verification.md).
+
+中文简注：图纸聚焦配置与创建；切换模式翻页，但保留已填写的数据。
+
 ## Homepage header alignment 0036
 
 [Instruction 0036](../prompts/0036-align-homepage-header-top-edges.md) is implemented with two homepage-scoped rules in `src/map-ui.css`, aligning the header/action group and the account's visible guest icon at the top. English/Chinese checks at 1440/760/360px and screenshot review passed matching edges, usable targets and no overflow; setup remains centered. [Results and limits](../collaboration/log.md#0036--align-homepage-header-top-edges).

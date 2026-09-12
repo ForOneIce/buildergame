@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. The app includes flat, valley and cloud sample towns with the same fictional projects and three snapshots. English is the default; use the language button to switch to Chinese.
+Open http://127.0.0.1:5173. Choose **Explore sample town → Tour landscapes** for flat, valley or cloud scenery with the same fictional projects and three snapshots. Choose **Create town → Personal** or **Community** to start planning. English is the default; use the language button to switch to Chinese.
 
 The Vite development server includes the Node API. No credentials are needed to explore, import/export backups or try a small public-repository capture. Unauthenticated GitHub requests share a low rate limit (usually 60/hour per IP); public previews are limited to 20 projects and one capture/minute per client. Authenticated collections support up to 200 projects.
 
@@ -18,7 +18,7 @@ The Vite development server includes the Node API. No credentials are needed to 
 1. Create a [GitHub OAuth App](https://github.com/settings/developers).
 2. For local development, set homepage to `http://127.0.0.1:5173` and authorization callback to `http://127.0.0.1:5173/api/auth/callback`.
 3. Copy `.env.example` to `.env` and set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_ALLOWED_LOGIN` to the deployer's account. Keep `PUBLIC_ORIGIN=http://127.0.0.1:5173`.
-4. Restart `npm run dev`. Choose **My builder town → Sign in**.
+4. Restart `npm run dev`. Choose **Create town → Personal → Sign in**.
 
 The confidential OAuth flow requests no repository-write scope. Tokens remain in expiring in-memory server sessions, with an HttpOnly cookie in the browser. Only the configured deployer may publish. A restart requires signing in again; the published town remains on disk. Never use a `VITE_` variable for a secret or commit `.env`.
 
@@ -34,21 +34,23 @@ Use persistent private storage for `PLAYER_DATA_DIR` (default `private/players`)
 
 ## Personal repository mode
 
-Sign in, load your public repositories, choose which projects to include, and give the town a name. Additional pages can be loaded. Set growth weights if desired, then select **Create town snapshot**.
+Choose **Personal**, sign in or enter a public username, select **Find repositories**, choose projects and name the town. Additional pages can be loaded. Set growth weights, then select **Create town**, or **Create & publish town** when publishing is enabled for the deployer.
 
 Without OAuth configured, enter a public GitHub username for a smaller preview. This does not grant publishing authority. A successful preview is stored only in that browser and can be exported.
 
-## Hackathon mode
+## Community and hackathon mode
 
-Paste one public repository URL per line; owners may differ. Alternatively import [examples/hackathon.config.json](../examples/hackathon.config.json) after editing the name, repository list, stable project IDs and plots. Example repositories are public libraries, not verified hackathon entries.
+Choose **Community** and paste one public repository URL per line; owners may differ. Alternatively use **Not ready yet? → Load a plan** to import [examples/hackathon.config.json](../examples/hackathon.config.json) after editing its name, repository list, stable project IDs and plots. Example repositories are public libraries, not verified hackathon entries.
 
 Configuration supports `weighted`, `commits`, `stars` or `custom` growth. Custom mode needs a complete `customScores` object mapping repository URLs to numeric scores. A configuration import preserves its custom rule until weights are edited in the UI.
 
 After a successful capture, enter the town. For another observation of the same collection, choose **Town settings** and capture again. Existing snapshots stay intact. Editing the repository selection starts a distinct town; the Demo does not splice a changed roster into old snapshots.
 
+In either mode, **Not ready yet? → Save draft** downloads `town.plan.json`, including unfinished fields and selected repositories. **Load a plan** restores it for later editing. Drafts contain no captured snapshots and are not CLI input. **Export deployment configuration** validates the complete form and downloads `town.config.json` for configuration import or CLI capture. The full town-history backup remains `town.json`.
+
 ## Publish for ordinary visitors
 
-An authenticated deployer can select **Publish for everyone on this deployment** when capturing. The Node service writes a public-data-only bundle atomically to `TOWN_DATA_FILE` (default `private/town.json`). This selects the active town for the deployment; export the previous town before replacing it with a different collection if you want to retain it.
+An authenticated deployer can select **Publish for everyone to explore** when capturing. The Node service writes a public-data-only bundle atomically to `TOWN_DATA_FILE` (default `private/town.json`). This selects the active town for the deployment; export the previous town before replacing it with a different collection if you want to retain it.
 
 Visitors can open the deployment and enter the published town without signing in. Viewing does not fetch GitHub on each visit. `mode: "live"` checks for newly published snapshots at `refreshSeconds`; it does not schedule GitHub captures by itself. Each snapshot records its own data time, separately from the app build version.
 
