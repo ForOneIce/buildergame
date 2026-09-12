@@ -5,8 +5,8 @@
   "capture": {
     "engine": "Local application rendered with Three.js in headless Chrome through Playwright",
     "viewport": {
-      "width": 1280,
-      "height": 720,
+      "width": 2560,
+      "height": 1440,
       "deviceScaleFactor": 1
     },
     "data": "sampleTown() from src/sample.mjs, latest snapshot, nine fictional projects",
@@ -15,9 +15,10 @@
       "valley",
       "clouds"
     ],
-    "ui": "HUD visibility disabled by screenshot-only CSS; runtime source and building models were not modified for these captures"
+    "ui": "HUD visibility disabled by screenshot-only CSS; runtime source and building models were not modified for these captures.",
+    "detail": "Automatic town LOD selection; all three overview captures used the locked low-detail building variants (highDetail=0)."
   },
-  "processing": "Cropped to landscape content and resized to 320x180 with System.Drawing HighQualityBicubic interpolation; PNG output.",
+  "processing": "Captured at 2560x1440; cropped using exactly twice the prior 1280x720 capture coordinates to preserve framing, then downsampled to 1280x720 with System.Drawing HighQualityBicubic interpolation; PNG output.",
   "sources": [
     {
       "path": "src/town.ts",
@@ -44,44 +45,45 @@
     {
       "file": "flat.png",
       "landscape": "flat",
-      "width": 320,
-      "height": 180,
+      "width": 1280,
+      "height": 720,
       "crop": {
-        "x": 200,
-        "y": 145,
-        "width": 896,
-        "height": 504
+        "x": 400,
+        "y": 290,
+        "width": 1792,
+        "height": 1008
       },
-      "sourceCaptureSha256": "52fe0b143b2842b0b2b4963dbe5674d8741f2809deaded995ad50b16f7f7485b",
-      "sha256": "ef365125a1722674a7989b17df15dd8d99f92eb8e7aac7ba0eeef787e587c8cd"
+      "sourceCaptureSha256": "354447e65dd89e74a3cd90ef169b7950ed646cc2cd30621e51b651a37a384fc2",
+      "sha256": "0d621b185d7830a8b4f32f780b49f3760132b5c691c5b1edc1fe348c0102dd21"
     },
     {
       "file": "valley.png",
       "landscape": "valley",
-      "width": 320,
-      "height": 180,
+      "width": 1280,
+      "height": 720,
       "crop": {
-        "x": 112,
-        "y": 135,
-        "width": 1008,
-        "height": 567
+        "x": 224,
+        "y": 270,
+        "width": 2016,
+        "height": 1134
       },
-      "sourceCaptureSha256": "c4b67c21e45af96c9d06b8f4b26ef66cd864b3bdd41733218f44f08db673bb91",
-      "sha256": "560afc89d653d629ba58e3898eeaa9f9f656fd54edc2d350897caeb2c252665d"
+      "sourceCaptureSha256": "2486de49325be3544c89e71d397a1b9700817c8435b388c7205eddc0c03fbdaa",
+      "sha256": "6192ec38e2c2909a39328e9a8a790ce18809fe49a9bead541efcca9e72843f5f"
     },
     {
       "file": "clouds.png",
       "landscape": "clouds",
-      "width": 320,
-      "height": 180,
+      "width": 1280,
+      "height": 720,
       "crop": {
-        "x": 220,
-        "y": 120,
-        "width": 832,
-        "height": 468
+        "x": 440,
+        "y": 240,
+        "width": 1664,
+        "height": 936
       },
-      "sourceCaptureSha256": "1e425d111f2f81b64d08866d3196147d8f5362c1c468b44eac05cfdbe2cb9209",
-      "sha256": "f63f98984f0a29a58a16d7ddc0975ae1134444e1dfd0f6403bf2aa4ffc07af66"
+      "sourceCaptureSha256": "dac140084d1df1beafded537d0ae14c40c9e7b3e1ae2388387e814840cdbe8af",
+      "sha256": "6266b2e0a52ac370ae9cde1db9fa7f561a5c8540bf7adfe425ef3c4525c824de"
     }
-  ]
+  ],
+  "updatedDate": "2026-09-13"
 }
