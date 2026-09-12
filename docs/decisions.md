@@ -1,5 +1,9 @@
 # Decision log
 
+## D-019 — Reveal the growth tagline on hover
+
+- 2026-09-12 (UTC): the human requested a hover-only “Keep building. Keep growing.” tagline and further building enlargement. [Instruction 0033](../prompts/0033-hover-tagline-and-larger-building.md) replaces the permanently visible tagline through CSS-only changes. Focused hover/responsive checks, full-courtyard screenshot review and build validation passed; no full suite was rerun. Human visual acceptance remains pending. [Verification](verification.md).
+
 ## D-018 — Use a large automatic showcase with silent transitions
 
 - 2026-09-12 (UTC): the human requested a larger homepage building showcase with automatic stage cycling, no five-stage/pause buttons and no loading text. [Exact instruction](../prompts/0032-silent-automatic-building-showcase.md). This replaces the corresponding 0031 presentation and D-017's manual showcase controls.

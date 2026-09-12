@@ -10,6 +10,10 @@ The shared header/material system now covers welcome, planning, success and town
 
 Implemented files: `src/ui/theme.css` contains common material tokens, control states, object-entry drawings, transitions and cursor styling; `src/ui/icons.ts` contains original geometric icons; `src/ui/planning.ts` provides the planning-sheet composition. Integration updates `src/main.ts`, `src/game-ui.ts`, `src/style.css`, `src/map-ui.css`, `src/town.css` and `src/town.ts`. Six Adventure UI SVGs and five Cursor Pack PNGs are vendored with verified original bytes, licenses and source manifests under `public/ui/kenney/`. No Lucide dependency is introduced.
 
+## Hover tagline and framing refinement 0033
+
+[Instruction 0033](../prompts/0033-hover-tagline-and-larger-building.md) makes “Keep building. Keep growing.” visible only while hovering over the homepage building illustration and enlarges its framing further, preserving the full courtyard. This supersedes the permanently visible tagline from the previous revision. Implementation changes only `src/style.css`. Focused Chrome checks passed initial-hidden, hover-visible and pointer-exit-hidden behavior at 1440/768/360px, exact Chinese copy and no horizontal overflow/page errors; stage-5 screenshots showed the full courtyard. TypeScript, sample/asset validation and production build passed. No full suite was rerun; human visual acceptance remains pending. [Verification](../docs/verification.md).
+
 ## Silent automatic showcase refinement 0032
 
 Status: implemented; TypeScript, sample/asset validation, production build and the final extended shared-interface browser check passed. Final human visual acceptance remains pending. [The original instruction and translation](../prompts/0032-silent-automatic-building-showcase.md) supersede the stage buttons, pause/play control and loading presentation described in 0031 below.

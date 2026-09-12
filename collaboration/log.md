@@ -1,5 +1,9 @@
 # Human–AI collaboration log
 
+## 0033 — Hover tagline and larger building framing
+
+- 2026-09-12 (UTC): the human requested a hover-only growth tagline and a larger homepage building. Codex changed only `src/style.css`; focused Chrome checks at 1440/768/360px and stage-5 screenshot review passed, as did TypeScript, sample/asset validation and production build. No JavaScript, tests or assets changed; no full suite was rerun. Human visual acceptance remains pending. [Instruction](../prompts/0033-hover-tagline-and-larger-building.md), [verification](../docs/verification.md).
+
 ## 0032 — Enlarge the automatic showcase and make transitions silent
 
 - 2026-09-12 (UTC): the human requested larger building presentation on the homepage's right side, automatic stage cycling, removal of the five stage buttons and pause control, and natural loading transitions without text. [Exact instruction and translation](../prompts/0032-silent-automatic-building-showcase.md).

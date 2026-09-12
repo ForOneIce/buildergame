@@ -2,6 +2,12 @@
 
 Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
 
+## Hover tagline and framing 0033
+
+This revision changes only `src/style.css`; no JavaScript, tests or assets changed. Focused headless Chrome checks at 1440/768/360px passed initial-hidden, hover-visible and pointer-exit-hidden caption behavior, exact Chinese wording, and no horizontal overflow or page errors. Desktop/tablet/mobile stage-5 screenshots were inspected: the full courtyard remained visible.
+
+On 2026-09-12 (UTC), `tsc --noEmit`, `node scripts/validate.mjs` (nine projects, three snapshots, ten unchanged locked GLBs) and Vite production build passed. The existing Three.js chunk-size advisory remains. No full test suite was rerun for this CSS revision; human visual acceptance remains pending.
+
 ## Silent automatic showcase 0032
 
 The [0032 revision](../prompts/0032-silent-automatic-building-showcase.md) is implemented: larger automatic building presentation, no stage/pause controls or loading copy, and a static stage 5 on reduced-motion entry. It preloads and caches the five GLBs as file bytes, parsing an incoming stage on demand. One live WebGL scene renders the current building; a temporary 2D copy of the outgoing frame fades over it. Hiding the page cancels future transition timers; an in-flight request or parse may finish. Disposal aborts requests and clears resources. Initial reduced-motion load failures have up to two silent retries.
