@@ -1,5 +1,20 @@
 # Decision log
 
+## D-011 — Preserve accepted buildings while revising landscapes and player UI
+
+- Human direction: lock the five accepted building appearances; choose flat, valley or cloud terrain at town creation; follow the supplied map/card references; allow GitHub players to retain exploration progress. Sources: [0020](../prompts/0020-landscapes-and-player-ui.md) and [0021](../prompts/0021-automatic-town-generation.md).
+- Implemented contract: the landscape is fixed for a town's snapshot history, with missing legacy values treated as flat. New collections receive stable spiral plot assignments; existing imported coordinates are retained. Six stored scoring labels continue to map to five visuals, with townhouse/decorated sharing the final asset.
+- AI implementation: original Three.js landscape assembly, reusable locked GLBs with SHA-256 verification, floating HUD/cards/minimap and local/account-scoped visit storage. Ordinary player login does not grant deployer publication authority.
+- Placement update: flat/valley scenery currently uses 16-unit logical spacing and cloud districts have separate deterministic transforms; this supersedes D-009's earlier 12-unit render spacing without changing stored logical plot identities.
+- Generation scope: different initial roster sizes are supported. Adding/removing membership inside existing history requires a separate versioned migration. Authored district modules are a researched follow-up proposal, not a completed framework.
+- Walking, interiors, list sorting and the resident world-map UI stay deferred while the current town composition is reviewed. Real OAuth remains unconfigured; current build/browser checks passed with exact scope in [verification](verification.md). [Implementation record](../collaboration/landscapes-player-ui.md).
+
+## D-010 — Deliver a playable bilingual, portable snapshot town
+
+- Human requirements: use supplied visual references, implement personal GitHub and multi-owner hackathon modes, support UI/file configuration, export backups and public visitor exploration after capture.
+- AI implementation: procedural merged 3D geometry, Vite/Node API, deployer-allowlisted GitHub OAuth, public REST metadata/history counts, append-only snapshots and JSON backup schema. Static viewing and full Node deployment are documented separately.
+- Reference: [Input](../prompts/0012-playable-demo.md), [implementation specification](../specs/0005-playable-demo.md), [verification](verification.md).
+
 ## D-009 — Separate product onboarding and hackathon review
 
 - Human direction: a conventional user-facing root README and a dedicated directory for judges.
@@ -78,3 +93,16 @@ Record dates, decisions, attribution, rationale, impact, and references. Unconfi
 - AI implementation choices: TypeScript, Vite, Three.js, provisional weights 1/3/6, replaceable procedural buildings and sample snapshots.
 - Status: initial implementation; actual project list, final art and verification remain pending.
 - References: [Input](../prompts/0007-web2-demo.md), [Demo specification](../specs/0003-web2-demo.md).
+
+## D-008 — Prioritize visual validation before feature expansion
+
+- Human instruction: evaluate the visual technology against the new design sheets and achieve the expected visuals before other work.
+- Work sequence: pause expanded exploration/map functionality and first validate a complete-house visual sample.
+- AI recommendation, not a final human technology choice: authored Blender/GLB assets rendered with the existing Three.js runtime.
+- References: [Input](../prompts/0014-visual-pipeline.md), [evaluation](../specs/0007-visual-pipeline.md), [research record](../collaboration/visual-research.md).
+
+## D-009 — Integrate accepted building direction into fixed town plots
+
+- AI implementation choice following the instruction to continue: render the five authored GLBs at 12 world units per existing logical plot. The 9.4-unit final courtyard fits without moving projects between snapshots.
+- Use instanced distant assets and at most six nearby full-detail buildings. Preserve the studio and defer walking/maps until visual review.
+- [Scope and acceptance](../specs/0009-town-visual-integration.md); [verification and reuse](../collaboration/town-visuals.md). This is not new human approval of the entire town composition.

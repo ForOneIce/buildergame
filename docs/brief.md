@@ -1,6 +1,6 @@
 # Problem brief
 
-Status: initial implementation of the Web2-first Demo authorized in prompt 0007. ETHOnline 2026 is the intended pilot; competition route remains undecided.
+Status: playable local Web2-first Demo with public repository capture, two setup modes, bilingual UI and snapshot export. Five accepted building appearances are locked; current implementation adds flat/valley/cloud landscapes, floating controls/cards/minimap and guest/GitHub player progress. Current build/browser checks passed; human review of the new town composition remains pending. See [verification](verification.md) for evidence and limits. ETHOnline 2026 is the intended pilot; competition route remains undecided.
 
 ## Product priorities
 
@@ -31,13 +31,13 @@ A Three.js town maps hackathon repositories to houses. Structured event manifest
 - AI recommendations, not confirmed: one event, 20–50 projects, cached daily snapshots, three house stages, a list fallback, wallet-free viewing, and conditional ENSv2 integration. The earlier metric-separation proposal was superseded by the user's organizer-defined growth requirement in session 0005.
 - Important assumptions: the town creates repeat visits; builders welcome metric-based appearance; organizers will curate and may pay. None has been tested.
 - Full review: [Hackathon Town](ideation/0002-hackathon-town-review.md).
-- Pending: actual project data, final visual references, verification and competition route. Pilot and metric ordering are set in prompt 0007.
+- Pending: actual event project data, town-composition review, production verification and competition route. Building references and five accepted appearances are now available. Pilot and metric ordering are set in prompt 0007.
 
 ## User refinement: deployment modes
 
 The user specified organizer self-deployment with event-name branding in the opening animation, a deployment-time game version, a fixed post-event showcase mode, and a continuously updated town mode. Evolving project buildings form the cityscape and should make change visible to returning visitors.
 
-Reference: [prompt 0003](../prompts/0003-town-deployment-modes.md). AI proposes separate deployment/data timestamps and persistent snapshot comparison; these technical details remain unapproved.
+Reference: [prompt 0003](../prompts/0003-town-deployment-modes.md). The Demo now keeps build and data timestamps separate and displays recorded snapshot history; `live` viewing polls published data but does not itself schedule new GitHub captures.
 
 ## User refinement: visible town history
 
@@ -47,10 +47,16 @@ The user specified fixed project land positions and a town-wide update timeline.
 
 The user explicitly assigns growth criteria to each organizer. Commits or stars can directly drive house stages. A custom scoring system requires a complete repository-to-score mapping supplied before deployment. Earlier AI proposals for mandatory separation or adjustment of metrics are superseded.
 
-See [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [the current specification](../specs/0002-organizer-growth-rules.md). Technical configuration and implementation remain pending.
+See [prompt 0005](../prompts/0005-organizer-growth-rules.md) and [the current specification](../specs/0002-organizer-growth-rules.md). The Demo implements cumulative commits, stars, weighted commits/stars/forks and complete custom-score tables.
 
 ## User clarification: accumulated construction remains
 
 Commits mode uses cumulative historical totals. With no new commits, the existing building stays unchanged under the same mapping. A confirmed empty repository with zero commits may render as empty land. Recent activity, rolling scoring windows, and inactivity decay are not part of this requirement.
 
 Source: [prompt 0006](../prompts/0006-cumulative-commit-growth.md).
+
+## Current refinement: stable landscapes and project discovery
+
+The human accepted the five building appearances and redirected the visual iteration to scenery and interaction. Organizers choose flat ground with concrete streets, a valley with water/gravel paths, or cloud districts at creation; subsequent snapshots retain that landscape and project locations. The game uses floating map controls, a searchable project list, minimap and sign-opened project cards. Guests retain local exploration progress; configured GitHub player login adds avatars and account synchronization for the published town.
+
+The current generator expands the initial town's extent with collection size. More detailed reusable district modules and adding projects to an existing history are separate proposals, described in [the generation assessment](procedural-town-plan.md). Walking/interior visits, dimension-based list sorting and the optional resident world map are deferred requirements from [prompt 0013](../prompts/0013-town-exploration.md), not available app features. See [0020](../prompts/0020-landscapes-and-player-ui.md), [0021](../prompts/0021-automatic-town-generation.md) and [implementation evidence](../collaboration/landscapes-player-ui.md).

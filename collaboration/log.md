@@ -1,5 +1,49 @@
 # Human–AI collaboration log
 
+## 0020–0021 — Landscapes, player interface and automatic layout
+
+- 2026-09-11 (UTC): the human accepted and locked the five construction appearances, requested three immutable landscape modes, floating map controls, GitHub player avatars/progress and project cards, and asked how collection size can drive town generation.
+- Codex researched available terrain/layout techniques, added landscape validation and stable placement, preserved the GLBs with fingerprint checks, and implemented original landscape assembly, HUD/cards/minimap, player OAuth and local/account visit storage. [Implementation and evidence](landscapes-player-ui.md) distinguish completed work from proposed district/membership extensions.
+- Sources: [0020 — Landscapes and player UI](../prompts/0020-landscapes-and-player-ui.md), [0021 — Automatic town generation](../prompts/0021-automatic-town-generation.md). Real OAuth and final human review of town composition remain pending.
+- 2026-09-12 (UTC): implementation continued with integration review and documentation reconciliation. Updated the product guide, deployment instructions, verification boundaries and development entry points. The current production build and full/targeted browser journeys passed; all ten locked GLBs remained unchanged. Checked three terrain modes, cards/minimap, guest progress, mocked player avatars/synchronization, delayed uploads, legacy configuration, languages and mobile controls. Inspected actual flat/cloud/mobile-card screenshots; human town-composition review remains pending. Geometry checks at 1, 9 and 50 projects do not establish large-town browser performance. [Exact results](../docs/verification.md) preserve the distinction between mocked OAuth and earlier real public GitHub reads.
+- Final targeted Node run: all twelve data/API/landscape/player tests passed, including stable configuration output at 1, 9, 50 and 200 projects. Documentation review: local Markdown targets resolved and scoped whitespace checks passed. Historical records below retain their original scope. Walking, interiors, list sorting and the resident world map remain deferred.
+
+## 0019 — Complete the sample's stage coverage
+
+- 2026-09-11 (UTC): human reported the missing second-stage example. Codex added First Bricks as a ninth fictional project, synchronized the public sample and checked the five-stage default view. [Evidence](sample-foundation.md).
+
+## 0018 — Green land-stage correction
+
+- 2026-09-11 (UTC): the human requested green lichen instead of yellow clearing, incomplete fencing and small saplings. Codex revised only stage 1, regenerated its two detail levels and verified the studio and town renders. [Iteration evidence](moss-land-stage.md).
+
+## 0017 — Authored town integration
+
+- 2026-09-11 (UTC): continued the visual-first iteration, integrated five authored stages into fixed 12-unit plots and connected streets, added distant instancing and nearby detail, and retained project/timeline interactions.
+- [Integration record](town-visuals.md) identifies the human direction, AI implementation, reuse, executed checks and performance limits. Human acceptance of the integrated street composition is pending.
+
+## 0016 — Expanded courtyard and five appearances
+
+- Human accepted the visual direction and requested more final-stage garden/sign space, followed by all other appearances. Codex generated the five assets and added stage selection, matching references, resource cleanup and retry handling to the studio.
+- [Iteration record](five-stages.md) includes actual geometry checks, asset sizes, browser tests, build results, reuse and limits. The final courtyard is 76.6% larger; 262 architectural/attached-furnishing objects remained identical. No remote push.
+
+## 0015 — Complete-house visual prototype
+
+- Generated an original Blender GLB and bilingual standalone viewer at `/visual.html`, with visual revisions based on real browser captures. [Full record](house-prototype.md) includes human/AI contribution, source/license register, exact asset statistics, executed checks and remaining limits.
+- Fourteen working-tree Node tests, TypeScript, targeted browser interaction checks and the multi-page production build passed. Final human visual review, real mobile GPU tests and large-town LOD remain pending. No remote push.
+
+## 0014 — Visual pipeline evaluation
+
+- Human redirected work to visual quality before feature expansion. Codex inspected the five new building sheets, the street reference and current rendering code, then researched primary-source technology and asset pages.
+- [Research record](visual-research.md) documents actual tools, outputs, source limitations, candidate reuse and pending human review. [Evaluation](../specs/0007-visual-pipeline.md) proposes a complete-house sample before five stages and a street.
+- No runtime changes, new render, asset installation, GPU benchmark or remote publication in this evaluation. Documentation whitespace checks passed.
+
+## 0012 — Deployment documentation and final source checks
+
+- Added local/Node/static deployment instructions, OAuth setup, JSON backup locations, capture CLI examples and an explicit verification record. Updated product and reviewer READMEs to describe the playable Demo accurately.
+- Final source checks: TypeScript and sample-bundle validation passed; local Markdown links and whitespace checks passed; the targeted credential-pattern scan found no matches or private/.env files in publishable paths.
+- Full build passed earlier in this session; production output has not been rebuilt after the final visual/mobile changes. Real OAuth and hosted production remain unverified.
+- Local implementation stages: 774601d data/API and df1652d playable UI; no assistant push or remote deployment performed.
+
 ## 0012 — Playable island and UI verification
 
 - AI: built reusable merged house geometry, blue shingle roofs, timber frames, island cliffs, greenery, signs, dock and cloud scenery; implemented bilingual welcome/setup/success/town screens, both collection modes, public viewing, capture, export/import, and deployment instructions.

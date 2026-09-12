@@ -10,7 +10,9 @@ blender --background --factory-startup --python scripts/art/build_house.py
 
 The default is stage 5. To generate another appearance, append `-- --stage 1` (or 2, 3, 4). Each run writes the corresponding `stage-N.glb`, `stage-N.stats.json` and local `stage-N.blend`. `stage_details.py` supplies stage derivation and the shared garden layout; it executes inside the main script's authoring namespace. Stage 5 keeps the compatible `cozy-house` filename.
 
-The final tile measures 9.4 × 9.4 units; stages 1–4 use 7.25 × 6.9. The main town reserves 12 units per fixed logical plot. Sign placement and face dimensions are in each statistics JSON, so the viewer does not duplicate layout constants.
+The final tile measures 9.4 × 9.4 units; stages 1–4 use 7.25 × 6.9. Flat and valley towns use 16-unit logical plot spacing; cloud districts use the deterministic transforms in `src/landscape.mjs`. Sign placement and face dimensions are in each statistics JSON, so the viewer does not duplicate layout constants.
+
+The accepted five appearances and their distant derivatives are locked in `public/models/buildings.lock.json`. The commands below document reproducible authoring; visual iterations on roads, terrain and UI must keep these GLBs unchanged.
 
 Stage 1 uses a green lichen lawn, incomplete fence sections and two small leafy saplings. It has no yellow clearing overlay. Stages 2–5 retain their construction surfaces and mature planting.
 

@@ -1,6 +1,6 @@
 # AI usage disclosure
 
-Codex assisted with project planning, research, English translations, specifications and initial implementation. No other AI tool use is recorded. Generated code is incomplete and has not passed a build or full human review.
+Codex assisted with project planning, research, translations, specifications, implementation and tests. The current landscape/HUD revision passed production build and targeted/full browser journeys; exact checks and limits are in [verification](../docs/verification.md). Human-supplied reference images are recorded in design/; their generation tool and prompts have not been supplied. The human accepted the five building assets, while the revised town composition and adoption remain unvalidated.
 
 ## Human contributions
 
@@ -8,19 +8,37 @@ Codex assisted with project planning, research, English translations, specificat
 - Specified organizer deployments, event branding, permanent plots and whole-town history navigation.
 - Defined organizer authority over growth, cumulative commits without inactivity decay, and complete custom score imports.
 - Selected the ETHOnline 2026 pilot, commits/stars/forks weight ordering, Web2 portability and deferred ENS integration.
+- Supplied visual references and specified bilingual interaction, personal/hackathon setup, deployer GitHub login, portable backups and public visitor access.
+- Accepted and locked the five building appearances; specified flat, valley and cloud landscapes, map-style floating controls, player avatars/progress and project-card composition.
 
 ## AI contributions
+
+Sessions 0020–0021: Codex researched terrain and automatic-layout options, implemented immutable landscape configuration, original Three.js terrain assembly, floating HUD/cards/minimap, player OAuth and local/account progress. The accepted GLBs remain unchanged and are checked by fingerprints. Source instructions are [0020](../prompts/0020-landscapes-and-player-ui.md) and [0021](../prompts/0021-automatic-town-generation.md); [the implementation record](landscapes-player-ui.md) identifies research, file scopes, executed checks and limits. Integration review resumed on 2026-09-12 (UTC), including documentation reconciliation, production build, full/targeted browser checks and actual screenshot inspection. Player authorization, avatars and synchronization were tested with mocked provider/session responses; real OAuth remains unconfigured. Walking, sorting and world-map UI remain deferred.
+
+Session 0019: Codex addressed the human's missing-foundation report by adding a fictional sample project and synchronizing its JSON. [Evidence and limits](sample-foundation.md). No new geometry or real repository observation was produced.
+
+Session 0018: the human supplied the land-stage correction; Codex implemented the green surface, broken fence segments and small saplings in the Blender source and two stage-1 assets. [Revision evidence](moss-land-stage.md) records generation and executed checks. Final human visual acceptance is pending.
+
+Session 0017: Codex derived five reduced-detail GLBs and generated the main town integration, instancing, loading/retry lifecycle, project signs and targeted browser checks. [Town integration record](town-visuals.md) documents evidence and limits. The human has not yet reviewed this integrated result.
 
 | Scope | Actual assistance | Verification status |
 | --- | --- | --- |
 | docs/ | Feasibility, GitHub API research, competition-source summaries and decisions | Sources recorded; product assumptions not user-validated |
 | specs/ and prompts/ | Requirements, original project instructions, labeled translations and implementation plan | Historical documentation checks recorded in collaboration log |
-| src/ | TypeScript/Three.js town, procedural models, timeline/directory UI, styling, data contract and link boundary | Initial code only; build and application tests pending |
-| package.json, tsconfig.json, vite.config.ts, index.html | Dependency and build setup | Installation and complete build unverified |
+| src/ | TypeScript/Three.js scene, locked GLB loading, generated terrain, bilingual setup/HUD/cards/minimap, progress, data contract and link boundary | Current production build and targeted/full browser checks passed |
+| server/, scripts/, tests/ | Deployer/player OAuth, GitHub reads, snapshots, account progress, asset lock, CLI and regression tests | Recorded Node/browser results in verification; OAuth mocked; earlier real public reads verified |
+| scripts/art/ and public/models/ | Original Blender authoring source, five building appearances and distant GLB derivatives | Human accepted the five appearances; ten GLBs protected by fingerprints |
+| package.json, tsconfig.json, vite.config.ts, index.html | Dependency and build setup | Installed and built; npm audit reported zero vulnerabilities after Vite update |
 | README.md and collaboration/ | Project status, contribution and reuse documentation | Does not establish adoption or production readiness |
 | hackathon/ and submission copy | Reviewer guide, rules, checklist, demo outline and English project description | Final video, human narration and submission verification pending |
 
 ## Development trace
+
+Session 0016: the human accepted the prior visual style. Codex expanded the final courtyard without scaling the architecture, derived four other appearances and implemented stage selection/retry in the studio. [Five-stage record](five-stages.md) documents Blender exports, architecture fingerprints, real browser checks and pending review of the new art.
+
+Session 0015: Codex authored the Blender model-generation script, generated original mesh/texture assets and wrote the standalone Three.js house studio and browser checks. Actual exports, visual corrections, test results and unresolved fidelity/performance limits are in the [prototype record](house-prototype.md). No image-generation service or third-party model pack was used. Human visual acceptance is pending.
+
+Session 0014: Codex inspected the new reference sheets and current rendering code, researched primary-source technology/asset pages, and wrote a [visual pipeline evaluation](../specs/0007-visual-pipeline.md). No replacement render or imported asset was produced. Human visual acceptance remains pending. See the [research record](visual-research.md).
 
 Session 0012: the human supplied six visual references and specified two setup modes, deployer GitHub authorization, bilingual UI, portable snapshot backup and public exploration. Codex generated the server, data pipeline, tests, procedural 3D components and UI. Eight Node tests and browser journeys passed; browser capture/OAuth responses were mocked for repeatability, while separate public GitHub reads were verified live. Real OAuth authorization and a hosted production deployment have not been tested. The reference image model/prompts were not supplied, so no attribution has been invented.
 
