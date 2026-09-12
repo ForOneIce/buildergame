@@ -13,3 +13,5 @@ Each specification should include:
 7. Status: draft / confirmed / implementing / verified, with revision history.
 
 Preserve actual specs, plans, and important revisions. Acceptance targets are not passing test results.
+
+Current workflow increment: [0012 — Named towns and deliberate snapshot publication](0012-named-towns-and-static-snapshots.md), including browser-only exploration, persistent town addresses and static deployment boundaries.

@@ -38,5 +38,9 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0036 — Align homepage header button top edges](0036-align-homepage-header-top-edges.md)
 - [0037 — Refine the town-planning page](0037-refine-town-planning-page.md)
 - [0038 — Refine the sample-town HUD](0038-refine-sample-town-hud.md)
+- [0039 — Named towns, static snapshots and frontend exploration](0039-named-towns-and-static-snapshots.md)
+- [0040 — Assess Vercel deployment](0040-vercel-deployment.md)
+- [0041 — Noncommercial use, attribution and public source](0041-noncommercial-attribution-source-license.md)
+- [0042 — Direct GitHub token access from the browser](0042-browser-github-token-access.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

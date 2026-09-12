@@ -8,8 +8,8 @@ The welcome screen offers three independent sample towns. They demonstrate the s
 
 ## GitHub players
 
-Use the existing GitHub OAuth app credentials and callback `/api/auth/callback`. Player login uses `/api/auth/login?role=player` and requests no extra GitHub scopes. Any GitHub player may sign in, but only `GITHUB_ALLOWED_LOGIN` can publish. The client sees the public login and avatar, never the access token.
+The profile control supports a page-memory GitHub token for direct browser access and avatars, including on static deployments. Optional Node OAuth uses `/api/auth/callback`; an OAuth-authenticated builder can publish their own town, while `GITHUB_ALLOWED_LOGIN` optionally grants administration. See the [current deployment guide](deployment.md).
 
-Guest visits are stored in this browser. Signed-in visits also synchronize for the town published on this deployment. Account-scoped progress files live under `PLAYER_DATA_DIR` (default `private/players`) and must be on persistent private storage for server restarts and cross-device access. The API stores a deduplicated list of viewed project IDs; reopening a card does not multiply progress. Imports, alternative local samples and deployments without OAuth keep local progress. The UI distinguishes local from synchronized storage. Backend OAuth credentials are required for real login; mocked tests do not validate a production OAuth setup.
+All visits are stored only in the current browser, regardless of connection method. Reopening a card does not multiply progress. There is no cross-device synchronization or new server progress storage; existing private legacy files are not exported. Browser-token identity and repository requests do not require backend OAuth credentials. Mocked authentication tests do not validate a real provider login.
 
 The five accepted building stages are fingerprinted in `public/models/buildings.lock.json`. `node scripts/verify-buildings.mjs` and the normal validation/build path check all ten GLBs. Terrain development must not update these fingerprints to bypass the human-approved asset lock.

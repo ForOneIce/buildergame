@@ -1,5 +1,29 @@
 # Decision log
 
+## D-028 — Add direct browser GitHub token access
+
+- 2026-09-12 (UTC): the human specified direct GitHub API access using a token without a backend and called out network/loading failures. [Exact instruction](../prompts/0042-browser-github-token-access.md).
+- Implemented a separate browser personal-access-token path for identity, public repository discovery and snapshot capture. The token remains in memory only, is discarded on disconnect/reload and is excluded from browser persistence, URLs, logs and exports. Transport and UI handle timeouts, cancellation, authentication/rate-limit and network failures.
+- This revises D-026's backend-only capture boundary for static clients. Confidential OAuth and server-owned publication still need a backend; reading GitHub does not automatically publish files or grant write permission. Data work is in `309d32b`; [verification](verification.md) records the passing final 42-test/build, four browser scripts and focused static/layout checks with their revision boundaries. [Updated specification](../specs/0012-named-towns-and-static-snapshots.md).
+
+## D-027 — Apply noncommercial attribution and source-sharing terms
+
+- 2026-09-12 (UTC): the human requested a license restricting commercial use, requiring attribution and requiring public source. [Exact instruction](../prompts/0041-noncommercial-attribution-source-license.md).
+- Codex interpretation: a custom noncommercial source-available license requires visible credit and public corresponding source under the same terms when distributing or hosting a version. It is explicitly not an OSI-approved open-source license. Private unpublished changes are outside the source-publication trigger.
+- Earlier CC0 building/Kenney asset scopes, GPL authoring scripts and third-party licenses retain their terms; supplied references and linked projects are not relicensed. [LICENSE](../LICENSE) and [NOTICE](../NOTICE), with corrected exception paths, are recorded in local commit `0a4dd23`. External legal review is not claimed.
+
+## D-026 — Provide a static Vercel deployment path
+
+- 2026-09-12 (UTC): the human asked whether the project can deploy to Vercel. Codex verified official documentation and prepared `vercel.json` for Vite output with physical town routes and no catch-all rewrite. [Question](../prompts/0040-vercel-deployment.md), [guide and sources](vercel.md).
+- Static viewing is the configured capability. Porting OAuth, publishing and capture to Vercel Functions requires a new adapter and shared durable data/session storage. Database plus optional Blob is a proposal; no storage service, paid plan or remote deployment was created. Hobby usage restrictions and limits are documented.
+
+## D-025 — Publish named towns through deliberate snapshots
+
+- 2026-09-12 (UTC): [instruction 0039](../prompts/0039-named-towns-and-static-snapshots.md) replaces the duplicated sample exploration panel with Random explore, restores GitHub account access, moves stats above the lower-left town name and makes all exploration progress frontend-only. It supersedes those parts of D-024 and earlier server-progress designs.
+- Town creation needs unique deployment-local names, stable name/timestamp subpaths, repository-file backup/deployment guidance and static occasion snapshots. Real-time GitHub state/automatic refresh is deferred. Existing cumulative metrics, organizer growth authority, fixed plots and landscape remain unchanged.
+- Implemented interpretation: reject empty project collections while permitting legitimate zero metrics; add an explicitly synthetic land-stage baseline without invented GitHub observations. Public bundles exclude private ownership and credentials. Full Node publication uses owner checks; static builds publish reviewed bundles at generated town paths. [Specification](../specs/0012-named-towns-and-static-snapshots.md), [passing local verification and limits](verification.md). Human visual acceptance and real authentication/remote deployment remain unverified.
+- Final static-host refinement: unpublished towns use the existing application shell with `?preview=<slug>`; only published towns use generated `/towns/<slug>/` paths. Restore a newer local draft over public data only after identity and unchanged-history-prefix checks, retain its unpublished status and request explicit export/publication. This keeps static refresh working without claiming unsaved server pages or discarding newer valid local snapshots.
+
 ## D-024 — Simplify the sample-town HUD
 
 - 2026-09-12 (UTC): the human supplied [six sample-town HUD changes](../prompts/0038-refine-sample-town-hud.md), relocating exploration/camera/name controls, removing sample account/save controls and adding concise hover hints. Codex interprets “命令” in the naming hint as “命名”; the original text is retained.

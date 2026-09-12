@@ -1,92 +1,76 @@
 # Run and deploy Buildergame
 
-## Run the complete local Demo
+Use Node.js 22.12 or newer. Run `npm install` and `npm run dev`, then open http://127.0.0.1:5173. The five approved buildings and three sample landscapes need no account.
 
-Use Node.js 22.12 or newer (Node 22 recommended) and npm.
+## Browser-only GitHub connection
 
-```sh
-npm install
-npm run dev
-```
+The upper-right profile button opens **Connect GitHub**. Enter a personal access token to validate your GitHub account, show its avatar and list public repositories. This works on static hosts, including Vercel and GitHub Pages; GitHub requests go directly from the browser to `api.github.com`.
 
-Open http://127.0.0.1:5173. Choose **Explore sample town → Tour landscapes** for flat, valley or cloud scenery with the same fictional projects and three snapshots. Choose **Create town → Personal** or **Community** to start planning. English is the default; use the language button to switch to Chinese.
+Use a fine-grained token with only the access needed for the selected public repositories. Repository metadata and commit counts require read access, including Contents read where GitHub requires it. This application does not request repository write access. Review [GitHub's token guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
-The Vite development server includes the Node API. No credentials are needed to explore, import/export backups or try a small public-repository capture. Unauthenticated GitHub requests share a low rate limit (usually 60/hour per IP); public previews are limited to 20 projects and one capture/minute per client. Authenticated collections support up to 200 projects.
+The token stays in the current page's memory. It is not saved in localStorage, sessionStorage, cookies, a URL, a draft or an exported town. Reloading or disconnecting clears it. Browser extensions and scripts running in the page can access page memory: connect only to deployments you trust.
 
-## Enable deployer GitHub login
+Each request has a 20-second deadline. Invalid/expired tokens, network failures, cancellation, access restrictions and rate limits produce actionable errors. Captures stop on authentication, network and rate-limit failures; completed historical snapshots remain unchanged. GitHub's API limits still apply. Public usernames can be read without a token where limits permit.
 
-1. Create a [GitHub OAuth App](https://github.com/settings/developers).
-2. For local development, set homepage to `http://127.0.0.1:5173` and authorization callback to `http://127.0.0.1:5173/api/auth/callback`.
-3. Copy `.env.example` to `.env` and set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_ALLOWED_LOGIN` to the deployer's account. Keep `PUBLIC_ORIGIN=http://127.0.0.1:5173`.
-4. Restart `npm run dev`. Choose **Create town → Personal → Sign in**.
+## Create and revisit a town
 
-The confidential OAuth flow requests no repository-write scope. Tokens remain in expiring in-memory server sessions, with an HttpOnly cookie in the browser. Only the configured deployer may publish. A restart requires signing in again; the published town remains on disk. Never use a `VITE_` variable for a secret or commit `.env`.
+1. Choose **Create town → Personal** or **Community**. Select at least one public repository; duplicate URLs and empty input are rejected.
+2. Name the town and choose its landscape and growth weights. Published town names are unique within the deployment after normalization of case and whitespace. Names, landscape, project identities and plots stay fixed when appending history.
+3. Optionally give this capture an occasion name, such as **Demo day**. The data time is the actual observation time; naming a past occasion does not fabricate historical metrics.
+4. Capture. A new town stores a **Town founded** view with every project at stage one, followed by its first measured snapshot. Playback runs from **0 / 1** to **1 / 1**. The baseline has no GitHub measurements and is labeled as a visual starting point.
+5. Enter the town, explore projects and export a backup. Each capture-generated town has `event.deployment {slug, createdAt}`; its URL is `/towns/<name-and-timestamp>/` and its backup is `<slug>.json`.
 
-The town's **Sign in with GitHub** control uses the same OAuth app for ordinary players. Any GitHub account can use player login; this does not grant publication permission. The interface displays the account's GitHub avatar. Real OAuth has not been configured for the local Demo; provider responses in automated tests are mocked.
+Older single-snapshot backups get a display-only starting view for playback. Their stored history is not rewritten. **Town settings** opens the same town for an explicit new capture. A changed repository collection creates a different town. There is no periodic GitHub data refresh or automatic snapshot polling in this version, including for older files marked live.
 
-## Choose a landscape and save exploration
+Exploration progress is only stored in the current browser, separately for each town. Signing in does not upload it or make it available on another device. If storage is unavailable, visits last for the current page session and the interface reports that limitation.
 
-Town creation offers **Flat**, **Valley** and **Clouds**. File configurations accept `"landscape": "flat"`, `"valley"` or `"clouds"`; older files without this field use flat mode. The landscape cannot change when appending snapshots to the same town. Each new collection receives stable plots; snapshots reuse them. See [landscape details and generation limits](landscape-deployment.md).
+## Publish from GitHub files: lowest-maintenance option
 
-Opening project cards records explored project IDs. Guest progress is stored in this browser. Signed-in players synchronize progress for the town currently published by the deployment. Imports and alternative local samples retain local progress. The status message indicates whether progress is local or synchronized.
+A browser capture is initially a **local preview** at `/?preview=<slug>` (under the deployment's base path). Refreshing that address restores the town from this browser's saved data; it is not yet a public page for other visitors. If a newer saved draft extends a published town's exact history, it is restored as an unpublished preview until its JSON is deployed.
 
-Use persistent private storage for `PLAYER_DATA_DIR` (default `private/players`) to preserve account progress across restarts. The directory contains account-scoped project visits and is separate from the public town bundle. Guest and account progress are stored separately; signing in does not automatically migrate guest visits.
+1. Export the town's `<slug>.json` backup.
+2. In your Buildergame deployment repository, add it to `public/data/towns/<slug>.json`. The filename must match `event.deployment.slug`.
+3. Run `npm run build`. The build validates town data and emits a directory manifest and a physical `dist/towns/<slug>/index.html` for each town.
+4. Commit and push the public JSON when ready to publish. Connected Vercel deployments rebuild. For GitHub Pages, select **Settings → Pages → Source: GitHub Actions**, then run the included **Deploy static towns to GitHub Pages** workflow.
+5. Open the generated town URL in a fresh browser session and refresh it. A nonexistent town path should be a missing page.
 
-## Personal repository mode
+Each town keeps its own file. To add a snapshot, replace that file with the complete updated history, keeping its name/slug. Normalized duplicate town names, duplicate identities and filename/address mismatches fail the build. Keep the complete backup rather than exporting an isolated latest record.
 
-Choose **Personal**, sign in or enter a public username, select **Find repositories**, choose projects and name the town. Additional pages can be loaded. Set growth weights, then select **Create town**, or **Create & publish town** when publishing is enabled for the deployer.
+The original `public/data/town.json` remains a compatible default-town source. A non-sample default also gets a generated address. The shared Vite relative asset base and generated HTML base tags support both a Vercel domain and a GitHub Pages repository subpath.
 
-Without OAuth configured, enter a public GitHub username for a smaller preview. This does not grant publishing authority. A successful preview is stored only in that browser and can be exported.
+The app does not push files into GitHub automatically. Only public town bundles belong under `public/data/`; never copy an OAuth session or a private server ownership envelope there. [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) provides static hosting from a repository; public repositories can use GitHub Free. See the [Vercel guide](vercel.md) for its free-plan conditions and deployment details.
 
-## Community and hackathon mode
+## Plans, configuration and command-line capture
 
-Choose **Community** and paste one public repository URL per line; owners may differ. Alternatively use **Not ready yet? → Load a plan** to import [examples/hackathon.config.json](../examples/hackathon.config.json) after editing its name, repository list, stable project IDs and plots. Example repositories are public libraries, not verified hackathon entries.
+**Not ready yet? → Save draft** downloads an incomplete `town.plan.json`. **Load a plan** restores it. **Export deployment configuration** validates and downloads a complete `town.config.json` for file setup or the CLI. Drafts do not contain observations and cannot replace CLI input.
 
-Configuration supports `weighted`, `commits`, `stars` or `custom` growth. Custom mode needs a complete `customScores` object mapping repository URLs to numeric scores. A configuration import preserves its custom rule until weights are edited in the UI.
-
-After a successful capture, enter the town. For another observation of the same collection, choose **Town settings** and capture again. Existing snapshots stay intact. Editing the repository selection starts a distinct town; the Demo does not splice a changed roster into old snapshots.
-
-In either mode, **Not ready yet? → Save draft** downloads `town.plan.json`, including unfinished fields and selected repositories. **Load a plan** restores it for later editing. Drafts contain no captured snapshots and are not CLI input. **Export deployment configuration** validates the complete form and downloads `town.config.json` for configuration import or CLI capture. The full town-history backup remains `town.json`.
-
-## Publish for ordinary visitors
-
-An authenticated deployer can select **Publish for everyone to explore** when capturing. The Node service writes a public-data-only bundle atomically to `TOWN_DATA_FILE` (default `private/town.json`). This selects the active town for the deployment; export the previous town before replacing it with a different collection if you want to retain it.
-
-Visitors can open the deployment and enter the published town without signing in. Viewing does not fetch GitHub on each visit. `mode: "live"` checks for newly published snapshots at `refreshSeconds`; it does not schedule GitHub captures by itself. Each snapshot records its own data time, separately from the app build version.
-
-Production with Node:
-
-```sh
-npm run build
-npm start
-```
-
-Set `PUBLIC_ORIGIN` to the exact public HTTPS origin, update the GitHub OAuth callback to that origin plus `/api/auth/callback`, and put the Node service behind an HTTPS reverse proxy. Set `PORT` as needed (default 3000). Use persistent storage for `TOWN_DATA_FILE` and `PLAYER_DATA_DIR`. The Demo uses a single Node process and in-memory sessions; multi-instance session coordination is not implemented.
-
-## Export, back up and deploy a static town
-
-1. Choose **Save town** in the town, or **Export backup** after capture. The download is `town.json`.
-2. Add that file to `public/data/town.json` in your deployment repository.
-3. Run `npm run validate`, then commit the data change and rebuild with `npm run build`.
-4. Deploy `dist/` to a static host such as GitHub Pages. The relative asset base supports a repository subpath.
-
-The export includes public project metadata, stable plots, recorded metrics/rules and all snapshots. It excludes tokens, OAuth sessions and unknown import fields. Importing the full backup restores the town locally. The app never automatically writes to or pushes your GitHub deployment repository.
-
-Static hosting supports public viewing, history, language switching, guest progress and backup import/export. GitHub login, account progress synchronization, repository listing and new data capture require the Node service. A static site's deployer can generate data with the CLI instead:
+[examples/hackathon.config.json](../examples/hackathon.config.json) demonstrates a public multi-repository configuration. Growth supports cumulative commits, stars, weighted commits/stars/forks, or a complete custom score table. Earlier snapshots retain their original rules.
 
 ```sh
 npm run snapshot -- examples/hackathon.config.json new-town.json
-# Or append to an exported backup, writing to a different new file:
 npm run snapshot -- town.json updated-town.json
 ```
 
-The CLI optionally reads a local `GITHUB_TOKEN` environment variable, never stores it, and refuses to overwrite the output file. Do not use a preview command as the production API server: `npm run preview` serves static assets only.
+The CLI optionally reads `GITHUB_TOKEN` from the process environment, never stores it, and refuses to overwrite its output file. Legacy output without deployment metadata can remain `public/data/town.json`; static build generates its stable route.
 
-## Checks
+## Optional Node service: immediate publication
 
-```sh
-npm test
-npm run build
-```
+The existing Node service is an alternative when towns must become publicly accessible immediately without a repository rebuild. It uses persistent local disk and GitHub OAuth rather than the browser token session.
 
-The current landscape/HUD browser script is `tests/map-ui-check.cjs`; the earlier capture/backup journey is `tests/browser-check.cjs`. They need Playwright (module resolvable normally, or via `PLAYWRIGHT_MODULE_PATH`) and Chrome with the dev server running. Screenshots are written only under ignored `private/qa/`. Browser capture flows use mocked responses; API tests separately exercise authorization and persistence. See [verification](verification.md) for the checks actually run against each revision.
+1. Create a GitHub OAuth App with callback `http://127.0.0.1:5173/api/auth/callback` for local development.
+2. Copy `.env.example` to ignored `.env` and set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` and the exact `PUBLIC_ORIGIN`. Do not use `VITE_` for secrets.
+3. Restart the service. In **Connect GitHub**, choose the site's OAuth option.
+4. Any OAuth-authenticated user can publish a new town and append only their own history. The optional `GITHUB_ALLOWED_LOGIN` can administer towns and choose the default-town file.
+5. Run `npm run build` and `npm start` behind HTTPS for production. `PORT` defaults to 3000; set the OAuth callback to the public origin plus `/api/auth/callback`.
+
+`TOWN_DATA_DIR` defaults to ignored `private/towns`. Each file contains a public bundle inside a private ownership envelope. Ownership uses GitHub's immutable account ID; ordinary visitors receive only the public bundle. Back up this private directory through your server's private backup system if ownership must survive migration. A public export omits ownership; repository-provided towns are managed by the destination deployment's administrator.
+
+`TOWN_DATA_FILE` retains the legacy default-town behavior. Public APIs expose `/api/towns` and `/api/towns/<slug>`. Towns remain after a server restart if their disk volume persists. OAuth sessions are in memory and require another sign-in after restart. Retired exploration-sync endpoints return 410 and do not write visitor progress.
+
+This is a single-process local-disk implementation. Vercel Functions have ephemeral filesystems and distributed instances, so this backend must not be deployed there unchanged. A future immediate-publishing Vercel backend needs durable ownership/data storage and shared or signed OAuth state. Browser-token capture plus GitHub files avoids that backend requirement.
+
+## Verification and license
+
+Run `npm test` and `npm run build`. Browser scripts need Playwright and Chrome; their fixtures, limits and executed results are in [verification](verification.md).
+
+Preserve [LICENSE](../LICENSE) and [NOTICE](../NOTICE) when deploying or redistributing. Original Buildergame application material is noncommercial and requires attribution and corresponding source under the same license. Existing CC0/GPL and third-party materials retain their separate terms.

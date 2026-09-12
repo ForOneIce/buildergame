@@ -25,7 +25,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. Select **Explore sample town**, then **Tour landscapes** to try flat, valley or cloud scenery. Select **Create town**, then **Personal** for your repositories or **Community** for a collection from multiple builders.
 
-For GitHub login and hosting, follow the [deployment guide](docs/deployment.md). Without OAuth configured, you can preview up to 20 public repositories; the sample town needs no credentials.
+For GitHub connection and hosting, follow the [deployment guide](docs/deployment.md). The upper-right profile button accepts a GitHub token for direct browser access to public repositories; no backend is needed for this mode. The sample town needs no credentials. [Deploy on Vercel](docs/vercel.md).
 
 ## A town you can explore
 
@@ -39,7 +39,7 @@ For GitHub login and hosting, follow the [deployment guide](docs/deployment.md).
 
 **Draw your own neighborhood.** Open a kraft-paper planning sheet, choose public repositories and a landscape, then capture your first snapshot. Wooden controls, paper cards and transparent teal panels connect the entrance, planning desk and town. On phones, exploration progress folds away to leave room for the world.
 
-**Keep track of your discoveries.** Opening project cards records which projects you have explored. Guests keep progress in their browser; GitHub players can synchronize progress for the deployment's published town when login is configured.
+**Keep track of your discoveries.** Opening project cards records which projects you have explored in this browser only. **Random explore** introduces an undiscovered project when one is available.
 
 | In the town | What it represents |
 | --- | --- |
@@ -73,11 +73,11 @@ Create a town in a few steps:
 
 The experience works without wallets. Star and follow links take visitors to GitHub, where they choose whether to perform the action.
 
-After capture, select **Enter my town** to explore. Choose **Save town** to download all recorded snapshots. Add the exported `town.json` to `public/data/` in your deployment repository and rebuild to publish a static town. **No GitHub repository writes happen automatically.**
+After capture, select **Enter my town** to explore. Each new town starts with an all-stage-one founding view, followed by the first measured snapshot, so its growth can be played immediately. Export `<slug>.json` to `public/data/towns/` in your deployment repository and rebuild to publish `/towns/<name-and-timestamp>/`. Existing names and addresses are preserved across snapshots. **No GitHub repository writes happen automatically.**
 
 Not ready to capture yet? Open **Not ready yet? → Save draft** in the planner to download `town.plan.json`, then use **Load a plan** to continue later. A draft can contain unfinished fields and has no snapshots. **Export deployment configuration** produces a complete `town.config.json` for configuration import or CLI capture; a draft cannot replace that input. Use [the example configuration](examples/hackathon.config.json) for file-based setup.
 
-A Node deployment also lets the allowed GitHub deployer publish snapshots directly; ordinary visitors can browse without signing in.
+Static deployments support token connection and manual captures directly in the browser. Unpublished towns use `?preview=<slug>` to support refresh in that browser; they become publicly shareable at `/towns/<slug>/` after their JSON is committed and redeployed. An optional Node deployment lets OAuth-authenticated builders publish their own towns immediately. Ordinary visitors need no account to explore published towns.
 
 ### Growth at your pace
 
@@ -97,11 +97,13 @@ A Node deployment also lets the allowed GitHub deployer publish snapshots direct
 | Sample data and public GitHub capture | Implemented; real public-repository reads verified |
 | Personal and hackathon setup; English/Chinese | Implemented; both UI flows checked |
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
-| Guest progress and GitHub player avatars/progress | Implemented; server synchronization needs configured OAuth and persistent storage |
+| Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
+| Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
+| Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
 | Hosted production Demo and broader device testing | Not completed |
 
-The three sample towns use fictional projects and metrics. A static host supports viewing, local progress and backups; GitHub login and capture need the Node service. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [landscape/player setup](docs/landscape-deployment.md).
+The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
 
 ## For builders
 
@@ -115,7 +117,8 @@ Built with **TypeScript, Three.js, Vite and Node.js**. The implementation keeps 
 | [scripts/art/](scripts/art/) | Inspect the reproducible Blender source for the accepted buildings |
 | [src/model.mjs](src/model.mjs) | Understand growth rules and snapshot validation |
 | [src/main.ts](src/main.ts) and [src/game-ui.ts](src/game-ui.ts) | Explore setup, floating controls, cards and project interactions |
-| [src/player-progress.ts](src/player-progress.ts) and [server/progress.mjs](server/progress.mjs) | Follow local and account-scoped exploration storage |
+| [src/player-progress.ts](src/player-progress.ts) | Follow browser-only exploration storage |
+| [src/browser-github.mjs](src/browser-github.mjs) | Follow direct GitHub requests and their error handling |
 | [src/types.ts](src/types.ts) | Inspect the configuration and snapshot data shapes |
 | [src/links.ts](src/links.ts) | Understand project destinations |
 | [server/](server/) | Explore OAuth, public GitHub capture and snapshot publishing |
