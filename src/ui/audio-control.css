@@ -1,0 +1,11 @@
+.player-actions #sound-toggle{min-width:48px;padding:9px;position:relative;flex-shrink:0}
+#sound-toggle .ui-icon{width:22px;height:22px}
+#sound-toggle .control-hint{right:0;left:auto;max-width:220px;transform:translateY(-3px)}
+#sound-toggle:is(:hover,:focus-visible) .control-hint{transform:translateY(0)}
+@media(max-width:440px){
+ .map-header .player-actions{gap:4px}
+ .map-header .player-actions #sound-toggle{min-width:44px;padding:6px}
+ .map-header:has(#logout) .wood-logo{font-size:16px;padding:5px 3px 8px}
+ .map-header:has(#logout) .wood-logo .ui-icon{display:none}
+ .map-header:has(#logout) .wood-logo small{font-size:9px;letter-spacing:0}
+}

@@ -4,6 +4,8 @@ Status: playable local Web2-first Demo with public repository capture, two setup
 
 ## Product priorities
 
+- Current audio requirement: add quiet click, map-unfolding and hover/focus cues with user-gesture unlock and a remembered mute setting. Six free CC0 Kenney clips have verified provenance. [Audio scope](../specs/0014-ui-interaction-sounds.md) separates this interaction feedback from background music; scoped browser checks and the final combined build passed, with human listening review pending.
+
 - Current visual requirement: make entrance, setup, success and town interactions feel like the same game. [Shared interface proposal](../specs/0011-shared-game-interface.md) and [reusable UI research](ui-kit-research.md) are under review; the proposed palette and asset selections are not yet accepted.
 
 - Build practical value with a chance of continued use after the hackathon.

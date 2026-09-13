@@ -17,3 +17,7 @@ Preserve actual specs, plans, and important revisions. Acceptance targets are no
 Current workflow increment: [0012 — Named towns and deliberate snapshot publication](0012-named-towns-and-static-snapshots.md), including browser-only exploration, persistent town addresses and static deployment boundaries.
 
 Current interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation; real Web3 work remains paused. Scoped mailbox browser checks and the final production build passed; human visual review remains pending.
+
+Current audio increment: [0014 — Game UI interaction sounds](0014-ui-interaction-sounds.md), covering six verified free local clips, user-gesture audio unlock, click/map/hover feedback and a remembered mute preference. Asset/scoped browser checks and the final combined build passed; human listening review remains pending.
+
+Companion camera refinement: [0015 — Sample-town default camera](0015-sample-town-default-camera.md) starts and resets all three sample landscapes at the previous fit view plus four zoom-in steps. Scoped camera checks and the final combined build passed, including unchanged non-sample fit; human visual acceptance remains pending.

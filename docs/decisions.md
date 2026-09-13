@@ -1,5 +1,16 @@
 # Decision log
 
+## D-032 — Start sample towns four zoom steps closer
+
+- 2026-09-13 (UTC): the human requested the closer sample view previously reached by pressing zoom-in four times. [Exact instruction](../prompts/0047-sample-town-default-zoom.md).
+- Implemented the existing fit distance times `0.8 ** 4`, with the existing clamp, for entry and reset in flat/valley/cloud samples. Non-sample framing, geometry and manual camera controls are preserved. This supplements UI audio without synthesizing click sounds. Projected-point checks confirmed all three sample views and unchanged non-sample fit; the final combined build passed. [Scope and acceptance](../specs/0015-sample-town-default-camera.md); human visual review remains pending.
+
+## D-031 — Add quiet interaction sounds from free assets
+
+- 2026-09-13 (UTC): the human requested reusable town-management UI sound research and implementation of click, map-unfolding and hover feedback. [Exact instruction](../prompts/0046-ui-interaction-sounds.md).
+- AI selection: six unchanged CC0 Ogg clips from Kenney UI Audio 1.0 and RPG Audio 1.0, with official/archive-license and byte-identity checks. Implemented native Web Audio after a user gesture, distinct quiet click/paper cues and throttled hover/focus feedback. A keyboard/touch-accessible mute setting is remembered only in the browser.
+- Audio supplements existing visual controls; no background music, paid resource, external audio service, sponsor SDK, wallet or building change is included. Scoped browser checks and the final combined build passed; human listening review remains pending. [Scope and acceptance](../specs/0014-ui-interaction-sounds.md), [source research](ui-audio-research.md), [exact verification boundaries](verification.md).
+
 ## D-030 — Demonstrate mailbox support without real Web3
 
 - 2026-09-13 (UTC): the human paused Web3 work and authorized a sample-town Easter egg: a coin cursor at the stage-five mailbox, a virtual deposit animation and an investment button beneath landscape tours with future wallet/sponsorship explanations. [Exact instruction](../prompts/0045-sample-mailbox-coins.md).

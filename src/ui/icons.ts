@@ -1,5 +1,7 @@
 // Original geometric UI drawings. Labels belong to the surrounding control.
 const drawings: Record<string, string> = {
+  sound: '<path d="M3 9h4l5-5v16l-5-5H3V9Zm13-2a7 7 0 0 1 0 10m3-13a11 11 0 0 1 0 16"/>',
+  'sound-off': '<path d="M3 9h4l5-5v16l-5-5H3V9Zm13 0 6 6m-6 0 6-6"/>',
   coin: '<ellipse cx="12" cy="12" rx="9" ry="10"/><ellipse cx="12" cy="12" rx="6" ry="7"/><path d="m12 8 1.1 2.7 2.9.3-2.2 2 .6 3-2.4-1.5L9.6 16l.6-3L8 11l2.9-.3Z"/>',
   wallet: '<path d="M4 7V5l14-2v4M3 7h17v14H3V7Z"/><path d="M20 12h-6v5h6M17 14.5h.1"/>',
   house: '<path d="M3 11 12 3l9 8M5 10v11h5v-7h4v7h5V10"/>',

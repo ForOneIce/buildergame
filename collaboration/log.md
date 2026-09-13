@@ -1,5 +1,16 @@
 # Human–AI collaboration log
 
+## 0047 — Start sample towns at an interaction-friendly zoom
+
+- 2026-09-13 (UTC): the human requested the sample camera default reached by four presses of zoom-in. Codex preserved the [exact input and translation](../prompts/0047-sample-town-default-zoom.md) and defined [specification 0015](../specs/0015-sample-town-default-camera.md) before implementation completion.
+- Codex implemented `initialZoomSteps` in `src/town.ts`, with `src/main.ts` passing four for samples and zero otherwise. Entry/reset applies the existing fit distance times `0.8 ** 4` with existing limits. Projected-point checks confirmed the four-step framing in flat/valley/cloud samples and unchanged non-sample fit. The final combined build passed with ten unchanged GLBs. Codex inspected the closer desktop default and 360px guest/signed-in screenshots; human visual acceptance remains pending. [Verification](../docs/verification.md) preserves exact boundaries.
+
+## 0046 — Add game UI interaction sounds
+
+- 2026-09-13 (UTC): the human requested reusable town-management UI audio research and sounds for button clicks, map unfolding and hover. Codex preserved the [exact input and English translation](../prompts/0046-ui-interaction-sounds.md) and authored [specification 0014](../specs/0014-ui-interaction-sounds.md) before implementation completion.
+- Codex vendored six unchanged Ogg clips from Kenney UI Audio 1.0 and RPG Audio 1.0, totaling 49,420 bytes. Official/archive CC0 evidence, metadata, decode/levels, and original-byte/hash checks for six clips plus two licenses passed. The original `src/ui/interface-audio.ts` mixer, `src/ui/audio-control.css`, main/game-UI/icon integration and scene-hover callback implement user-gesture unlock, quiet distinct cues, throttled fine-pointer/keyboard feedback and a remembered browser-only mute setting. Background music, paid assets, external audio services and sponsor/wallet integration are outside this scope.
+- Assets, research and NOTICE are recorded in local commit `d4f22f6`. Scoped native browser checks passed actual decoding/gain/source behavior, gesture unlock/no autoplay, throttling/singleton routing, map/panel/mailbox cues, mute/persistence, hidden-page stopping and failure fixtures. English/Chinese 360px guest/signed-in headers passed overlap checks. The lifecycle run preceded the final success-cue throttle exemption; affected reduced-motion/pending, fallback, responsive and camera checks passed afterward. The final build after both audio and camera fixes passed with 54 modules, nine fictional projects, three snapshots and ten unchanged GLBs. Human listening/visual review remains pending; no auditory approval is claimed. [Research](../docs/ui-audio-research.md), [exact verification boundaries](../docs/verification.md).
+
 ## 0045 — Add sample-town mailbox coins
 
 - 2026-09-13 (UTC): the human paused Web3 and requested a mailbox coin cursor/virtual deposit Easter egg for sample-town visits, plus an investment action below landscape tours with wallet/sponsorship explanations. Codex preserved the [exact input and English translation](../prompts/0045-sample-mailbox-coins.md) and authored [specification 0013](../specs/0013-sample-mailbox-coins.md) before implementation completion.

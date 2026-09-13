@@ -11,7 +11,7 @@ import { createMailboxDemo } from './mailbox-demo';
 import type { Landscape, Project, Snapshot } from './types';
 import './town.css';
 
-export type TownOptions = { mailboxDemo?: boolean; onMailbox?: (id: string) => void };
+export type TownOptions = { initialZoomSteps?: number; mailboxDemo?: boolean; onMailbox?: (id: string) => void; onHover?: () => void };
 
 export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void, landscape: Landscape = 'flat', options: TownOptions = {}) {
   const zh = document.documentElement.lang.startsWith('zh');
@@ -84,7 +84,8 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down: { x: number; y: number; pointerId: number; button: number } | undefined, dragged = false;
   const greeting=document.createElement('span');greeting.className='scene-greeting';greeting.textContent=t('Say hi','打个招呼');greeting.hidden=true;greeting.setAttribute('aria-hidden','true');host.append(greeting);
   renderer.domElement.dataset.cursor='walk';
-  function clearHover() { greeting.hidden = true; renderer.domElement.dataset.cursor = 'walk'; }
+  let hovered = '';
+  function clearHover() { greeting.hidden = true; renderer.domElement.dataset.cursor = 'walk'; hovered = ''; }
   function tossCoin(id: string) { clearHover(); return mailboxes?.toss(id) ?? false; }
   const pick = (e: PointerEvent) => {
     const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1);
@@ -94,6 +95,9 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   renderer.domElement.addEventListener('pointermove', e => {
     if(e.buttons&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)dragged=true;
     const hit=pick(e), mailbox=hit?.action==='mailbox';renderer.domElement.dataset.cursor=e.buttons?'grabbing':mailbox?'coin':hit?.action==='visit'?'visit':hit?'grab':'walk';
+    const nextHover=!e.buttons&&hit?`${hit.id}:${hit.action}`:'';
+    if(nextHover&&nextHover!==hovered&&e.isTrusted&&e.pointerType==='mouse'&&matchMedia('(hover: hover) and (pointer: fine)').matches)options.onHover?.();
+    hovered=nextHover;
     greeting.hidden=!!e.buttons||(!mailbox&&hit?.action!=='visit')||e.pointerType==='touch';
     greeting.textContent=mailbox?t('Drop a demo coin','投一枚演示金币'):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
     if(!greeting.hidden){const bounds=host.getBoundingClientRect(),margin=greeting.offsetWidth/2+8;greeting.style.left=Math.min(Math.max(margin,e.clientX-bounds.left),Math.max(margin,bounds.width-margin))+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
@@ -109,8 +113,11 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   function reset() {
     camera.aspect = Math.max(1, host.clientWidth) / Math.max(1, host.clientHeight); camera.updateProjectionMatrix();
     const distance = Math.max((width + depth * .45) / camera.aspect, depth + width * .42) / (2 * Math.tan(THREE.MathUtils.degToRad(18))) * (camera.aspect < .8 ? .94 : .84);
-    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.6, .88, 1).normalize().multiplyScalar(distance));
-    controls.maxDistance = Math.max(80, distance * 2); controls.update(); dirty = true;
+    controls.maxDistance = Math.max(80, distance * 2);
+    // Sample towns start closer; reset returns to the same framing. 示例小镇的初始与重置视角一致。
+    const initialDistance = THREE.MathUtils.clamp(distance * .8 ** (options.initialZoomSteps ?? 0), controls.minDistance, controls.maxDistance);
+    controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(.6, .88, 1).normalize().multiplyScalar(initialDistance));
+    controls.update(); dirty = true;
   }
   function resize() {
     const w = Math.max(1, host.clientWidth), h = Math.max(1, host.clientHeight);

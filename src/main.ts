@@ -3,6 +3,7 @@ import './style.css';
 import './flow.css';
 import {objectArt,sitePlan} from './ui/planning';
 import {icon} from './ui/icons';
+import {createInterfaceAudio} from './ui/interface-audio';
 import {builderSymbol} from './ui/builder-symbols';
 import {createHomeShowcase} from './home-showcase';
 import {gameHeader,gameLayout,projectCard} from './game-ui';
@@ -19,9 +20,11 @@ import type { Bundle, TownEvent, Project, Landscape, Snapshot } from './types';
 import { projectDestination } from './links';
 import './map-ui.css';
 import './mailbox-ui.css';
+import './ui/audio-control.css';
 
 declare const __DEPLOYED_AT__: string;
 const app = document.querySelector<HTMLDivElement>('#app')!;
+const interfaceAudio = createInterfaceAudio(app);
 const localRead=(key:string)=>{try{return localStorage.getItem(key);}catch{return null;}};
 const localWrite=(key:string,value:string)=>{try{localStorage.setItem(key,value);return true;}catch{return false;}};
 let lang: 'en' | 'zh' = localRead('bg-language') === 'zh' ? 'zh' : 'en';
@@ -85,7 +88,7 @@ function navigate(to: typeof screen) {
 }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang,true); }
+function header() { return gameHeader(t,session,lang,true,false,interfaceAudio); }
 function connectGitHub(){
   const dialog=$<HTMLDialogElement>('#github-connect-dialog');
   const request=new AbortController();dialog.onclose=()=>request.abort();
@@ -109,6 +112,12 @@ function render() {
   app.innerHTML=header()+`<div id="notice" class="notice" role="status" aria-live="polite" hidden></div>`+(screen==='welcome'?welcome():screen==='setup'?setup():screen==='success'?success():town())+`<input type="file" id="import" accept=".json,application/json" hidden><dialog id="detail" class="paper-panel" aria-labelledby="detail-title"><button class="close hud-button icon-button" id="close" aria-label="${t('Close','关闭')}">×</button><div id="detail-body"></div></dialog><dialog id="project-entry" class="paper-panel" aria-labelledby="entry-title"><button class="close hud-button icon-button" id="close-entry" aria-label="${t('Close','关闭')}">×</button><div class="entry-door" aria-hidden="true"><span></span></div><h2 id="entry-title"></h2><p id="entry-status" role="status"></p><div id="entry-actions"></div></dialog>`;
   app.insertAdjacentHTML('beforeend','<dialog id="github-connect-dialog" class="paper-panel" aria-label="'+t('Connect GitHub','连接 GitHub')+'"></dialog>');
   $('#home').onclick=()=>navigate('welcome');
+  document.querySelector<HTMLButtonElement>('#sound-toggle')?.addEventListener('click',event=>{
+    interfaceAudio.toggle(event);
+    const button=$('#sound-toggle'),label=interfaceAudio.enabled?t('Mute sound effects','关闭音效'):t('Enable sound effects','开启音效');
+    button.setAttribute('aria-pressed',String(interfaceAudio.enabled));button.setAttribute('aria-label',label);
+    button.innerHTML=icon(interfaceAudio.enabled?'sound':'sound-off')+'<span class="control-hint" id="sound-hint" role="tooltip">'+label+'</span>';
+  });
   const languageButton=document.querySelector<HTMLButtonElement>('#language');
   if(languageButton){languageButton.onclick=()=>{lang=lang==='en'?'zh':'en';localWrite('bg-language',lang);render();};languageButton.setAttribute('aria-label',t('Switch to Chinese','切换英文'));}
   document.querySelector('#player-login')?.setAttribute('aria-label',session.authenticated?t(`GitHub account: ${session.login}`,`GitHub 账号：${session.login}`):t('Sign in with GitHub','通过 GitHub 登录'));
@@ -345,7 +354,7 @@ function showSnapshot(index: number) {
   refreshProgress();$('#snapshot-label').textContent=`${sampleLabel}${changes?` · ${changes} ${t('buildings changed','栋建筑发生变化')}`:''}`;list();
 }
 function bindTown() {
-  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat',{mailboxDemo:bundle.event.sampleData,onMailbox:id=>mailboxUI?.credit(id)});}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
+  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{void interfaceAudio.play('open');const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat',{initialZoomSteps:bundle.event.sampleData?4:0,mailboxDemo:bundle.event.sampleData,onHover:()=>void interfaceAudio.play('hover'),onMailbox:id=>{mailboxUI?.credit(id);void interfaceAudio.play('success');}});}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
   if(bundle.event.sampleData)mailboxUI=mountMailboxUI({host:app,projects:bundle.event.projects,snapshot:()=>timelineSnapshots()[snapshotIndex],scene:()=>scene,t,stopHistory:()=>{stop();$('#play').innerHTML=icon('play');$('#play').setAttribute('aria-label',t('Play history','播放历史'));}});
   $('#reset').onclick=()=>scene?.reset();$('#zoom-in').onclick=()=>scene?.zoom(1);$('#zoom-out').onclick=()=>scene?.zoom(-1);
   visited=localProgress(bundle.event.id,null);progressStatus='local';
