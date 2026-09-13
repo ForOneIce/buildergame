@@ -30,19 +30,6 @@
 - The five accepted appearances, growth rules, snapshots, GitHub workflows and browser-only exploration retain their existing contracts. Missing new configuration preserves old JSON behavior. [Specification 0016](../specs/0016-optional-privy-support.md).
 - This supersedes the Web3 pause only for the authorized support extension. Implementation, fixture testing, deployed availability, live transaction evidence and partner eligibility must be recorded separately. The project's existing license is unchanged.
 
-## D-036 — Present the demo as a foundation for Buildergame's broader vision
-
-- 2026-09-13 (UTC): the human requested that submission copy include planned developer support and permissions instead of defining the project by unfinished integrations.
-- Lead with belonging, project discovery and continuing community support. Describe the current mailbox as an interaction prototype and wallet-based appreciation, wallet/ENS identity and community permissions as planned extensions. Keep implemented technology selections factual. [Instruction](../prompts/0052-submission-vision-and-web3-roadmap.md), [submission sheet](../hackathon/summitinfo.md).
-
-## D-035 — Prepare a feature demo with no background music
-
-Superseded for current video preparation by the [verified video requirements](../hackathon/rules.md#video-wording-and-current-preparation). Retained as history of the earlier instruction.
-
-- 2026-09-13 (UTC): the human requested completed submission materials, quoted a 2–4 minute, minimum-720p, "Audio without music" video requirement and asked for an extra export with no audio stream. The human clarified that the initial video should demonstrate features, with an optional script reserved for a later live presentation.
-- Prepare the main export with interface effects and no music or added narration, plus a separate silent export. Correct the earlier AI inference of an unconditional narration mandate while retaining the recorded no-TTS/AI-voiceover and no-speed-up guidance. No organizer clarification or eligibility decision is invented. [Prompt](../prompts/0051-demo-video-audio-versions.md), [rule wording](../hackathon/rules.md), [submission sheet](../hackathon/summitinfo.md).
-- English form answers, logo/cover and real app screenshots describe the shipped Web2 demo. Public video/deployment URLs and submission success must come from actual publication, not local file preparation.
-
 ## D-034 — Limit supplied music to the planning desk
 
 - 2026-09-13 (UTC): the human supplied a Suno track and its style prompt, requesting a loop only on Create town. Preserve the supplied provenance without treating it as CC0 or asserting independently verified commercial rights.

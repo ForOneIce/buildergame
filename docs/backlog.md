@@ -1,6 +1,12 @@
 # Next-version backlog
 
-These items are deferred work, not completed verification or a requirement to delay the current final-video recording.
+Deferred development checks; these items are not completed verification.
+
+## Short-height town controls
+
+- **Status:** regression recheck needed on the current revision.
+- **Observed boundary:** an earlier 1280 × 720 browser viewport showed overlap between Support builders and the lower-left town totals. The later interface revisions have not been explicitly verified against that exact observation.
+- **Acceptance:** sample and created towns keep support, totals, minimap and navigation controls readable and operable at 1280 × 720 without overlap.
 
 ## Interrupted session/reload recovery
 

@@ -1,6 +1,6 @@
 # Optional Privy support for builders
 
-Status: **implemented; local automated checks passed; live verification pending**. Scope defined 2026-09-13 (UTC), committed as `22de9db` before final implementation verification. The final 65-test suite, scoped browser fixtures and production build with the optional wallet bundle enabled passed. A live Privy receipt and hosted integration verification remain pending. [Human instructions](../prompts/0053-optional-privy-support.md), [exact results and limits](../docs/verification.md#optional-privy-support-0053-and-post-test-recording-plan-0054).
+Status: **implemented; local automated checks passed; live verification pending**. Scope defined 2026-09-13 (UTC), committed as `22de9db` before final implementation verification. The final 65-test suite, scoped browser fixtures and production build with the optional wallet bundle enabled passed. A live Privy receipt and hosted integration verification remain pending. [Human instructions](../prompts/0053-optional-privy-support.md), [exact results and limits](../docs/verification.md#optional-privy-support-0053).
 
 ## Product boundary
 
@@ -48,7 +48,6 @@ The optional public event field is `support: { version: 1, chainId: 11155111, re
 3. Run existing data/build/model-lock checks and scoped mailbox/planner regression tests. Record actual commands, outcomes and remaining limits in [verification](../docs/verification.md).
 4. Separately perform a live Privy session and a user-confirmed Sepolia transfer. Record only public, authorized evidence: submitted revision, configured network, integration code links and successful receipt hash/explorer URL. Never use fixture hashes as partner proof.
 5. Update [the submission sheet](../hackathon/summitinfo.md) only to the demonstrated state. Code implementation, fixture success, hosted availability and a confirmed live receipt are separate milestones. No live receipt is claimed at specification creation.
-6. [Record replacement competition footage last](../prompts/0054-record-updated-demo-after-testing.md), after functional verification. Retain original site interaction sounds and no added background music. An optional English narration script is separate from actual voice recording; do not infer AI/TTS competition narration permission. Existing published videos predate this extension.
 
 ## Out of scope
 

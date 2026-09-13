@@ -49,11 +49,7 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0047 — Start sample towns at a closer default zoom](0047-sample-town-default-zoom.md)
 - [0048 — Make mailbox coin targeting more obvious](0048-mailbox-coin-cursor.md)
 - [0049 — Loop supplied Suno music only in the planner](0049-planner-suno-music.md)
-- [0050 — Prepare the project submission information](0050-submission-preparation.md)
-- [0051 — Prepare music-free and silent demo-video versions](0051-demo-video-audio-versions.md)
-- [0052 — Present the product vision and planned Web3 extensions](0052-submission-vision-and-web3-roadmap.md)
 - [0053 — Add optional Privy support for builders](0053-optional-privy-support.md)
-- [0054 — Record the updated demo after functional testing](0054-record-updated-demo-after-testing.md)
 - [0055 — Document optional wallet deployment prerequisites](0055-optional-wallet-deployment-guide.md)
 - [0056 — Explain login and wallets to visitors](0056-login-and-wallet-explanation.md)
 - [0057 — Lock support submissions and explain failure states](0057-support-lock-and-failure-handling.md)
@@ -64,7 +60,5 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0062 — Compact the support card](0062-compact-support-card.md)
 - [0063 — Verify Sepolia support on the deployed application](0063-deployed-sepolia-verification.md)
 - [0064 — Clarify virtual coins and wallet support](0064-clarify-virtual-and-wallet-support.md)
-- [0065 — Record sample exploration followed by a supported town](0065-record-sample-to-supported-town.md)
-- [0066 — Capture the town engineering showcase](0066-capture-town-engineering-showcase.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.
