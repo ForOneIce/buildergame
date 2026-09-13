@@ -247,7 +247,7 @@ function setup() {
         <label class="publish-option"><input type="checkbox" id="publish" ${canPublishHere()?'checked':'disabled'}> ${t('Publish for everyone to explore','发布小镇，供所有人探索')}</label>
         <p class="helper publish-hint">${canPublishHere()?t('Saved at its own address. Your other towns stay available.','保存到独立地址，其他小镇仍可访问。'):t('Create in your browser, then commit the exported snapshot to your deployment repository to share its address.','在浏览器中创建后，将导出的快照提交至部署仓库，即可分享小镇地址。')}</p>
         <div class="capture-actions"><button class="button primary" id="capture">${captureLabel()}</button></div>
-        <details class="config-backup"><summary>${t('Not ready yet?','还没准备好？')}</summary><p class="helper">${t('Save your plan locally, then load it here when you’re ready to continue. Unfinished fields are welcome.','先把图纸草稿保存在本地，准备好后再导入继续填写。不必一次填完。')}</p><div class="paired-actions"><button class="text-button" id="save-draft">${icon('download')}${t('Save draft','保存草稿')}</button><button class="text-button" data-import>${icon('upload')}${t('Load a plan','导入图纸')}</button></div><button class="text-button" id="export-config">${t('Export deployment configuration','导出部署配置')}</button></details>
+        <details class="config-backup"><summary>${t('Not ready yet?','还没准备好？')}</summary><p class="helper">${t('Save your plan locally, then load it here when you’re ready to continue. Unfinished fields are welcome.','先把图纸草稿保存在本地，准备好后再导入继续填写。不必一次填完。')}</p><div class="paired-actions"><button class="text-button" id="save-draft">${icon('download')}${t('Save draft','保存草稿')}</button><button class="text-button" data-import>${icon('upload')}${t('Load a plan','导入图纸')}</button></div><button class="text-button" id="export-config">${t('Export deployment configuration','导出部署配置')}</button>${!bundle.event.sampleData?`<p class="helper">${t('Continue the town you just visited, preserving its history and landscape.','继续建设刚刚游览的小镇，保留已有历史和地形。')}</p><div class="paired-actions"><button type="button" class="text-button" id="edit-current-town">${t('Continue current town','继续建设当前小镇')}</button><button type="button" class="text-button" data-export>${t('Back up current town','备份当前小镇')}</button></div>`:''}</details>
       </section>
     </div></div>
   </main>`;
@@ -315,6 +315,7 @@ function currentConfiguration(): TownEvent {
 }
 function bindSetup() {
   bindSupportSetupHelp($<HTMLDetailsElement>('.support-settings'),t,creatorWalletAcknowledged,()=>{creatorWalletAcknowledged=true;});
+  document.querySelector('#edit-current-town')?.addEventListener('click',()=>{loadConfiguration(bundle.event);usePrevious=true;navigate('setup');});
   landscape=imported ? imported.landscape||'flat' : landscape;
   const picker=document.createElement('div');picker.className='landscape-picker';
   picker.innerHTML='<label for="landscape">'+t('Town landscape','城镇地形')+'</label><select id="landscape" '+(usePrevious?'disabled':'')+'>'+(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>'<option value="'+mode+'" '+(landscape===mode?'selected':'')+'>'+[t('Flat · concrete roads','平地 · 水泥路面'),t('Valley · slopes, gravel & water','山谷 · 缓坡、碎石与水流'),t('Clouds · floating districts & steps','云端 · 漂浮片区与云朵阶梯')][i]+'</option>').join('')+'</select><p class="helper">'+t('Chosen once for this town. Future snapshots keep the same landscape.','建镇时确定，之后的快照保持同一地形。')+'</p>';
@@ -448,20 +449,12 @@ function bindTown() {
   $('#map-home').onclick=()=>scene?.reset();
   document.querySelectorAll<HTMLElement>('.map-nav button').forEach(button=>{const label=button.querySelector(':scope > span');if(label&&!button.hasAttribute('aria-label'))button.setAttribute('aria-label',label.textContent!);});
   $('#close-projects').onclick=()=>{$('#project-panel').hidden=true;$('#show-projects').setAttribute('aria-expanded','false');};
-  const questStack=document.querySelector<HTMLElement>('.quest-stack');
-  if(questStack){questStack.id='exploration-panel';
-  const explorationToggles=document.querySelectorAll<HTMLElement>('#show-exploration,#explorer-profile');
-  questStack.hidden=matchMedia('(max-width: 760px)').matches;
-  const updateExplorationToggles=()=>explorationToggles.forEach(button=>{button.setAttribute('aria-controls',questStack.id);button.setAttribute('aria-expanded',String(!questStack.hidden));});
-  updateExplorationToggles();
-  explorationToggles.forEach(button=>button.onclick=()=>{questStack.hidden=!questStack.hidden;updateExplorationToggles();if(!questStack.hidden)$('#next-project').focus();});}
   const discover=()=>{const unseen=bundle.event.projects.filter(p=>!visited.has(p.id));const candidates=unseen.length?unseen:bundle.event.projects;const next=candidates[Math.floor(Math.random()*candidates.length)];if(next)details(next.id);};
-  document.querySelectorAll<HTMLElement>('#next-project,#random-explore').forEach(button=>button.onclick=discover);
+  $('#random-explore').onclick=discover;
   $('#minimap').onclick=e=>{if(!scene)return;const b=(e.currentTarget as HTMLCanvasElement).getBoundingClientRect();const x=(e.clientX-b.left)/b.width*240,z=(e.clientY-b.top)/b.height*240;const points=minimapPoints();const nearest=points.sort((a,b)=>(a.x-x)**2+(a.z-z)**2-((b.x-x)**2+(b.z-z)**2))[0];if(nearest && Math.hypot(nearest.x-x,nearest.z-z)<26)details(nearest.id);};
   const panel=$('#project-panel');const toggle=$('#show-projects');panel.hidden=true;toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.setAttribute('aria-controls','project-panel');
   toggle.onclick=()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));};
   document.querySelector('#scene canvas')?.setAttribute('aria-label',t('Interactive town. Use the project directory for keyboard access.','交互小镇。可通过项目列表使用键盘访问全部项目。'));
-  document.querySelector('#manage')?.addEventListener('click',()=>{loadConfiguration(bundle.event);usePrevious=true;navigate('setup');});
   document.querySelectorAll<HTMLButtonElement>('[data-tour-landscape]').forEach(button=>button.onclick=()=>{
     if(!bundle.event.sampleData)return;
     const mode=button.dataset.tourLandscape as Landscape;
@@ -493,7 +486,7 @@ function refreshProgress(){
   const totals=[records.reduce((sum,r)=>sum+(r.metrics?.stars||0),0),records.reduce((sum,r)=>sum+(r.metrics?.forks||0),0),total];
   $('#town-stats').innerHTML=totals.map((value,i)=>{
     const key=['stars','forks','projects'][i],label=[t('Stars','星标'),t('Forks','分叉'),t('Projects','项目')][i];
-    return `<span class="stat-token hud-glass${bundle.event.sampleData?' hinted-control':''}" ${bundle.event.sampleData?`tabindex="0" aria-label="${label}: ${value.toLocaleString()}" aria-describedby="total-${key}-hint"`:''}><b aria-hidden="true">${['★','⑂','⌂'][i]}</b> ${value.toLocaleString()}${bundle.event.sampleData?`<span class="control-hint" id="total-${key}-hint" role="tooltip">${t('Totals across all projects.','为所有项目数据总和')}</span>`:''}</span>`;
+    return `<span class="stat-token hud-glass hinted-control" tabindex="0" aria-label="${label}: ${value.toLocaleString()}" aria-describedby="total-${key}-hint"><b aria-hidden="true">${['★','⑂','⌂'][i]}</b> ${value.toLocaleString()}<span class="control-hint" id="total-${key}-hint" role="tooltip">${t('Totals across all projects.','为所有项目数据总和')}</span></span>`;
   }).join('');
   const canvas=$<HTMLCanvasElement>('#minimap'),ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,240,240);ctx.fillStyle=bundle.event.landscape==='clouds'?'#c1dff2':'#85ad8d';ctx.beginPath();ctx.arc(120,120,112,0,Math.PI*2);ctx.fill();
   const points=minimapPoints();for(const p of points){ctx.fillStyle=visited.has(p.id)?'#f5d783':'#f1f2dc';ctx.fillRect(p.x-7,p.z-7,14,14);if(selected===p.id){ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.strokeRect(p.x-11,p.z-11,22,22);}}

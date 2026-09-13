@@ -17,6 +17,9 @@ function watch(page, errors, progressRequests) {
   page.on('pageerror', error => errors.push(error.message));
   page.on('request', request => { if (new URL(request.url()).pathname.includes('/api/progress')) progressRequests.push(request.url()); });
 }
+async function visits(page, townId) {
+  return page.evaluate(key => JSON.parse(localStorage.getItem(key) || '[]'), `bg-exploration:${townId}:guest`);
+}
 (async () => {
   const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_BIN ? { executablePath: process.env.BROWSER_BIN } : { channel: 'chrome' }) });
   try {
@@ -53,7 +56,7 @@ function watch(page, errors, progressRequests) {
     await page.screenshot({ path: 'private/qa/info-mobile.png' }); await page.locator('#close').click();
     await page.locator('#home').click(); await page.locator('[data-create]').click(); await page.locator('[data-mode="hackathon"]').click();
     await page.locator('[data-landscape-choice="valley"]').click(); await page.locator('#town-name').fill('Valley example'); await page.locator('#repositories').fill('https://github.com/example/project');
-    await page.locator('.config-backup > summary').click();
+    await page.locator('.config-backup').filter({ has: page.locator('#export-config') }).locator(':scope > summary').click();
     const downloading = page.waitForEvent('download'); await page.locator('#export-config').click(); await (await downloading).saveAs('private/qa/valley.config.json');
     assert.equal(JSON.parse(fs.readFileSync('private/qa/valley.config.json')).landscape, 'valley');
 
@@ -68,14 +71,16 @@ function watch(page, errors, progressRequests) {
       await page.locator(`[data-landscape-choice="${selectedMode}"]`).click();
       await page.locator('#import').setInputFiles({ name: 'legacy.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(legacy)) });
       await townReady(page); assert.equal(await page.locator('#scene').getAttribute('data-landscape'), 'flat');
+      if (await page.locator('#notice').isVisible()) await page.locator('#notice').click();
       if (selectedMode === 'valley') {
         const bounds = await page.locator('#minimap').boundingBox();
         await page.locator('#minimap').click({ position: { x: bounds.width / 2, y: bounds.height / 2 } });
         await page.locator('#detail[open]').waitFor(); assert.equal(await page.locator('#detail-title').innerText(), 'Open Orchard');
-        assert.equal(await page.locator('#visited-count').textContent(), '1 / 1'); await page.locator('#close').click();
+        assert.deepEqual(await visits(page, 'legacy-test-fixture'), ['sample-0']); await page.locator('#close').click();
       }
-      assert.equal(await page.locator('#language, #player-login, .map-nav [data-export]').count(), 3);
-      await page.locator('#manage').click(); assert.equal(await page.locator('#landscape').inputValue(), 'flat'); assert.equal(await page.locator('#landscape').isDisabled(), true);
+      assert.equal(await page.locator('#language, #player-login, #random-explore').count(), 3);
+      assert.equal(await page.locator('.quest-stack, .explorer-badge, #show-exploration, #next-project, [data-export]').count(), 0);
+      assert.equal(await page.locator('#manage, [data-tour-landscape], #landscape').count(), 0, 'Ordinary town visitors cannot switch the fixed landscape or open editor controls');
       await page.locator('#home').click(); await page.locator('[data-create]').click(); await page.locator('[data-mode="hackathon"]').click();
     }
     await page.close();
@@ -92,13 +97,14 @@ function watch(page, errors, progressRequests) {
     await playerPage.goto(baseUrl + '?town=1', { waitUntil: 'domcontentloaded' }); await townReady(playerPage);
     assert.equal(await playerPage.locator('#player-login').getAttribute('aria-label'), 'GitHub account: test-explorer');
     assert.equal(await playerPage.locator('#player-login img').getAttribute('src'), avatar);
-    assert.equal(await playerPage.locator('#visited-count').innerText(), '1 / 3');
-    await playerPage.locator('#next-project').click(); await playerPage.locator('#detail[open]').waitFor();
+    assert.deepEqual(await visits(playerPage, 'player-test-fixture'), ['sample-0']);
+    await playerPage.locator('#random-explore').click(); await playerPage.locator('#detail[open]').waitFor();
     assert.ok(['Little Atlas', 'Cloud Notes'].includes(await playerPage.locator('#detail-title').innerText()), 'Discovery selects a project not already visited'); await playerPage.locator('#close').click();
-    assert.equal(await playerPage.locator('#visited-count').innerText(), '2 / 3');
-    assert.equal(await playerPage.locator('#progress-status').innerText(), 'Saved on this device');
+    const remembered = await visits(playerPage, 'player-test-fixture');
+    assert.equal(remembered.length, 2);
+    assert.equal(await playerPage.locator('#visited-count, #progress-status, .explorer-badge, .quest-stack').count(), 0, 'Progress stays browser-local without restoring the removed dashboard controls');
     await playerPage.reload({ waitUntil: 'domcontentloaded' }); await playerPage.locator('[data-enter]').click(); await townReady(playerPage);
-    assert.equal(await playerPage.locator('#visited-count').innerText(), '2 / 3');
+    assert.deepEqual(await visits(playerPage, 'player-test-fixture'), remembered);
     await playerPage.locator('#player-login').click(); await playerPage.locator('.setup-page').waitFor();
     assert.equal(await playerPage.locator('[data-mode="personal"]').getAttribute('aria-pressed'), 'true');
     assert.equal(await playerPage.locator('#username').inputValue(), 'test-explorer');
@@ -118,6 +124,6 @@ function watch(page, errors, progressRequests) {
     await samplePlayer.locator('#random-explore').click(); await samplePlayer.locator('#detail[open]').waitFor();
     assert.deepEqual(progressRequests, [], 'Exploration sends no server requests for guests or signed-in users');
     assert.deepEqual(errors, []);
-    console.log('Three landscapes, direct random exploration, compact account header, mobile cards, legacy landscape lock/minimap, local-only signed-in visits and authenticated personal setup passed.');
+    console.log('Three sample landscapes, shared random exploration/account controls, mobile cards, fixed ordinary-town landscape/minimap, local-only signed-in visits and authenticated personal setup passed.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

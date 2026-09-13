@@ -35,7 +35,7 @@ async function acknowledgeCreatorNotice(page) {
   const { baselineSnapshot, makeRecord } = await import('../src/model.mjs');
   const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_BIN ? { executablePath: process.env.BROWSER_BIN } : { channel: 'chrome' }) });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
-  const requests = [], errors = [], external = [];
+  const requests = [], errors = [], external = [], captureRequests = [];
   try {
     await context.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -48,10 +48,12 @@ async function acknowledgeCreatorNotice(page) {
       if (url.pathname === '/api/towns') return route.fulfill({ json: { towns: [] } });
       if (url.pathname === '/data/town.json') return route.fulfill({ status: 404, body: '' });
       if (url.pathname === '/api/capture') {
-        const { event } = route.request().postDataJSON();
-        const capturedAt = '2026-09-13T08:00:00.000Z';
-        const snapshot = { id: 'support-browser-snapshot', label: 'Fixture snapshot', capturedAt, projects: event.projects.map(project => makeRecord(project, { commits: 150, stars: 80, forks: 40 }, event.rule, capturedAt)) };
-        return route.fulfill({ json: { bundle: { format: 'buildergame/v1', event, history: { schemaVersion: 1, eventId: event.id, sampleData: false, snapshots: [baselineSnapshot(event, '2026-09-13T07:59:00.000Z'), snapshot] } }, published: false, failures: [] } });
+        const payload = route.request().postDataJSON(), { event, previous, label } = payload;
+        captureRequests.push(payload);
+        const capturedAt = new Date(Date.parse('2026-09-13T08:00:00.000Z') + (captureRequests.length - 1) * 60000).toISOString();
+        const snapshot = { id: `support-browser-snapshot-${captureRequests.length}`, kind: 'capture', label: label || 'Fixture snapshot', capturedAt, projects: event.projects.map(project => makeRecord(project, { commits: 150 + captureRequests.length, stars: 80, forks: 40 }, event.rule, capturedAt)) };
+        const earlier = previous?.history.snapshots || [baselineSnapshot(event, '2026-09-13T07:59:00.000Z')];
+        return route.fulfill({ json: { bundle: { format: 'buildergame/v1', event, history: { schemaVersion: 1, eventId: event.id, sampleData: false, snapshots: [...earlier, snapshot] } }, published: false, failures: [] } });
       }
       return route.continue();
     });
@@ -105,9 +107,11 @@ async function acknowledgeCreatorNotice(page) {
     assert.equal(await page.locator('#support-recipients').inputValue(), draft.supportRecipientsText);
     await page.locator('#capture').click();
     await page.locator('.success-page').waitFor();
+    const firstCapture = await downloadJson(page, '.success-page [data-export]');
+    assert.equal(captureRequests.length, 1); assert.equal(captureRequests[0].previous, null);
     await page.locator('[data-enter]').click(); await ready(page);
     assert.equal(await page.locator('#town-wallet').count(), 1);
-    assert.equal(await page.locator('#sample-invest').count(), 0);
+    assert.equal(await page.locator('#sample-invest').count(), 1);
     assert.equal(requests.some(url => /support\/(panel|wallet-panel)/.test(url)), false, 'Creating and browsing a configured town does not load optional support UI');
     assert.equal(await page.evaluate(() => window.__supportProviderCalls), 0);
     await page.locator('#show-projects').click();
@@ -128,10 +132,34 @@ async function acknowledgeCreatorNotice(page) {
     await page.locator('[data-project]').first().click();
     assert.equal(await page.locator('[data-support-project]').count(), 1);
     await page.locator('#close').click();
-    await page.locator('#manage').click();
+    assert.equal(await page.locator('#manage').count(), 0);
+    await page.locator('#home').click();
+    await page.locator('[data-create]').click();
+    await backup.locator(':scope > summary').click();
+    const backedUpTown = await downloadJson(page, '.config-backup [data-export]');
+    assert.deepEqual(backedUpTown, firstCapture, 'The planner backup keeps the full town rather than only its editable configuration');
+    await page.locator('#edit-current-town').click();
+    assert.equal(await page.locator('#town-name').inputValue(), firstCapture.event.name);
+    assert.equal(await page.locator('#town-name').getAttribute('readonly'), '');
+    assert.equal(await page.locator('#landscape').inputValue(), firstCapture.event.landscape);
+    assert.equal(await page.locator('#landscape').isDisabled(), true);
+    assert.equal(await page.locator('[data-landscape-choice]:disabled').count(), 3);
+    assert.equal(await page.locator('#capture').innerText(), 'Update town');
     assert.equal(await page.locator('#support-recipients').inputValue(), draft.supportRecipientsText);
     fs.mkdirSync('private/qa', { recursive: true });
     await page.screenshot({ path: 'private/qa/support-planner.png' });
+    await page.locator('#snapshot-label').fill('UI continuation fixture');
+    await page.locator('#capture').click();
+    await page.locator('.success-page').waitFor();
+    const continued = await downloadJson(page, '.success-page [data-export]');
+    assert.equal(captureRequests.length, 2);
+    assert.deepEqual(captureRequests[1].previous, firstCapture, 'Continue current town sends its complete previous history to capture');
+    assert.equal(continued.event.id, firstCapture.event.id);
+    assert.equal(continued.event.landscape, firstCapture.event.landscape);
+    assert.deepEqual(continued.event.support, firstCapture.event.support);
+    assert.equal(continued.history.snapshots.length, firstCapture.history.snapshots.length + 1);
+    assert.deepEqual(continued.history.snapshots.slice(0, -1), firstCapture.history.snapshots, 'Continuation appends one observation without rewriting old snapshots');
+    assert.equal(continued.history.snapshots.at(-1).label, 'UI continuation fixture');
     // Old backup import keeps the wallet extension entirely absent.
     const old = sampleTown();
     await importJson(page, old); await ready(page);
@@ -169,6 +197,6 @@ async function acknowledgeCreatorNotice(page) {
     assert.equal(await page.evaluate(() => window.__supportProviderCalls), 0);
     assert.deepEqual(external, []);
     assert.deepEqual(errors, []);
-    console.log('Bilingual creator notice/cancel/acknowledgment, imported-address gate, planner/export/import/capture, mixed recipients, missing SDK, lazy loading and legacy no-wallet checks passed. No real Privy session or transfer is claimed.');
+    console.log('Bilingual creator notice/cancel/acknowledgment, imported-address gate, planner backup/continuation with preserved history, mixed recipients, missing SDK, lazy loading and legacy no-wallet checks passed. No real Privy session or transfer is claimed.');
   } finally { await context.close(); await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

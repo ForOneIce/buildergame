@@ -275,7 +275,8 @@ async function sceneFixture(page) {
         assert.equal(await fixturePage.locator('#find-mailbox').isDisabled(), true);
         assert.equal(await fixturePage.locator('#try-demo-coin').isDisabled(), true);
       } else {
-        assert.equal(await fixturePage.locator('#sample-invest, #town-wallet').count(), 0, 'Unconfigured real towns show no demo launcher or wallet button');
+        assert.equal(await fixturePage.locator('#sample-invest').count(), 1, 'Unconfigured real towns retain the same virtual coin launcher');
+        assert.equal(await fixturePage.locator('#town-wallet').count(), 0, 'Unconfigured real towns do not show a wallet button');
         assert.equal(await fixturePage.locator('#investment-dialog[open], #demo-wallet-receipt:visible').count(), 0, 'Virtual UI stays hidden until an interaction');
         assert.equal(await fixturePage.locator('#demo-wallet-receipt').count(), 1, 'Real towns keep the virtual mailbox receipt without needing a launcher');
         const before = await storage(fixturePage);

@@ -38,16 +38,16 @@
 @keyframes wallet-coin-in{from{opacity:0;transform:translateY(-15px) scale(.75)}to{opacity:1;transform:none}}
 /* Keep camera below map, and support directly below terrain, without covering town totals. */
 @media(max-width:760px),(max-height:679px){
- .sample-town.map-game .map-nav{display:grid;grid-template-columns:repeat(4,44px);width:194px;gap:6px}
- .sample-town.map-game .map-nav>#map-home{grid-area:1 / 1 / 2 / 4;min-height:44px}
- .sample-town.map-game .map-nav>.camera-controls{grid-area:2 / 1 / 3 / 4;width:144px}
- .sample-town.map-game .map-nav>#show-projects{grid-area:3 / 1}
- .sample-town.map-game .map-nav>#random-explore{grid-area:3 / 2}
- .sample-town.map-game .map-nav>.sample-tour-picker{grid-area:1 / 4 / 2 / 5;position:static}
- .sample-town.map-game .map-nav>#sample-invest{grid-area:2 / 4 / 3 / 5}
- .sample-town.map-game .map-nav>.hud-button,.sample-town.map-game .sample-tour-picker>summary{min-width:44px;min-height:44px;padding:6px;justify-content:center}
- .sample-town .sample-tour-options{top:calc(100% + 8px);left:0;width:min(300px,calc(100vw - 28px));max-height:calc(100dvh - 285px);overflow:auto;overscroll-behavior:contain}
- .sample-town .sample-tour-picker>summary .control-hint{left:-150px}
+ .town-hud.map-game .map-nav{display:grid;grid-template-columns:repeat(4,44px);width:194px;gap:6px}
+ .town-hud.map-game .map-nav>#map-home{grid-area:1 / 1 / 2 / 4;min-height:44px}
+ .town-hud.map-game .map-nav>.camera-controls{grid-area:2 / 1 / 3 / 4;width:144px}
+ .town-hud.map-game .map-nav>#show-projects{grid-area:3 / 1}
+ .town-hud.map-game .map-nav>#random-explore{grid-area:3 / 2}
+ .town-hud.map-game .map-nav>.sample-tour-picker{grid-area:1 / 4 / 2 / 5;position:static}
+ .town-hud.map-game .map-nav>#sample-invest{grid-area:2 / 4 / 3 / 5}
+ .town-hud.map-game .map-nav>.hud-button,.town-hud.map-game .sample-tour-picker>summary{min-width:44px;min-height:44px;padding:6px;justify-content:center}
+ .town-hud .sample-tour-options{top:calc(100% + 8px);left:0;width:min(300px,calc(100vw - 28px));max-height:calc(100dvh - 285px);overflow:auto;overscroll-behavior:contain}
+ .town-hud .sample-tour-picker>summary .control-hint{left:-150px}
 }
 @media(max-width:760px){
  #investment-dialog{padding:21px}#investment-dialog h2{font-size:22px}
