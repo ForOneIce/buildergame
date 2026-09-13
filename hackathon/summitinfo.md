@@ -67,15 +67,15 @@ Partner selection is still open. Wallet-based developer support and wallet/ENS i
 | Project name | Buildergame |
 | Repository | https://github.com/ForOneIce/buildergame |
 | Live project URL | [buildergame-two.vercel.app](https://buildergame-two.vercel.app/), as listed in the repository's public metadata; HTTP 200 and Buildergame title checked |
-| Video | `buildergame-demo-no-music.mp4` — 3:07, 1280×720, interface audio without music; upload and add its real URL if required |
-| Silent alternative | Separate export with no audio stream; additional option, not the default for an "Audio without music" field |
+| Video | [Direct video URL](https://buildergame-two.vercel.app/demo/buildergame-demo-no-music.mp4) — 3:07, 1280×720, interface audio without music |
+| Silent alternative | [Direct silent video URL](https://buildergame-two.vercel.app/demo/buildergame-demo-silent.mp4) — identical video with no audio stream |
 | Square logo | [buildergame-logo.png](media/buildergame-logo.png), 512×512; [SVG source](media/buildergame-logo.svg) |
 | Cover | [buildergame-cover.png](media/buildergame-cover.png), 1280×720, composed from an actual house capture |
 | Screenshot 1 | [Homepage](media/01-homepage.png), 1920×1245 |
 | Screenshot 2 | [Town planning](media/02-town-planning.png), 1920×1508; an unsubmitted example draft |
 | Screenshot 3 | [Sample town and project card](media/03-sample-town-project.png), 1920×1080; fictional sample project |
 
-Images and both video exports are prepared locally; upload remains pending. [Media provenance](media/README.md) and [verification](../docs/verification.md) record capture and export checks. The existing public site has not been checked against the latest local commit; deploy the final revision before submitting that link. Use public upload URLs in the form.
+Images and both finished videos are included in the repository. The video files in `public/demo/` are served directly by the static deployment after this revision builds. [Media provenance](media/README.md), [video files](../public/demo/README.md) and [verification](../docs/verification.md) record preparation and export checks. Confirm the direct URL opens before pasting it into the form.
 
 ## Video requirements
 

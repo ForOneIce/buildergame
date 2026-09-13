@@ -1,5 +1,7 @@
 # Submission images
 
+For the submission video field, use the [music-free demo](https://buildergame-two.vercel.app/demo/buildergame-demo-no-music.mp4). An [additional silent version](https://buildergame-two.vercel.app/demo/buildergame-demo-silent.mp4) is also included in the repository's [public video directory](../../public/demo/README.md).
+
 Prepared from the local Buildergame application on 2026-09-13. No desktop, unrelated application, signed-in account or credentials were captured.
 
 | File | Purpose | Size |
