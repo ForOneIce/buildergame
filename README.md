@@ -12,7 +12,7 @@ Build a home for your public portfolio, or bring a whole hackathon community tog
 
 [Explore the idea](#a-town-you-can-explore) · [Make-it-yours workflow](#make-it-yours) · [Development status](#development-status) · [Hackathon review](hackathon/README.md)
 
-> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub to import your projects. English and Chinese are supported. Optional Privy support is active on the hosted site, with live login and insufficient-funds handling verified; funded Sepolia transfer and receipt verification remain pending.
+> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub to import your projects. English and Chinese are supported. Optional Privy support is active on the hosted site: real login, insufficient-funds handling and a human-approved Sepolia test-ETH transfer with a matching successful receipt are verified.
 
 ## Quick start
 
@@ -41,7 +41,7 @@ For GitHub connection and hosting, follow the [deployment guide](docs/deployment
 
 **Keep track of your discoveries.** Opening project cards records which projects you have explored in this browser only. **Random explore** introduces an undiscovered project when one is available.
 
-**Leave a little encouragement.** Hover over a garden home's mailbox to turn your pointer into a coin. Keep it playful with virtual deposits, or let a town creator enable direct support for builders. The optional Privy extension offers email or wallet sign-in, a clear recipient/amount review and explicit confirmation; a successful receipt triggers the coin celebration. Its first release targets Sepolia test ETH, with live verification still pending. [Configure optional support](readme_web3.md).
+**Leave a little encouragement.** Hover over a garden home's mailbox to turn your pointer into a coin. Keep it playful with virtual deposits, or let a town creator enable direct support for builders. The optional Privy extension offers email or wallet sign-in, a clear recipient/amount review and explicit confirmation; a successful receipt triggers the coin celebration. Its first release targets Sepolia test ETH, with a real human-approved transfer and matching successful receipt verified on the hosted site. [Configure optional support](readme_web3.md).
 
 **Hear the little interactions.** Soft clicks, paper unfolding and a coin chime accompany controls after your first interaction. A gentle [planning-desk track](music/README.md) loops only while creating a town. The upper-right speaker button mutes music and effects together and remembers the setting on this device. Six small [Kenney CC0 clips](docs/ui-audio-research.md) provide the interface sounds; all audio is served locally.
 
@@ -109,19 +109,19 @@ Static deployments support token connection and manual captures directly in the 
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
 | Mailbox Easter egg | Unconfigured mailboxes retain virtual coins independently of wallet support |
-| Optional Privy support | Published Email/wallet integration and direct Sepolia test-ETH flow, with notices, explicit review, critical-state locking and pending recovery. Hosted login, wallet/account/network/balance checks and insufficient-funds guard verified; funded review and live transfer/receipt verification remain pending |
+| Optional Privy support | Published Email/wallet integration and direct Sepolia test-ETH flow, with notices, explicit review, critical-state locking and pending recovery. Hosted login, low-balance guard, funded review, a human-approved 0.001 test-ETH transfer with matching receipt, and live cancellation/unlock verified; interrupted recovery remains pending |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
-| Hosted demo and broader device testing | Current town release deployed; home/sample, locally imported town, real Privy login and low-balance handling checked online. Broader device coverage needs verification. Existing videos show the earlier release |
+| Hosted demo and broader device testing | Current town release deployed; home/sample, locally imported town, real Privy login and successful Sepolia transfer checked online. Broader device coverage needs verification. Existing videos show the earlier release |
 
 The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
 
-The latest local suite passed **82 Node tests**, including **33 transaction fixtures**, with scoped browser fixtures covering the wallet flow and shared town controls, plus **21 compact-wallet scenarios**. The final combined production build passed, and release `3bf2596` was deployed on Vercel with its home/sample checked. Later hosted checks verified the compact support card, real Privy login, sending-wallet/account/network/balance checks and an insufficient-funds guard. No transaction was submitted; a funded review, fee estimate and confirmed Sepolia receipt remain pending. Existing videos show the earlier town release. [Evidence and boundaries](docs/verification.md).
+The latest local suite passed **82 Node tests**, including **33 transaction fixtures**, with scoped browser fixtures covering the wallet flow and shared town controls, plus **21 compact-wallet scenarios**. The final combined production build passed, and release `3bf2596` was deployed on Vercel with its home/sample checked. Later hosted checks verified real Privy login, the insufficient-funds guard, funded review and a human-approved **0.001 Sepolia test-ETH transfer**. The app reported success, and Sepolia Etherscan independently showed a successful receipt with matching sender, recipient and value. A separate final-preview cancellation submitted no second transfer. Both outcomes restored ordinary project-directory interaction. Interrupted session/reload recovery remains pending; existing videos show the earlier town release. [Evidence and boundaries](docs/verification.md).
 
 ### What comes next
 
-1. **Verify the complete wallet experience.** Verify funded Sepolia review and fee estimation, an explicitly approved transfer, matching receipt, cancellation and recovery in the hosted wallet-enabled town without disrupting ordinary exploration.
+1. **Verify interrupted recovery.** Exercise interrupted session/reload recovery in the hosted wallet-enabled town without disrupting ordinary exploration.
 2. **Show the complete journey.** Record an updated demonstration from that verified build and refresh the submission materials.
 
 Longer term, wallet/ENS identity, community membership and management permissions, and recorded on-chain milestones could connect discovery with lasting participation. These are planned directions, not features enabled by the current testnet extension.
