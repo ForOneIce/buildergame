@@ -1,5 +1,10 @@
 # Decision log
 
+## D-029 — Use an actual homepage animation in the README
+
+- 2026-09-13 (UTC): the human requested a homepage GIF instead of the README screenshot. Capture only the project viewport and preserve the application's existing five-stage carousel. [Project instruction excerpts](../prompts/0044-homepage-readme-gif.md).
+- Web3 options discussed in 0043 remain unapproved; this documentation-media update does not authorize a wallet or payment implementation.
+
 ## D-028 — Add direct browser GitHub token access
 
 - 2026-09-12 (UTC): the human specified direct GitHub API access using a token without a backend and called out network/loading failures. [Exact instruction](../prompts/0042-browser-github-token-access.md).

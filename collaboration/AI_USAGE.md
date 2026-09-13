@@ -13,6 +13,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
+Session 0044: Codex captured the actual homepage carousel in a dedicated guest browser viewport using Playwright/Chrome and encoded a README GIF with FFmpeg. This is a recording of the existing application, not new AI-generated artwork. The [record](log.md#0044--animate-the-readme-homepage-preview) identifies its scope and verification; source behavior and building assets are unchanged.
+
 Session 0043: Codex researched optional mailbox support, ENS community records and funding-board alternatives against official prize/SDK documentation. The [discussion record](../docs/ideation/0043-web3-support-options.md) distinguishes the human's idea from AI proposals and unresolved integration/license requirements. No Web3 implementation or selection is claimed.
 
 Session 0042: the human requested direct GitHub token/API access without a backend and handling of network/timeouts. Codex preserved the exact instruction/translation and implemented shared transport/capture, the browser token adapter and in-memory UI account flow. No token value is recorded. Data work is in local commit `309d32b`; unit/integration checks, final affected lifecycle/PAT browser journeys and an unauthenticated one-repository public capture passed. Browser fixtures covered token-free persistence/exports, invalid-token retry, network/rate handling, disconnect/reload clearing, late-response discard, static preview refresh and safe append-only draft recovery. Real token and OAuth authentication were not tested. [Instruction](../prompts/0042-browser-github-token-access.md), [verification and timing](../docs/verification.md).

@@ -1,6 +1,13 @@
 # Demo verification
 
-Updated: 2026-09-12 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
+Updated: 2026-09-13 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
+
+## README homepage animation 0044
+
+- 2026-09-13 (UTC): a dedicated Playwright/headless Chrome guest page captured only the actual English homepage viewport, including five automatic building stages and the return transition. Capture produced 145 timestamped source frames with no page errors. Browser chrome, desktop and other applications are outside the recording.
+- Installed FFmpeg encoded `docs/images/homepage-showcase.gif` at 1080 × 946, 21.66 seconds, 260 frames and infinite looping, with a full palette and Sierra dithering. The final file is 1,317,614 bytes (about 1.26 MiB).
+- Codex inspected source composition and decoded GIF stages 1, 3, 5 and a transition. The homepage text, controls, building and attribution fit the frame; the recorded page is an unsigned-in guest view. The README image path and caption were updated.
+- This is documentation media only. Application tests/build were not repeated; application source and accepted building assets are unchanged. Final human review and GitHub's remote rendering remain unverified.
 
 ## Named towns, browser GitHub access and static deployment 0039–0042
 

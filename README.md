@@ -6,9 +6,9 @@ Turn a collection of GitHub projects into a little 3D neighborhood. Each reposit
 
 Build a home for your public portfolio, or bring a whole hackathon community together on one map.
 
-![Fictional sample projects on cloud districts, with exploration controls and a snapshot timeline](docs/images/cloud-town.png)
+![Buildergame homepage with a repository growing through five building stages](docs/images/homepage-showcase.gif)
 
-*Cloud-town preview with fictional sample data. Choose flat streets, a valley or cloud districts when creating your town.*
+*From an empty plot to a welcoming home: the homepage cycles through all five building stages.*
 
 [Explore the idea](#a-town-you-can-explore) · [Make-it-yours workflow](#make-it-yours) · [Development status](#development-status) · [Hackathon review](hackathon/README.md)
 

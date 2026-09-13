@@ -1,5 +1,10 @@
 # Human–AI collaboration log
 
+## 0044 — Animate the README homepage preview
+
+- 2026-09-13 (UTC): the human requested a homepage GIF and limited recording to the project presentation. Codex used a dedicated English guest Chrome page with Playwright to capture the existing five-stage homepage carousel, then encoded webpage-only frames using the installed FFmpeg. No desktop, browser chrome or other application was recorded.
+- Updated the README hero image and caption to the captured animation. The application code, accepted building assets and gameplay remain unchanged. Output metadata, decoded-frame review and scope checks are recorded in [verification](../docs/verification.md). No remote publication was performed.
+
 ## 0043 — Discuss optional Web3 support
 
 - 2026-09-13 (UTC): the human proposed optional mailbox tipping and requested comparison with easy-to-demonstrate partner/community tools before development. Codex reread official prize pages and ENS/Privy documentation, compared recipients, wallet friction, costs and track requirements, and recorded [options and evidence](../docs/ideation/0043-web3-support-options.md).
