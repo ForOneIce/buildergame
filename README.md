@@ -43,7 +43,7 @@ For GitHub connection and hosting, follow the [deployment guide](docs/deployment
 
 **Leave a little encouragement.** In the sample town, hover over a garden home's mailbox to turn your pointer into a coin, then click to watch a pretend deposit. **Support builders**, below **Tour landscapes**, offers a keyboard/touch alternative and explains future sponsorship ideas. This Easter egg uses temporary demo coins, with no wallet connection, payment or saved balance.
 
-**Hear the little interactions.** Soft clicks, paper unfolding and a coin chime accompany controls after your first interaction. Use the speaker button in the upper-right corner to mute effects; the setting is remembered on this device. Six small, locally served [Kenney CC0 clips](docs/ui-audio-research.md) add no audio service or background music.
+**Hear the little interactions.** Soft clicks, paper unfolding and a coin chime accompany controls after your first interaction. A gentle [planning-desk track](music/README.md) loops only while creating a town. The upper-right speaker button mutes music and effects together and remembers the setting on this device. Six small [Kenney CC0 clips](docs/ui-audio-research.md) provide the interface sounds; all audio is served locally.
 
 Sample towns open at a closer view, equivalent to four zoom-in steps, so signs and mailboxes are easier to reach. **Reset camera** returns to that view; zoom out for the full neighborhood.
 

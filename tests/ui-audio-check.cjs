@@ -130,7 +130,7 @@ async function holdNextCue(page, selector) {
       watch(context, errors, requests); await instrument(context); const page = await context.newPage(); await serve(page);
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' }); await page.locator('#sound-toggle').waitFor();
       assert.equal(await page.locator('#sound-toggle').getAttribute('aria-pressed'), 'true');
-      assert.equal(await page.locator('#sound-toggle').getAttribute('aria-label'), 'Mute sound effects');
+      assert.equal(await page.locator('#sound-toggle').getAttribute('aria-label'), 'Mute audio');
       await page.mouse.move(0, 0); await page.locator('#home').hover(); await page.waitForTimeout(220);
       await page.locator('#home').dispatchEvent('click'); await page.waitForTimeout(150);
       assert.equal((await state(page)).created, 0, 'Load, untrusted clicks and hover before a gesture do not construct an AudioContext');
@@ -277,7 +277,7 @@ async function holdNextCue(page, selector) {
       await page.locator('[data-enter]').tap(); await townReady(page); await headerFits(page);
       await page.screenshot({ path: `private/qa/audio-header-${signedIn ? 'signed-in' : 'guest'}-360.png` });
       assert.equal(await page.locator('#sound-toggle').count(), 1);
-      await page.locator('#language').tap(); assert.equal(await page.locator('#sound-toggle').getAttribute('aria-label'), 'Enable sound effects');
+      await page.locator('#language').tap(); assert.equal(await page.locator('#sound-toggle').getAttribute('aria-label'), 'Enable audio');
       await context.close(); passed.push(`360px ${signedIn ? 'signed-in' : 'guest'} bilingual header`);
     }
     assert.deepEqual(errors, [], 'Unavailable audio never becomes a page error');

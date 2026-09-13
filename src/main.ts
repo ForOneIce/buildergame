@@ -4,6 +4,7 @@ import './flow.css';
 import {objectArt,sitePlan} from './ui/planning';
 import {icon} from './ui/icons';
 import {createInterfaceAudio} from './ui/interface-audio';
+import {createPlannerMusic} from './ui/planner-music';
 import {builderSymbol} from './ui/builder-symbols';
 import {createHomeShowcase} from './home-showcase';
 import {gameHeader,gameLayout,projectCard} from './game-ui';
@@ -25,6 +26,11 @@ import './ui/audio-control.css';
 declare const __DEPLOYED_AT__: string;
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const interfaceAudio = createInterfaceAudio(app);
+const plannerMusic = createPlannerMusic(app, interfaceAudio.enabled);
+const audioControls = {
+  get enabled() { return interfaceAudio.enabled; },
+  get available() { return interfaceAudio.available || plannerMusic.available; },
+};
 const localRead=(key:string)=>{try{return localStorage.getItem(key);}catch{return null;}};
 const localWrite=(key:string,value:string)=>{try{localStorage.setItem(key,value);return true;}catch{return false;}};
 let lang: 'en' | 'zh' = localRead('bg-language') === 'zh' ? 'zh' : 'en';
@@ -88,7 +94,7 @@ function navigate(to: typeof screen) {
 }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang,true,false,interfaceAudio); }
+function header() { return gameHeader(t,session,lang,true,false,audioControls); }
 function connectGitHub(){
   const dialog=$<HTMLDialogElement>('#github-connect-dialog');
   const request=new AbortController();dialog.onclose=()=>request.abort();
@@ -104,6 +110,7 @@ function connectGitHub(){
 }
 
 function render() {
+  plannerMusic.setActive(screen === 'setup');
   reposRequest?.abort();reposRequest=undefined;reposGeneration++;
   mailboxUI?.dispose();mailboxUI=undefined;
   homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
@@ -114,7 +121,8 @@ function render() {
   $('#home').onclick=()=>navigate('welcome');
   document.querySelector<HTMLButtonElement>('#sound-toggle')?.addEventListener('click',event=>{
     interfaceAudio.toggle(event);
-    const button=$('#sound-toggle'),label=interfaceAudio.enabled?t('Mute sound effects','关闭音效'):t('Enable sound effects','开启音效');
+    plannerMusic.setEnabled(interfaceAudio.enabled);
+    const button=$('#sound-toggle'),label=interfaceAudio.enabled?t('Mute audio','关闭声音'):t('Enable audio','开启声音');
     button.setAttribute('aria-pressed',String(interfaceAudio.enabled));button.setAttribute('aria-label',label);
     button.innerHTML=icon(interfaceAudio.enabled?'sound':'sound-off')+'<span class="control-hint" id="sound-hint" role="tooltip">'+label+'</span>';
   });

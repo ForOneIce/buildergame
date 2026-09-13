@@ -11,6 +11,9 @@ Separate licenses and existing dedications are preserved:
   source manifests are in public/ui/kenney/.
 - Kenney UI Audio and RPG Audio: CC0-1.0. Six unchanged sound effects,
   original licenses and a source/hash manifest are in public/audio/ui/.
+- music/Miniature Sky.mp3: human-supplied Suno-generated planning music.
+  Separate from the Kenney CC0 effects and the application license; provenance
+  and the limits of supplied rights information are in music/README.md.
 - Original building assets previously declared CC0-1.0 retain that dedication;
   see public/models/README.md and public/models/buildings.lock.json, and collaboration/house-prototype.md,
   collaboration/town-visuals.md, and collaboration/baseline.md.
