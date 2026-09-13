@@ -7,7 +7,8 @@ import type { Project } from '../types';
 import { recipientForProject } from '../support-config.mjs';
 import type { SupportPanel, SupportPanelOptions } from './panel';
 import { WalletHelp, TransferRisk } from './wallet-help';
-import { canConfirmDonation, classifyError, createBrowserTransferGuard, createDonationFlow, createSupportActionGate, SUPPORT_CHAIN_ID, SUPPORT_EXPLORER, validateAmount } from './transaction.mjs';
+import { SupportDetail } from './detail-dialog';
+import { assertNoLegacyRecovery, atSupportStage, canConfirmDonation, classifyError, createBrowserTransferGuard, createDonationFlow, createSupportActionGate, sameRecoveryIntent, SupportError, SUPPORT_CHAIN_ID, SUPPORT_EXPLORER, validateAmount } from './transaction.mjs';
 import type { DonationCheckpoint, DonationFlow, DonationState, WalletAdapter } from './transaction.mjs';
 
 type Request = { version: number; project?: Project; restoreFocus: HTMLElement | null };
@@ -38,6 +39,7 @@ function message(code: string, t: SupportPanelOptions['t']) {
     copy: ['Copy was blocked. Select and copy the displayed address manually.', '复制被浏览器阻止，请手动选中并复制显示的地址。'],
     setup: ['The wallet could not initialize. Check the network and Privy application settings, then reconnect.', '钱包未能初始化，请检查网络与 Privy 应用配置后重新连接。'],
     acknowledgement: ['Read the notice and check the acknowledgement before continuing.', '请阅读说明并勾选已知后继续。'],
+    legacy_pending: ['An earlier transfer record still needs verification. Reopen this panel to recover it. Unreadable records are kept; no new transfer will be sent.', '此前的交易记录尚待核验，请重新打开面板恢复。无法读取的记录会保留，在核验前不会发送新的转账。'],
   };
   return t(...(copy[code] || copy.network));
 }
@@ -56,6 +58,7 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
   const [amount, setAmount] = useState('0.001');
   const [walletAddress, setWalletAddress] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorStage, setErrorStage] = useState<string | null>(null);
   const [working, setWorking] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [recipientCopied, setRecipientCopied] = useState(false);
@@ -63,6 +66,8 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
   const [recoveryHash, setRecoveryHash] = useState('');
   const [loginAcknowledged, setLoginAcknowledged] = useState(false);
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
+  const [detail, setDetail] = useState<'recipient' | 'wallet' | 'risks' | 'login' | null>(null);
+  const [infoPage, setInfoPage] = useState(0);
   const modal = useRef<HTMLElement>(null), alive = useRef(true);
   const operation = useRef(0), [gate] = useState(() => createSupportActionGate());
   const selectedProject = choices.find(p => p.id === (state.intent?.projectId || projectId));
@@ -74,7 +79,7 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
   const canConfirm = canConfirmDonation({ state, walletAddress: wallet?.address, authenticated, ready: ready && walletsReady, acknowledged: riskAcknowledged });
   useEffect(() => { alive.current = true; return () => { alive.current = false; operation.current++; gate.dispose(); }; }, []);
   useEffect(() => {
-    setVisible(true); setError(null); setLoginAcknowledged(false);
+    setVisible(true); setError(null); setLoginAcknowledged(false); setDetail(null);
     if (!lockedPhase(flow.getSnapshot()) && flow.reset()) {
       setProjectId(request.project?.id || choices[0]?.id || '');
     }
@@ -113,11 +118,11 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
   }
   async function runAction(kind: string, task: (context: { isCurrent(): boolean }) => Promise<void>, timeoutMs = 30000) {
     if (gate.busy || !alive.current) return;
-    const token = ++operation.current; setWorking(kind); setError(null);
+    const token = ++operation.current; setWorking(kind); setError(null); setErrorStage(null);
     const result = await gate.run(task, timeoutMs);
     if (!alive.current || token !== operation.current) return;
     setWorking(null);
-    if (result.status === 'error') { flow.cancelPreparation(); setError(classifyError(result.error)); }
+    if (result.status === 'error') { flow.cancelPreparation(); setError(classifyError(result.error)); setErrorStage(result.error instanceof SupportError ? result.error.stage || null : null); }
   }
   function beginLogin() {
     if (gate.busy || authenticated || privyOpen) return;
@@ -131,9 +136,9 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
     setRiskAcknowledged(false);
     await runAction('review', async ({ isCurrent }) => {
       // Privy docs: acquire a fresh provider after switching networks.
-      await wallet.switchChain(SUPPORT_CHAIN_ID);
+      await atSupportStage('switch', () => wallet.switchChain(SUPPORT_CHAIN_ID));
       if (!isCurrent()) return;
-      const provider = await wallet.getEthereumProvider();
+      const provider = await atSupportStage('provider', () => wallet.getEthereumProvider());
       if (!isCurrent()) return;
       const sender = wallet.address, embedded = wallet.walletClientType === 'privy';
       const adapter: WalletAdapter = {
@@ -175,9 +180,9 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
   async function recheck() {
     if (gate.busy || !wallet) return;
     await runAction('recheck', async ({ isCurrent }) => {
-      await wallet.switchChain(SUPPORT_CHAIN_ID);
+      await atSupportStage('switch', () => wallet.switchChain(SUPPORT_CHAIN_ID));
       if (!isCurrent()) return;
-      const provider = await wallet.getEthereumProvider();
+      const provider = await atSupportStage('provider', () => wallet.getEthereumProvider());
       if (!isCurrent()) return;
       await flow.recheck({ address: wallet.address, request: args => provider.request(args), send: async () => { throw new Error('Receipt-only recovery cannot send transactions'); } });
     }, 120000);
@@ -195,7 +200,10 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
     setError(null); void flow.send();
   }
   function statusText() {
-    const localError = error ? message(error, t) + ' ' : '';
+    const stageNames: Record<string, [string, string]> = { switch: ['network switch', '网络切换'], provider: ['wallet connection', '钱包连接'], chain: ['network check', '网络核对'], account: ['account check', '账号核对'], balance: ['wallet balance', '钱包余额'], fee: ['network fee', '网络手续费'], estimate: ['gas estimate', '手续费估算'], receipt: ['transaction receipt', '交易回执'], transaction: ['transaction verification', '交易核验'] };
+    const diagnostic = stageNames[errorStage || state.errorStage || ''];
+    const stageNote = diagnostic ? t(` Check: ${diagnostic[0]}.`, ` 检查环节：${diagnostic[1]}。`) : '';
+    const localError = error ? message(error, t) + stageNote + ' ' : '';
     if (state.phase === 'unknown') return localError + message(state.error === 'wallet_wait' ? 'wallet_wait' : 'unknown', t);
     if (state.phase === 'pending') return `${localError}${state.error && state.error !== 'pending' ? t('The receipt could not be verified yet. ', '暂时无法核验回执。') : ''}${t('A transaction hash is saved. Check its status below; do not resend it.', '交易哈希已保留，请检查下方状态，不要重复发送。')}`;
     if (state.phase === 'confirmed') return t(`${state.intent?.amount} test ETH reached the configured wallet. Thanks for supporting this builder!`, `${state.intent?.amount} 测试 ETH 已到达配置的钱包，感谢支持这位开发者！`);
@@ -205,11 +213,11 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
     if (working === 'login') return t('Opening wallet sign-in…', '正在打开钱包登录…');
     if (working === 'disconnect') return t('Disconnecting the wallet…', '正在断开钱包连接…');
     if (state.phase === 'preparing' || working) return t('Checking the wallet, network, balance and fee…', '正在检查钱包、网络、余额与手续费…');
-    if (state.error) return message(state.error, t) + (state.phase === 'error' && state.error !== 'rejected' ? t(' No transfer was submitted; this request charged no network fee.', ' 本次未提交转账，也不收取网络手续费。') : '');
-    return error ? message(error, t) : '';
+    if (state.error) return message(state.error, t) + stageNote + (state.phase === 'error' && state.error !== 'rejected' ? t(' No transfer was submitted; this request charged no network fee.', ' 本次未提交转账，也不收取网络手续费。') : '');
+    return localError.trim();
   }
   function keydown(e: React.KeyboardEvent) {
-    if (privyOpen) return;
+    if (privyOpen || detail) return;
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
     if (e.key !== 'Tab') return;
     const nodes = Array.from(modal.current?.querySelectorAll<HTMLElement>('button:not(:disabled),summary,a[href],input:not(:disabled),select:not(:disabled),[tabindex="0"]') || []).filter(n => n.offsetParent !== null);
@@ -217,28 +225,27 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
   }
+  const showDetails = (next: NonNullable<typeof detail>) => { setInfoPage(0); setDetail(next); };
+  const settledOrRecovery = ['pending', 'unknown', 'checking', 'confirmed'].includes(state.phase);
   if (!visible) return null;
-  return <div className="support-overlay" onMouseDown={e => { if (e.target === e.currentTarget && !privyOpen) close(); }} onKeyDown={keydown}>
-    <section ref={modal} className="support-card paper-panel" role="dialog" aria-modal={!privyOpen} aria-labelledby="support-title">
-      <div className="support-heading"><div><span className="support-testnet">Ethereum Sepolia · {t('Testnet', '测试网')}</span><h2 id="support-title">{t('Support a builder', '支持开发者')}</h2></div><button type="button" className="hud-button" data-support-close aria-label={t('Close', '关闭')} disabled={state.critical} onClick={close}>×</button></div>
-      {state.critical && <p id="support-transaction-lock" className="support-status" role="status">{t('Transfer in progress · Town controls are locked. Confirm or cancel in your wallet, or check the saved transaction below. Do not refresh or start another transfer.', '转账处理中 · 小镇操作已锁定。请在钱包中确认或取消，或检查下方已保存的交易。请勿刷新或重复转账。')}</p>}
+  return <div className="support-overlay" onMouseDown={e => { if (e.target === e.currentTarget && !privyOpen && !detail) close(); }} onKeyDown={keydown}>
+    <section ref={modal} className="support-card support-main-card paper-panel" role="dialog" aria-modal={!privyOpen && !detail} aria-labelledby="support-title" inert={Boolean(detail)}>
+      <div className="support-heading"><div><span className="support-testnet">{t('Sepolia · Test ETH · No monetary value', 'Sepolia · 测试 ETH · 无货币价值')}</span><h2 id="support-title">{t('Support a builder', '支持开发者')}</h2></div><button type="button" className="hud-button" data-support-close aria-label={t('Close', '关闭')} disabled={state.critical} onClick={close}>×</button></div>
       {choices.length ? <>
-        <label>{t('Project', '项目')}<select value={state.intent?.projectId || projectId} disabled={locked || state.phase === 'confirmed'} onChange={e => edit(() => setProjectId(e.target.value))}>{choices.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></label>
-        <div className="support-project"><strong>{selectedProject?.name || state.intent?.projectId}</strong><span className="support-muted">{selectedProject?.repository}</span><div><small>{t('Receiving address · Set by the town creator', '收款地址 · 由城镇创建者配置')}</small>{selectedRecipient && <details key={selectedRecipient}><summary className="support-address">{shorten(selectedRecipient)} · {t('Review full address', '核对完整地址')}</summary><a className="support-address" href={`${SUPPORT_EXPLORER}/address/${selectedRecipient}`} target="_blank" rel="noopener noreferrer">{selectedRecipient} ↗</a><button type="button" className="hud-button support-copy" onClick={() => void copyRecipient()}>{recipientCopied ? t('Copied', '已复制') : t('Copy receiving address', '复制收款地址')}</button></details>}</div><small>{t('Check that this address belongs to the builder. BuilderGame does not verify ownership.', '请核对地址是否属于该开发者，BuilderGame 不验证地址归属。')}</small></div>
+        {choices.length > 1 ? <label>{t('Project', '项目')}<select value={state.intent?.projectId || projectId} disabled={locked || state.phase === 'confirmed'} onChange={e => edit(() => setProjectId(e.target.value))}>{choices.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></label> : <strong className="support-project-name">{selectedProject?.name || state.intent?.projectId}</strong>}
+        <div className="support-summary-row"><span>{t('To builder', '收款人')}</span>{selectedRecipient && <button type="button" className="support-text-action support-address" onClick={() => showDetails('recipient')} aria-label={t('Review full receiving address', '核对完整收款地址')}>{shorten(selectedRecipient)} ↗</button>}</div>
       </> : <p>{t('This town has no projects with a receiving address.', '小镇尚无配置收款地址的项目。')}</p>}
-      {!ready || !walletsReady ? <div className="support-actions"><p role="status">{slow ? message('setup', t) : t('Preparing wallet connection…', '正在准备钱包连接…')}</p>{slow && !['preparing', 'signing', 'checking'].includes(state.phase) && <button type="button" className="hud-button" onClick={retryConnection}>{t('Reconnect wallet service', '重新连接钱包服务')}</button>}</div> : !authenticated ? <div className="support-actions"><WalletHelp t={t} acknowledged={loginAcknowledged} onAcknowledgeChange={state.critical ? undefined : setLoginAcknowledged} /><button type="button" className="hud-button" disabled={Boolean(working) || (!state.critical && !loginAcknowledged)} onClick={beginLogin}>{state.critical ? t('Reconnect to check this transfer', '重新连接以检查这笔交易') : t('Continue with email or wallet', '使用邮箱或钱包继续')}</button></div> : <>
-        <div className="support-wallet-row"><div><small>{t('Sending wallet', '发送钱包')}</small><strong className="support-address">{wallet ? shorten(wallet.address) : t('No wallet yet', '尚未创建钱包')}</strong></div><button type="button" className="hud-button" disabled={locked} onClick={() => void disconnect()}>{t('Disconnect', '断开连接')}</button></div>
-        {sortedWallets.length > 1 && <label>{t('Choose a wallet', '选择钱包')}<select disabled={locked} value={wallet?.address || ''} onChange={e => edit(() => setWalletAddress(e.target.value))}>{sortedWallets.map(w => <option key={w.address} value={w.address}>{w.walletClientType === 'privy' ? 'Privy' : w.meta.name || 'Wallet'} · {shorten(w.address)}</option>)}</select></label>}
-        {!sortedWallets.some(w => w.walletClientType === 'privy') && <button type="button" className="hud-button" disabled={locked} onClick={() => void makeWallet()}>{t('Create a Privy wallet', '创建 Privy 钱包')}</button>}
-        {wallet && <><details><summary>{t('Wallet address · Receive test ETH', '钱包地址 · 接收测试 ETH')}</summary><code className="support-address">{wallet.address}</code><button type="button" className="hud-button support-copy" onClick={() => void copyAddress()}>{copied ? t('Copied', '已复制') : t('Copy address', '复制地址')}</button><p className="support-muted">{t('Receive Sepolia ETH at this address before sending support. Test ETH has no monetary value.', '赞赏前请先向此地址转入 Sepolia ETH。测试 ETH 没有货币价值。')}</p></details>
-          <label>{t('Amount · test ETH', '金额 · 测试 ETH')}<input inputMode="decimal" type="text" autoComplete="off" value={state.intent?.amount || amount} disabled={locked || state.phase === 'confirmed'} onChange={e => edit(() => setAmount(e.target.value))} aria-describedby="support-amount-note" /></label>
-          <p id="support-amount-note" className="support-muted">{t('Direct to the configured wallet. No platform fee. The sending wallet pays the network fee.', '直达配置的钱包，不收平台费用，网络手续费由发送钱包支付。')}</p>
-          <TransferRisk t={t} acknowledged={riskAcknowledged} onAcknowledgeChange={state.phase === 'ready' ? setRiskAcknowledged : undefined} />
+      {!ready || !walletsReady ? <div className="support-actions"><p role="status">{slow ? message('setup', t) : t('Preparing wallet connection…', '正在准备钱包连接…')}</p>{slow && !['preparing', 'signing', 'checking'].includes(state.phase) && <button type="button" className="hud-button" onClick={retryConnection}>{t('Reconnect wallet service', '重新连接钱包服务')}</button>}</div> : !authenticated ? <div className="support-actions"><WalletHelp t={t} acknowledged={loginAcknowledged} onAcknowledgeChange={state.critical ? undefined : setLoginAcknowledged} onDetails={() => showDetails('login')} /><button type="button" className="hud-button" disabled={Boolean(working) || (!state.critical && !loginAcknowledged)} onClick={beginLogin}>{state.critical ? t('Reconnect to check this transfer', '重新连接以检查这笔交易') : t('Continue with email or wallet', '使用邮箱或钱包继续')}</button></div> : <>
+        <div className="support-summary-row"><span>{t('Your wallet', '你的钱包')}</span><button type="button" className="support-text-action support-address" onClick={() => showDetails('wallet')}>{wallet ? shorten(wallet.address) : t('Set up wallet', '设置钱包')} · {t('Manage', '管理')}</button></div>
+        {wallet && <>
+          {settledOrRecovery ? <div className="support-summary-row"><span>{t('Amount', '金额')}</span><strong>{state.intent?.amount} test ETH</strong></div> : <label>{t('Amount · test ETH', '金额 · 测试 ETH')}<input inputMode="decimal" type="text" autoComplete="off" value={state.intent?.amount || amount} disabled={locked} onChange={e => edit(() => setAmount(e.target.value))} aria-describedby="support-amount-note" /></label>}
+          {!state.critical && state.phase !== 'confirmed' && <p id="support-amount-note" className="support-muted">{t('Direct to builder · No platform fee', '直达开发者 · 不收平台费')}</p>}
+          {!state.critical && state.phase !== 'confirmed' && <TransferRisk t={t} acknowledged={riskAcknowledged} onAcknowledgeChange={state.phase === 'ready' ? setRiskAcknowledged : undefined} onDetails={() => showDetails('risks')} />}
         </>}
       </>}
-      {state.estimate && state.estimate.gas > 0n && <div className="support-quote"><div><span>{t('Wallet balance', '钱包余额')}</span><span>{state.estimate.balance} test ETH</span></div><div><span>{t('Estimated network fee', '预计网络手续费')}</span><span>≈ {state.estimate.fee} test ETH</span></div><small>{t('The final network fee is shown in your wallet before confirmation.', '最终网络手续费以钱包确认页显示为准。')}</small></div>}
+      {state.phase === 'ready' && state.estimate && <div className="support-quote"><div><span>{t('Estimated network fee', '预计网络手续费')}</span><span>≈ {state.estimate.fee} ETH</span></div></div>}
       {statusText() && <p className="support-status" data-kind={error ? 'error' : state.phase} role="status" aria-live="polite">{statusText()}</p>}
-      {state.hash && <a className="support-address" href={`${SUPPORT_EXPLORER}/tx/${state.hash}`} target="_blank" rel="noopener noreferrer">{t('View Sepolia transaction', '查看 Sepolia 交易')} ↗<br />{state.hash}</a>}
+      {state.hash && <a className="support-text-action" href={`${SUPPORT_EXPLORER}/tx/${state.hash}`} target="_blank" rel="noopener noreferrer">{t('View Sepolia transaction', '查看 Sepolia 交易')} ↗</a>}
       {state.phase === 'unknown' && <div className="support-project"><a href={`${SUPPORT_EXPLORER}/address/${state.estimate?.sender}`} target="_blank" rel="noopener noreferrer">{t('Check the sending wallet history', '检查发送钱包交易记录')} ↗</a><label>{t('Transaction hash from your wallet', '钱包记录中的交易哈希')}<input value={recoveryHash} onChange={e => setRecoveryHash(e.target.value)} placeholder="0x…" autoComplete="off" /></label><button type="button" className="hud-button" onClick={recoverHash}>{t('Find this transaction', '查找这笔交易')}</button></div>}
       <div className="support-actions">
         {authenticated && wallet && choices.length > 0 && ['idle', 'error', 'failed'].includes(state.phase) && <button type="button" className="hud-button" disabled={!ready || !walletsReady || Boolean(working)} onClick={() => void review()}>{t('Review test transfer', '核对测试转账')}</button>}
@@ -246,9 +253,14 @@ function WalletPanel({ options, request, flow, retryConnection }: Props) {
         {state.phase === 'pending' && <button type="button" className="hud-button" disabled={!wallet || !ready || Boolean(working)} onClick={() => void recheck()}>{t('Check confirmation', '检查交易确认')}</button>}
         {state.phase === 'confirmed' && <button type="button" className="hud-button" onClick={close}>{t('Back to town', '返回小镇')}</button>}
       </div>
-      {(active || state.phase === 'pending' || state.phase === 'unknown') && <p className="support-close-note">{t('The public transaction reference is saved in this browser for recovery across tabs and reloads. A submitted transaction cannot be cancelled by closing the page.', '公开的交易引用会保存在此浏览器中，供跨标签页和刷新后恢复。关闭页面不会取消已提交的交易。')}</p>}
-      <p className="support-muted">{t('Testnet demonstration only. Support does not change house growth or give ownership, shares or financial returns.', '仅限测试网演示。赞赏不改变房屋成长，也不授予所有权、股份或财务回报。')}</p>
+      {state.critical && <p id="support-transaction-lock" className="support-close-note">{t('Town paused · Do not refresh or resend.', '小镇操作已暂停 · 请勿刷新或重复发送。')} <button type="button" className="support-text-action" onClick={() => showDetails('risks')}>{t('Help', '查看说明')}</button></p>}
     </section>
+    {detail && <SupportDetail title={t({recipient:'Receiving address',wallet:'Your wallet',risks:'Transfer notice',login:'Email and your wallet'}[detail],{recipient:'收款地址',wallet:'你的钱包',risks:'转账须知',login:'邮箱与钱包'}[detail])} close={() => setDetail(null)} t={t} page={detail === 'risks' ? infoPage : undefined}>
+      {detail === 'recipient' && <><strong>{selectedProject?.name || state.intent?.projectId}</strong><p className="support-muted">{selectedProject?.repository}</p><p>{t('Set by the town creator. Verify this address with the builder; BuilderGame does not verify ownership.', '由小镇创建者配置。请与开发者核对地址，BuilderGame 不验证地址归属。')}</p><code className="support-address">{selectedRecipient}</code><button type="button" className="hud-button" onClick={() => void copyRecipient()}>{recipientCopied ? t('Copied', '已复制') : t('Copy receiving address', '复制收款地址')}</button><a href={`${SUPPORT_EXPLORER}/address/${selectedRecipient}`} target="_blank" rel="noopener noreferrer">{t('View on Sepolia explorer ↗', '在 Sepolia 浏览器查看 ↗')}</a></>}
+      {detail === 'wallet' && <>{wallet && <><code className="support-address">{wallet.address}</code><button type="button" className="hud-button" onClick={() => void copyAddress()}>{copied ? t('Copied', '已复制') : t('Copy address', '复制地址')}</button><p>{t('Receive Sepolia test ETH here to cover your support amount and network fee.', '请向此地址转入 Sepolia 测试 ETH，用于赞赏金额和网络费。')}</p>{state.estimate && <p className="support-muted">{t('Last checked balance: ', '上次核对余额：')}{state.estimate.balance} test ETH</p>}</>}{sortedWallets.length > 1 && <label>{t('Choose a wallet', '选择钱包')}<select disabled={locked} value={wallet?.address || ''} onChange={e => edit(() => setWalletAddress(e.target.value))}>{sortedWallets.map(w => <option key={w.address} value={w.address}>{w.walletClientType === 'privy' ? 'Privy' : w.meta.name || 'Wallet'} · {shorten(w.address)}</option>)}</select></label>}{!sortedWallets.some(w => w.walletClientType === 'privy') && <button type="button" className="hud-button" disabled={locked} onClick={() => void makeWallet()}>{t('Create a Privy wallet', '创建 Privy 钱包')}</button>}<p className="support-muted">{t('Wallet export is not available in this demo yet. See Privy’s official management guide.', '此演示版暂未提供钱包导出功能，请查看 Privy 官方管理说明。')}</p><a href="https://docs.privy.io/wallets/wallets/export" target="_blank" rel="noopener noreferrer">{t('Wallet management guide ↗', '钱包管理指南 ↗')}</a><button type="button" className="hud-button" disabled={locked} onClick={() => { void disconnect(); setDetail(null); }}>{t('Disconnect', '断开连接')}</button></>}
+      {detail === 'login' && <><p>{t('Email verifies your identity; it is not a private key. Privy creates or reopens your app wallet without asking you to write down a seed phrase.', '邮箱验证身份，并不是私钥。Privy 为你创建或重新打开应用钱包，登录时无需手写助记词。')}</p><p>{t('A new app wallet is separate from your MetaMask wallet and balance. Keep your email secure and use the same login to return. Every transfer needs a separate confirmation.', '新应用钱包与原有 MetaMask 钱包及余额独立。请保护邮箱安全，并使用相同方式再次登录。每笔转账仍需单独确认。')}</p><p className="support-muted">{t('This demo has no export button yet. Privy explains how wallet export works in its official guide.', '本演示版暂无导出按钮。Privy 官方指南解释了钱包导出和管理方式。')}</p><a href="https://docs.privy.io/wallets/wallets/export" target="_blank" rel="noopener noreferrer">{t('Privy wallet guide ↗', 'Privy 钱包指南 ↗')}</a></>}
+      {detail === 'risks' && <>{infoPage === 0 ? <><p>{t('Sepolia test ETH has no monetary value. Check the recipient, network and amount before approval. A successful transfer cannot be reversed by BuilderGame.', 'Sepolia 测试 ETH 没有货币价值。授权前请核对收款人、网络和金额。BuilderGame 无法撤销成功转账。')}</p><p>{t('The sending wallet pays the network fee. An on-chain failure can still consume that fee; cancellation before submission does not. Your wallet shows the final fee before confirmation.', '网络费由发送钱包支付。链上失败仍可能消耗网络费；提交前取消不会收费。最终网络费以钱包确认页为准。')}</p><p>{t('Support does not change house growth or grant ownership, shares or financial returns.', '赞赏不改变房屋成长，不授予所有权、股份或财务回报。')}</p></> : <><p>{t('A refresh, disconnect or site update does not cancel a sent transaction. Pending is not failure: check wallet history or the Sepolia explorer before sending again.', '刷新、断网或站点更新不会取消已发送交易。待确认不等于失败：再次发送前，请查询钱包记录或 Sepolia 区块浏览器。')}</p><p>{t('Saved references help recover in the same browser and site origin. Switching devices or domains, or clearing browser data, can remove this recovery path.', '保存的交易引用用于同一浏览器和站点来源内的恢复。更换设备、域名或清除浏览器数据后，可能无法自动恢复。')}</p><p>{t('A changed project address only applies after loading updated town data. Existing transfers keep their original destination.', '项目地址变更仅在加载新小镇数据后生效，已发送交易的目标保持不变。')}</p></>}<div className="support-detail-pages"><button type="button" className="hud-button" disabled={infoPage === 0} onClick={() => setInfoPage(0)}>{t('Previous', '上一页')}</button><span>{infoPage + 1} / 2</span><button type="button" className="hud-button" disabled={infoPage === 1} onClick={() => setInfoPage(1)}>{t('Next', '下一页')}</button></div></>}
+    </SupportDetail>}
   </div>;
 }
 
@@ -273,20 +285,34 @@ class WalletBoundary extends Component<BoundaryProps, { failed: boolean; dismiss
 
 export function mountWalletPanel(host: HTMLElement, options: SupportPanelOptions, appId: string): SupportPanel {
   const root = createRoot(host);
-  const guard = createBrowserTransferGuard({ eventId: options.event.id });
-  let recoveryEvent = options.event.id;
-  const flow = createDonationFlow({ guard, onConfirmed(id, result) { if (recoveryEvent === options.event.id) options.onConfirmed(id, result); } });
   const legacyKey = `buildergame.support.pending.v1:${options.event.id}`;
+  const guard = createBrowserTransferGuard({ eventId: options.event.id, assertNoLegacy() {
+    try { assertNoLegacyRecovery(sessionStorage, legacyKey); }
+    catch (error) { throw error instanceof SupportError ? error : new SupportError('storage'); }
+  } });
+  let recoveryEvent = options.event.id;
+  let restoredLegacy: DonationCheckpoint | null = null;
+  const flow = createDonationFlow({ guard, onConfirmed(id, result) { if (recoveryEvent === options.event.id) options.onConfirmed(id, result); } });
   const restore = () => {
     try {
       const saved = guard.read();
-      if (saved) { recoveryEvent = saved.eventId; flow.restore(saved); return; }
+      if (saved) {
+        recoveryEvent = saved.eventId; flow.restore(saved);
+        if (saved.legacyVersion === 1 && recoveryEvent === options.event.id) {
+          const legacy = sessionStorage.getItem(legacyKey);
+          if (legacy) { const checkpoint = JSON.parse(legacy) as DonationCheckpoint; if (sameRecoveryIntent(checkpoint, saved)) restoredLegacy = checkpoint; }
+        }
+        return;
+      }
       const legacy = sessionStorage.getItem(legacyKey);
       if (legacy) {
         const checkpoint = JSON.parse(legacy) as DonationCheckpoint;
-        if (flow.restore(checkpoint)) void guard.migrate(checkpoint).then(() => {
-          if (['confirmed', 'failed'].includes(flow.getSnapshot().phase)) guard.save(null);
-        }).catch(() => { /* Keep the original record; recovery must not authorize a new send. */ });
+        if (flow.restore(checkpoint)) {
+          restoredLegacy = checkpoint;
+          void guard.migrate(checkpoint).then(() => {
+            if (['confirmed', 'failed'].includes(flow.getSnapshot().phase)) guard.save(null);
+          }).catch(() => { /* Keep the original record; recovery must not authorize a new send. */ });
+        }
       }
     } catch { /* Unknown versions and malformed recovery data are retained; acquire fails closed. */ }
   };
@@ -295,7 +321,12 @@ export function mountWalletPanel(host: HTMLElement, options: SupportPanelOptions
   const unsubscribe = flow.subscribe(() => {
     if (!disposed) {
       const state = flow.getSnapshot();
-      if (['confirmed', 'failed'].includes(state.phase)) { try { sessionStorage.removeItem(legacyKey); } catch { /* Keep metadata if storage is blocked. */ } }
+      if (['confirmed', 'failed'].includes(state.phase) && restoredLegacy && recoveryEvent === options.event.id && state.intent && state.estimate) {
+        try {
+          const raw = sessionStorage.getItem(legacyKey), completed = { ...state.intent, sender: state.estimate.sender, hash: state.hash };
+          if (raw && sameRecoveryIntent(restoredLegacy, completed) && sameRecoveryIntent(JSON.parse(raw), completed)) sessionStorage.removeItem(legacyKey);
+        } catch { /* Keep unrelated, unreadable or inaccessible legacy metadata. */ }
+      }
       options.onLockChange?.(state.critical); render();
     }
   });
