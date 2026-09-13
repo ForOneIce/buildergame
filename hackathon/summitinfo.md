@@ -120,11 +120,11 @@ Leave the numerical rating and experience feedback for actual integration observ
 | Cover | [buildergame-cover.png](media/buildergame-cover.png), 1280×720, composed from an actual house capture |
 | Screenshot 1 | [Homepage](media/01-homepage.png), 1920×1245 |
 | Screenshot 2 | [Town planning](media/02-town-planning.png), 1920×1508; an unsubmitted example draft |
-| Screenshot 3 | [Sample town and project card](media/03-sample-town-project.png), 1920×1080; fictional sample project |
+| Screenshot 3 | [Updated cloud town and project card](media/05-cloud-town-project.png), 1920×1080; fictional sample project. [Cloud-town overview alternative](media/04-cloud-town-overview.png), 1920×1080 |
 
 Images and both finished videos are included in the repository. The video files in `public/demo/` are served directly by the static deployment after this revision builds. [Media provenance](media/README.md), [video files](../public/demo/README.md) and [verification](../docs/verification.md) record preparation and export checks. Confirm the direct URL opens before pasting it into the form.
 
-The currently linked competition video and still images show the earlier town demo; they do not constitute Privy transaction evidence. Prepare replacement demonstration footage after functionality is tested. Retain original site interface sounds and exclude added background music. Any English presentation script is separate from the actual recorded narration and must not be treated as permission for AI/TTS competition narration.
+The currently linked competition video predates the wallet extension. The updated cloud-town screenshots show the current renderer and interface using fictional sample projects; they do not constitute Privy transaction evidence. Prepare replacement demonstration footage after functionality is tested. Retain original site interface sounds and exclude added background music. Any English presentation script is separate from the actual recorded narration and must not be treated as permission for AI/TTS competition narration.
 
 ## Video requirements
 

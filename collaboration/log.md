@@ -1,5 +1,11 @@
 # Human–AI collaboration log
 
+## 0066 — Capture the town engineering showcase
+
+- 2026-09-13 (UTC): the human requested a screenshot of the most technically or visually demanding screen for updated submission images. [Original instruction and translation](../prompts/0066-capture-town-engineering-showcase.md).
+- Codex recommended town exploration with a project card and captured two English 1920 × 1080 views: cloud-town overview and garden-house interaction. The images use the existing fictional sample and actual controls at source revision `f5beeff`; no product code or building assets changed.
+- Both viewport captures were visually inspected and exported as genuine PNGs. Pillow verified their format, integrity and dimensions. Media provenance and the submission screenshot links were updated. These images do not establish a live transaction; questionnaire upload and human selection remain unverified.
+
 ## 0065 — Show real creation after sample exploration
 
 - 2026-09-13 (UTC): the human requested that the final recording actually create a wallet-enabled town after exploring the sample. [Original instruction and translation](../prompts/0065-record-sample-to-supported-town.md).

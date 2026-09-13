@@ -114,6 +114,8 @@ Session 0017: Codex derived five reduced-detail GLBs and generated the main town
 
 ## Development trace
 
+Session 0066: Codex selected and captured two actual English cloud-town views, exported the unchanged captured pixels as 1920 × 1080 PNGs, and updated submission references and [media provenance](../hackathon/media/README.md). No generated replacement graphics or source changes were used. The human requested submission screenshots; final image selection and upload remain unverified. [Instruction](../prompts/0066-capture-town-engineering-showcase.md).
+
 Session 0016: the human accepted the prior visual style. Codex expanded the final courtyard without scaling the architecture, derived four other appearances and implemented stage selection/retry in the studio. [Five-stage record](five-stages.md) documents Blender exports, architecture fingerprints, real browser checks and pending review of the new art.
 
 Session 0015: Codex authored the Blender model-generation script, generated original mesh/texture assets and wrote the standalone Three.js house studio and browser checks. Actual exports, visual corrections, test results and unresolved fidelity/performance limits are in the [prototype record](house-prototype.md). No image-generation service or third-party model pack was used. Human visual acceptance is pending.

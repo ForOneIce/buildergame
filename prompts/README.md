@@ -65,5 +65,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0063 — Verify Sepolia support on the deployed application](0063-deployed-sepolia-verification.md)
 - [0064 — Clarify virtual coins and wallet support](0064-clarify-virtual-and-wallet-support.md)
 - [0065 — Record sample exploration followed by a supported town](0065-record-sample-to-supported-town.md)
+- [0066 — Capture the town engineering showcase](0066-capture-town-engineering-showcase.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.
