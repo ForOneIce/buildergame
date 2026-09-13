@@ -32,8 +32,16 @@ Final deadline: September 13 at 12:00 pm EDT. Individual judging assignments app
 - AI tools are generally permitted. Disclose purposes and affected code/files/assets. Team members must contribute meaningfully.
 - Spec-driven workflows must include all specs, prompts, and planning artifacts in the submission repository. This structure retains evidence; it does not guarantee eligibility or awards.
 - Select at most three partner prizes in the form. Multiple subtracks from one partner count as one partner. Explain actual integration.
-- Video: 2–4 minutes, at least 720p. No speeding up to fit the limit, phone recording, or TTS/AI voiceover. Waiting time may be edited out.
+- Video: 2–4 minutes, at least 720p, audio without music. No speeding up to fit the limit, phone recording, or TTS/AI voiceover. Waiting time may be edited out.
 - Finalist live judging: four-minute demo plus three-minute Q&A. Partners judge asynchronously.
+
+## Video wording and current preparation
+
+The latest submission-field text supplied on 2026-09-13 states: "To be eligible for Top 10 Finalist prizes, you must upload a demo video," with "Between 2 and 4 minutes long," "Minimum resolution of 720p," and "Audio without music."
+
+Earlier official guidance recorded in this conversation says: "DO NOT play music with text on video describing project (instead of talking)" and "DO NOT use TTS/AI Voiceover." This wording is not a literal unconditional requirement for narration. An earlier local summary overstated it as mandatory human narration; that interpretation is corrected here. No new organizer clarification or independent live-page recheck is claimed.
+
+Current preparation follows the requested feature demonstration: actual interface effects, no background music, and no added narration. A separate completely silent export is an additional option; the main export retains audio for the quoted audio requirement. The [English script](demo-script.md) is optional preparation for a later live presentation, distinct from the initial uploaded demonstration. No TTS/AI voiceover is planned.
 
 ## Checks after topic selection
 

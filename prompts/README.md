@@ -47,5 +47,9 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0045 — Add virtual mailbox coins to sample towns](0045-sample-mailbox-coins.md)
 - [0046 — Research and add game UI interaction sounds](0046-ui-interaction-sounds.md)
 - [0047 — Start sample towns at a closer default zoom](0047-sample-town-default-zoom.md)
+- [0048 — Make mailbox coin targeting more obvious](0048-mailbox-coin-cursor.md)
+- [0049 — Loop supplied Suno music only in the planner](0049-planner-suno-music.md)
+- [0050 — Prepare the project submission information](0050-submission-preparation.md)
+- [0051 — Prepare music-free and silent demo-video versions](0051-demo-video-audio-versions.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

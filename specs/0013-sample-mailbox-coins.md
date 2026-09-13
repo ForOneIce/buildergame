@@ -42,3 +42,13 @@ Scoped mailbox browser checks passed. The unchanged scene's earlier checks cover
 The final production build passed with 52 modules, nine fictional projects, three snapshots and all ten locked GLBs unchanged. Codex inspected desktop English dialog/flight/receipt and narrow dialog/receipt/menu screenshots; human visual review remains pending. [Verification](../docs/verification.md) records exact script execution boundaries, screenshot coverage and any separate regression results. No actual funds or live wallet integration is claimed.
 
 中文简注：仅示例小镇的第五阶段邮箱投虚拟金币；不连接钱包、不转账、不保存余额。
+
+## Cursor refinement 0048
+
+The human requests a larger hover radius centered on the existing mailbox, a larger coin cursor and no footprint cursor during coin interaction. [Exact instruction](../prompts/0048-mailbox-coin-cursor.md). Keep the target local to eligible stage-five sample mailboxes, preserve other house/sign actions and retain the coin pointer while the mailbox effect is active. Do not change the GLBs or imply a real payment.
+
+Implementation uses a mailbox-centered invisible spherical target with radius 0.82 world units and a 48px original coin cursor, retaining coin feedback through activation and flight. Accepted GLBs and scoring data remain unchanged.
+
+Acceptance: pointer positions near the mailbox enter the enlarged target; the larger coin cursor is visible on hover and during coin interaction; footprints do not replace it; drag/navigation and stage/non-sample exclusions remain correct.
+
+Five focused Chrome groups passed: positions outside the former 0.68×0.62×0.68 proxy now receive the coin cursor; its computed size is 48px with hotspot 5,3; pointer down/up/move and flight keep it visible; neighboring door/sign callbacks and cursors remain correct; drag, cancellation and snapshot changes clear the effect correctly. The checks reported no page errors, and Codex inspected a native flight screenshot. The combined production build passed with all ten GLBs unchanged. [Verification](../docs/verification.md) records exact evidence and limits; human visual acceptance is not claimed.

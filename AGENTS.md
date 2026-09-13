@@ -52,4 +52,4 @@ Record project facts, plans and artifacts. Exclude personal administration and s
 
 - Sources are in `hackathon/rules.md`. Check partner eligibility against the final product and Classic/Continuity route.
 - Disclose AI assistance and actual human contributions. Preserve specs, prompts, and planning artifacts used in spec-driven development.
-- Video: 2–4 minutes, at least 720p, human narration. Product TTS does not authorize AI narration of the submission video.
+- Video: 2–4 minutes, at least 720p, audio without music. Prepare the initial feature demo without added narration, plus an additional no-audio export as requested. Keep an optional live-demo script for later use. Do not infer an unconditional narration mandate from the recorded guidance; TTS/AI voiceover and speeding up footage remain prohibited.

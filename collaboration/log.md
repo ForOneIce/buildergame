@@ -1,5 +1,24 @@
 # Human–AI collaboration log
 
+## 0050–0051 — Prepare final submission materials and music-free video
+
+- 2026-09-13 (UTC): the human requested completed submission information, a feature video and an additional completely silent export. The human supplied the 2–4 minute, minimum-720p, "Audio without music" requirements, and clarified that a live-presentation script should be kept for possible later use rather than added as mandatory narration to this initial recording.
+- Codex completed [the English submission sheet](../hackathon/summitinfo.md), [optional live script](../hackathon/demo-script.md), prompt records, reviewer guide/checklist and source-aware video-rule corrections. Answers describe the actual Web2 demo, fictional sample data and mailbox, direct browser GitHub capture, static deployment boundaries, deferred Web3 and actual AI/reuse contributions. Unverified deployment/upload links remain clearly identified.
+- Codex prepared a 512×512 logo, 1280×720 cover and three actual application screenshots, then inspected their visual output. [Media provenance](../hackathon/media/README.md) identifies the empty guest-session fixtures, unsubmitted planning example and fictional sample card. Capture checks observed no page errors, HTTP writes or external requests. Exact video/export metadata, audio provenance and playback inspection are recorded separately in [verification](../docs/verification.md); this entry does not claim an external upload or completed submission.
+- Original project excerpts and separately labeled translations are in [0050](../prompts/0050-submission-preparation.md) and [0051](../prompts/0051-demo-video-audio-versions.md). The initial no-music feature demonstration and optional later live script are distinct; no AI voiceover or accelerated footage is authorized.
+- Documentation checks: submission fields contain 81 characters (short description), 2,023 (description) and 2,525 (how it is made), meeting the supplied limits. All 417 local links across 18 affected documents resolved, and the scoped Git whitespace check passed. These checks do not establish video metadata, final upload or eligibility.
+
+## 0049 — Add the supplied planning-desk soundtrack
+
+- 2026-09-13 (UTC): the human supplied `music/Miniature Sky.mp3`, identified Suno as its generation tool and provided the musical style prompt, authorizing looping playback only on Create town. [Original instruction and translation](../prompts/0049-planner-suno-music.md).
+- Codex integrated one lazy native HTMLAudioElement at volume 0.16, shared the existing remembered mute state, preserved playback across planner rerenders, paused hidden tabs and reset playback on exit. [Music provenance](../music/README.md) records the unchanged 3,590,270-byte MP3 and SHA-256. The supplied track is separate from Kenney CC0 effects; no subscription/commercial-rights verification is claimed.
+- Focused Chrome checks passed actual MP3 decoding/time progression, planner-only looping, singleton/rerender continuity, shared/remembered mute, first-action mute with zero plays, visibility pause/resume, home/town reset/silence and explicit autoplay/delayed-resolution/network/Audio-unavailable fallback fixtures without page errors. The combined build passed with 56 modules and ten unchanged GLBs. Human listening remains unverified. [Specification](../specs/0014-ui-interaction-sounds.md#planner-music-0049), [exact verification](../docs/verification.md).
+
+## 0048 — Enlarge mailbox targeting and coin feedback
+
+- 2026-09-13 (UTC): the human requested a larger mailbox-centered hover radius and coin cursor, retaining the coin rather than footprints during the interaction. [Exact instruction and translation](../prompts/0048-mailbox-coin-cursor.md).
+- Codex changed the invisible mailbox target to a 0.82-world-unit sphere, enlarged the original coin cursor to 48px and refined activation/flight cursor continuity. Five focused browser groups passed enlarged-area hits, cursor size/hotspot, down/up/move/flight continuity, neighboring sign/door behavior and drag/cancellation/snapshot reset, with no page errors. Codex inspected a native flight screenshot. Ten locked GLBs, scoring and snapshot data are unchanged. The combined build passed; exact evidence is recorded in [verification](../docs/verification.md), without implying human visual approval.
+
 ## 0047 — Start sample towns at an interaction-friendly zoom
 
 - 2026-09-13 (UTC): the human requested the sample camera default reached by four presses of zoom-in. Codex preserved the [exact input and translation](../prompts/0047-sample-town-default-zoom.md) and defined [specification 0015](../specs/0015-sample-town-default-camera.md) before implementation completion.

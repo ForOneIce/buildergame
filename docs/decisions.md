@@ -1,5 +1,21 @@
 # Decision log
 
+## D-035 — Prepare a feature demo with no background music
+
+- 2026-09-13 (UTC): the human requested completed submission materials, quoted a 2–4 minute, minimum-720p, "Audio without music" video requirement and asked for an extra export with no audio stream. The human clarified that the initial video should demonstrate features, with an optional script reserved for a later live presentation.
+- Prepare the main export with interface effects and no music or added narration, plus a separate silent export. Correct the earlier AI inference of an unconditional narration mandate while retaining the recorded no-TTS/AI-voiceover and no-speed-up guidance. No organizer clarification or eligibility decision is invented. [Prompt](../prompts/0051-demo-video-audio-versions.md), [rule wording](../hackathon/rules.md), [submission sheet](../hackathon/summitinfo.md).
+- English form answers, logo/cover and real app screenshots describe the shipped Web2 demo. Public video/deployment URLs and submission success must come from actual publication, not local file preparation.
+
+## D-034 — Limit supplied music to the planning desk
+
+- 2026-09-13 (UTC): the human supplied a Suno track and its style prompt, requesting a loop only on Create town. Preserve the supplied provenance without treating it as CC0 or asserting independently verified commercial rights.
+- One lazy native HTMLAudioElement shares the existing mute preference, keeps continuity through planner rerenders, pauses when hidden and stops/resets on exit. The existing UI cues remain on other pages. The submission recording excludes the track. Focused native/failure-fixture checks and the combined build passed; human listening is unverified. [Prompt](../prompts/0049-planner-suno-music.md), [scope](../specs/0014-ui-interaction-sounds.md#planner-music-0049).
+
+## D-033 — Make the virtual mailbox easier to target
+
+- 2026-09-13 (UTC): the human requested an enlarged mailbox hover radius, larger coin cursor and uninterrupted coin pointer during activation. The implementation uses a 0.82-world-unit invisible spherical target and 48px cursor with flight continuity.
+- Keep the sample-only virtual effect, existing GLBs and project scoring/data intact; preserve neighboring sign/door actions and dragging. [Prompt](../prompts/0048-mailbox-coin-cursor.md), [scope and acceptance](../specs/0013-sample-mailbox-coins.md#cursor-refinement-0048). Exact final interaction evidence is separate from the passing combined build.
+
 ## D-032 — Start sample towns four zoom steps closer
 
 - 2026-09-13 (UTC): the human requested the closer sample view previously reached by pressing zoom-in four times. [Exact instruction](../prompts/0047-sample-town-default-zoom.md).

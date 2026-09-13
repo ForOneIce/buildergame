@@ -4,7 +4,7 @@ This directory is the entry point for ETHOnline 2026 reviewers. For the product 
 
 A 3D town where GitHub projects become houses that evolve with their recorded history. Designed for hackathon showcases and individual developers' public portfolios. Intended pilot: ETHOnline 2026. Basic viewing requires no wallet; ENS integration is deferred.
 
-Human–AI collaboration is recorded from workspace preparation onward. Demo implementation is in progress; user requirements and AI proposals are recorded separately.
+Human–AI collaboration is recorded from workspace preparation onward. A playable demo and final-submission materials are prepared locally; user requirements, AI proposals and verified results are recorded separately. Submission and hosted production have not been verified.
 
 The checkout contains a **playable local Demo**: five accepted building appearances, flat/valley/cloud landscapes, floating map controls, project cards/minimap, bilingual personal/hackathon setup, direct browser GitHub capture, snapshots and portable backups. Exploration progress is browser-only. Towns start with a visual founding baseline and receive independent addresses; exported repository JSON produces static town pages. Optional Node OAuth supports immediate publication with private ownership checks. Exact executed checks and their revision scope are in [verification](../docs/verification.md). Real token/OAuth login and hosted production remain unverified; provider tests use fixtures. Sample data is fictional, actual event projects remain pending, and no adoption is claimed. See [deployment](../docs/deployment.md) and [current specification](../specs/0012-named-towns-and-static-snapshots.md).
 
@@ -42,12 +42,14 @@ buildergame/
     ├── README.md            # Reviewer introduction
     ├── rules.md             # Competition rules and sources
     ├── checklist.md          # Submission and partner requirements
-    └── demo-script.md        # 2–4 minute, human-narrated demo
+    ├── summitinfo.md         # Copy-ready submission answers
+    ├── media/               # Logo, cover and actual app screenshots
+    └── demo-script.md       # Optional later live-demo script
 ```
 
 ## Current status
 
-- Phase: visual and interaction iteration of the Web2-first Demo authorized in prompt 0007; the human has accepted and locked five building assets.
+- Phase: final-submission preparation for the Web2-first Demo authorized in prompt 0007; the human has accepted and locked five building appearances. Sample mailbox interaction, control sounds and planner-only music are implemented; submission video excludes music.
 - Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots.
 - Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle; Classic/Continuity route and partners are undecided.
 - Outputs: collaboration records, feasibility review and a tested local Demo. No user-adoption validation or hosted production verification yet.
@@ -77,7 +79,9 @@ Project prompt records 0002–0007 preserve the concept, product decisions and D
 - [Collaboration log](../collaboration/log.md)
 - [AI disclosure](../collaboration/AI_USAGE.md)
 - [Submission checklist](checklist.md)
-- [Demo script](demo-script.md)
+- [Copy-ready submission sheet](summitinfo.md)
+- [Logo, cover and screenshots](media/README.md)
+- [Optional live-demo script](demo-script.md)
 
 Final submission: **2026-09-13 16:00 UTC**.
 Second check-in: **2026-09-11 03:59 UTC**.

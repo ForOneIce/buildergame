@@ -20,7 +20,9 @@ Check items only with evidence. Final submission status has not been verified.
 - [ ] Record actual verification and unfinished work.
 - [ ] Explain integration locations, functions, and evidence for each partner.
 - [ ] Complete required feedback files/forms, testnet deployment, and contract verification.
-- [ ] Record a 2–4 minute video at 720p or higher with human narration; English is the project default.
+- [ ] Verify a 2–4 minute feature video at 720p or higher, with interface audio and no background music; keep a separate export without an audio stream.
+- [x] Prepare English submission answers and an optional later live-demo script; added narration is not a blocker for the initial feature recording.
+- [x] Prepare a 512×512 logo, 1280×720 cover and three actual app screenshots; see [media and provenance](media/README.md).
 - [ ] Check for no AI voiceover, speeding up to fit the limit, or phone recording.
 - [ ] Submit and confirm success before 2026-09-13 16:00 UTC.
 - [ ] If seeking Finalist consideration, check the individual assignment and prepare a four-minute demo plus three-minute Q&A.
@@ -29,4 +31,4 @@ Check items only with evidence. Final submission status has not been verified.
 
 | Partner and prize | Official link | Route eligibility | Required integration/materials | Evidence/status |
 | --- | --- | --- | --- | --- |
-| Undecided | — | Unverified | To check | Not started |
+| None selected for this build | — | Unverified | No implemented partner integration | ENS/wallet work deferred; mailbox coins are fictional |
