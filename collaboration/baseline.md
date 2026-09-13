@@ -4,6 +4,18 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0053 adds an optional Privy support extension. The code, final 65-test Node suite, scoped browser fixtures and production build are complete; hosted/live transaction verification remains pending. The following direct dependencies were installed and their package metadata inspected on 2026-09-13 (UTC); exact dependency resolution is in `package-lock.json`. Installation and a passing build do not establish a successful chain transaction.
+
+| Package | Version | Declared license | Source and scope |
+| --- | --- | --- | --- |
+| `@privy-io/react-auth` | 3.42.0 | Apache-2.0 | [Privy SDK documentation](https://docs.privy.io); optional wallet/authentication panel |
+| `react`, `react-dom` | 19.3.0 | MIT | [React](https://react.dev/); isolated wallet UI, not a rewrite of the Three.js app |
+| `ethers` | 6.17.0 | MIT | [ethers](https://ethers.org); address and test-ETH amount validation and transaction helpers |
+| `viem` | 2.56.0 | MIT | [viem](https://viem.sh); Privy-compatible chain definitions and SDK integration dependency |
+| `@types/react`, `@types/react-dom` | 19.3.0 | MIT | [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped); development-time UI types |
+
+No new 3D model, external game asset, previous project code or deployed payment contract is part of this increment. Existing ten locked GLBs, CC0 interface artwork/cursors/audio and the supplied planner track retain their recorded provenance. [Scope and verification boundaries](../specs/0016-optional-privy-support.md). Earlier notes describing Privy as unapproved or Web3 as paused refer to those earlier revisions. Original application contributions remain under the existing project license; dependency and service terms retain their own scope.
+
 Sessions 0048–0051: the mailbox refinement reuses the original stage-five mailbox geometry and coin artwork; the new target/cursor behavior imports no model pack, dependency or license. All ten accepted GLBs remain unchanged. The human supplied the separate Suno-generated `music/Miniature Sky.mp3` (3,590,270 bytes; SHA-256 `2841e093b232826af76e5034e619aa54314c0affe1681eb7d89f6a8c2aa7df9f`), integrated unchanged through Vite and native browser audio. [Generation prompt](../prompts/0049-planner-suno-music.md) and [track provenance](../music/README.md) identify the actual supplied scope. The account plan and generation-rights evidence are unverified; the track is neither a Kenney asset nor a CC0 dedication, and the app license does not relicense it. Six existing Kenney CC0 effects retain their terms. Native playback/integration and focused tests are original Codex-assisted project code; the music increment is local commit `7fcac00`.
 
 Submission stills reuse the existing application, accepted building render and house mark. Codex used actual browser captures and HTML/SVG composition for the logo/cover, without a new image-generation model or paid resource. [Media provenance](../hackathon/media/README.md) distinguishes unedited app screenshots, composed presentation images and guest fixture boundaries. The video excludes the supplied background track; exact interface-audio capture/export provenance belongs in [verification](../docs/verification.md). No new partner integration, on-chain work or pre-event project code is introduced by these presentation materials.

@@ -1,5 +1,23 @@
 # Human–AI collaboration log
 
+## 0055 — Document optional wallet deployment prerequisites
+
+- 2026-09-13 (UTC): the human requested `readme_web3.md` for developers configuring wallet services. [Original project instruction and translation](../prompts/0055-optional-wallet-deployment-guide.md).
+- Codex wrote the [deployer guide](../readme_web3.md), covering independent base deployment, standard Email/Wallet login with custom authentication disabled, public App ID, exact allowed origins, local/Vercel build configuration, creator recipients, test funding, explicit confirmation and receipt-only recovery. The root README and deployment guide link to it. General production activation/cost prerequisites refer deployers to current provider terms. No account-specific IDs, addresses, credentials or personal setup dialogue are included.
+- This is deployment documentation for the implemented optional Sepolia scope; it does not establish a live Privy session, confirmed receipt, new deployment or mainnet readiness. Link/whitespace checks are recorded with the current documentation verification.
+
+## 0054 — Record the updated demo after functional testing
+
+- 2026-09-13 (UTC): the human directed recording to follow completed functional tests, relayed submission-form acceptance of original site interface audio without added music, and allowed English explanatory narration. [Original instruction and translation](../prompts/0054-record-updated-demo-after-testing.md).
+- Codex updated the preparation order and evidence boundary and drafted an [optional support narration segment](../hackathon/demo-script.md#optional-support-segment-for-the-verified-revision) for use only after functional/live-flow verification. A narration script is preparation, not a recorded voice track, and AI/TTS competition narration is not inferred. The previously published competition videos remain the earlier town demo; replacement recording and metadata verification are pending.
+
+## 0053 — Add optional Privy support for builders
+
+- 2026-09-13 (UTC), phase: specification and implementation. The human chose direct developer support through optional Privy wallets, with creator-controlled adoption, personal/per-project recipient configuration and priority for test-chain verification. The human required preservation of physical mailboxes, existing virtual coin interaction without an address, and minimal interface-only changes around the locked building designs.
+- Codex preserved [project instruction excerpts and translations](../prompts/0053-optional-privy-support.md), defined [scope/dependencies/acceptance](../specs/0016-optional-privy-support.md) before implementation completion, and began a separate wallet panel/configuration increment. Records cover single-chain Sepolia test ETH, explicit confirmation, receipt-gated animation, rejection/timeout/duplicate/late-result safeguards and old-JSON compatibility.
+- Documentation outputs: prompt/specification indexes, optional deployment setup and public environment example, decisions, reuse/AI disclosures, and revised submission/prize preparation. No private credentials, account-setup conversation, fabricated wallet address or fixture transaction is published as evidence.
+- Verification at scope creation was pending. Subsequent checks passed the final **65-test Node suite**, Chrome mailbox desktop/guards, support configuration/browser and physical-mailbox routing fixtures, TypeScript and a separate 16-test transaction-controller run. Production builds passed both without wallet application configuration and with the optional wallet bundle enabled for compilation; all ten accepted GLBs remained unchanged. [Verification](../docs/verification.md#optional-privy-support-0053-and-post-test-recording-plan-0054) records commands, incremental checkpoints, bundle size/warnings and fixture boundaries. Hosted configuration and a live Privy receipt remain pending. No on-chain transfer, production readiness, human visual acceptance or sponsor eligibility is claimed here.
+
 ## 0052 — Connect the submission story to the Web3 roadmap
 
 - 2026-09-13 (UTC): the human requested a vision-led description that leaves room for planned developer support and permission management.

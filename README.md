@@ -25,7 +25,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. Select **Explore sample town**, then **Tour landscapes** to try flat, valley or cloud scenery. Select **Create town**, then **Personal** for your repositories or **Community** for a collection from multiple builders.
 
-For GitHub connection and hosting, follow the [deployment guide](docs/deployment.md). The upper-right profile button accepts a GitHub token for direct browser access to public repositories; no backend is needed for this mode. The sample town needs no credentials. [Deploy on Vercel](docs/vercel.md).
+For GitHub connection and hosting, follow the [deployment guide](docs/deployment.md). The upper-right profile button accepts a GitHub token for direct browser access to public repositories; no backend is needed for this mode. The sample town needs no credentials. [Deploy on Vercel](docs/vercel.md). To offer optional developer support, follow the [Privy wallet setup guide](readme_web3.md); the base experience needs no Privy setup.
 
 ## A town you can explore
 
@@ -41,7 +41,7 @@ For GitHub connection and hosting, follow the [deployment guide](docs/deployment
 
 **Keep track of your discoveries.** Opening project cards records which projects you have explored in this browser only. **Random explore** introduces an undiscovered project when one is available.
 
-**Leave a little encouragement.** In the sample town, hover over a garden home's mailbox to turn your pointer into a coin, then click to watch a pretend deposit. **Support builders**, below **Tour landscapes**, offers a keyboard/touch alternative and explains future sponsorship ideas. This Easter egg uses temporary demo coins, with no wallet connection, payment or saved balance.
+**Leave a little encouragement.** Hover over a garden home's mailbox to turn your pointer into a coin. Unconfigured mailboxes keep their playful virtual deposit. Town creators can optionally configure receiving addresses and open a Privy support card from the mailbox, with confirmation before sending and coin feedback after a successful receipt. This first wallet extension uses Sepolia test ETH. [Configure optional support](readme_web3.md).
 
 **Hear the little interactions.** Soft clicks, paper unfolding and a coin chime accompany controls after your first interaction. A gentle [planning-desk track](music/README.md) loops only while creating a town. The upper-right speaker button mutes music and effects together and remembers the setting on this device. Six small [Kenney CC0 clips](docs/ui-audio-research.md) provide the interface sounds; all audio is served locally.
 
@@ -77,7 +77,7 @@ Create a town in a few steps:
 4. **Record a moment.** Capture repository observations as a snapshot. Earlier snapshots keep their recorded appearance.
 5. **Share the town.** Self-host a fixed showcase, or publish new snapshots to keep the timeline growing.
 
-The experience works without wallets. Star and follow links take visitors to GitHub, where they choose whether to perform the action.
+The experience works without wallets. Star and follow links take visitors to GitHub, where they choose whether to perform the action. **Builder support (optional)** lets a creator add one personal receiving address or per-project community recipients; see [wallet prerequisites and deployment](readme_web3.md) before enabling it.
 
 After capture, select **Enter my town** to explore. Each new town starts with an all-stage-one founding view, followed by the first measured snapshot, so its growth can be played immediately. Export `<slug>.json` to `public/data/towns/` in your deployment repository and rebuild to publish `/towns/<name-and-timestamp>/`. Existing names and addresses are preserved across snapshots. **No GitHub repository writes happen automatically.**
 
@@ -104,11 +104,12 @@ Static deployments support token connection and manual captures directly in the 
 | Personal and hackathon setup; English/Chinese | Implemented; both UI flows checked |
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
-| Sample-town mailbox Easter egg | Virtual coin animation and temporary project receipt; real Web3 remains paused |
+| Mailbox Easter egg | Unconfigured mailboxes retain virtual coins independently of wallet support |
+| Optional Privy support | Sepolia test-ETH code implemented; 65 Node tests, scoped browser fixtures and production build passed. Hosted/live transfer verification pending |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
-| Hosted production Demo and broader device testing | Not completed |
+| Hosted demo and broader device testing | Earlier demo/media publicly available; optional wallet deployment and broader device coverage need verification |
 
 The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
 
@@ -126,6 +127,7 @@ Built with **TypeScript, Three.js, Vite and Node.js**. The implementation keeps 
 | [src/main.ts](src/main.ts) and [src/game-ui.ts](src/game-ui.ts) | Explore setup, floating controls, cards and project interactions |
 | [src/player-progress.ts](src/player-progress.ts) | Follow browser-only exploration storage |
 | [src/browser-github.mjs](src/browser-github.mjs) | Follow direct GitHub requests and their error handling |
+| [readme_web3.md](readme_web3.md) and [src/support/](src/support/) | Configure the optional Privy extension and inspect its wallet/transaction lifecycle |
 | [src/types.ts](src/types.ts) | Inspect the configuration and snapshot data shapes |
 | [src/links.ts](src/links.ts) | Understand project destinations |
 | [server/](server/) | Explore OAuth, public GitHub capture and snapshot publishing |

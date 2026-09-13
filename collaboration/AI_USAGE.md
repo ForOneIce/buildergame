@@ -4,6 +4,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## Human contributions
 
+- Authorized optional Privy developer support, creator-controlled adoption, direct personal/per-project recipients and test-chain-first delivery. Required unconfigured mailboxes to retain virtual coin feedback and existing 3D assets to remain locked.
+
 - Directed the submission narrative to connect the working demo with planned wallet-based developer support and community permissions. Codex revised the English copy and clearly labeled those integrations as roadmap work; no runtime Web3 feature was added in that revision.
 
 - Originated the hackathon town concept and the problem of projects losing visibility after events.
@@ -14,6 +16,12 @@ Codex assisted with project planning, research, translations, specifications, im
 - Accepted and locked the five building appearances; specified flat, valley and cloud landscapes, map-style floating controls, player avatars/progress and project-card composition.
 
 ## AI contributions
+
+Session 0055: Codex wrote [the optional wallet deployment guide](../readme_web3.md), linked it from the user README/deployment documentation, and preserved the [project instruction](../prompts/0055-optional-wallet-deployment-guide.md). This documentation work describes public configuration and implementation boundaries without publishing account-specific setup details or claiming live wallet verification.
+
+Session 0053: Codex translated the relevant requirements and defined [the optional-support specification](../specs/0016-optional-privy-support.md), configuration/lifecycle acceptance and deployment/submission records. Generated scopes include `src/support-config.mjs`, `src/support/panel.ts`, `src/support/wallet-panel.tsx`, `src/support/transaction.mjs`, declarations/styles, targeted tests and their integration with manifest/backup/planning/main UI code. The implementation adds a lazy Privy/React wallet panel, public receipt-recovery checkpoints and native Sepolia transfers without changing building models. Installed package versions/licenses are recorded in [baseline](baseline.md). The final 65-test Node suite, TypeScript, scoped configuration/mailbox browser fixtures and production build passed. Hosted verification and a real Privy receipt remain separate pending evidence. [Verification](../docs/verification.md#optional-privy-support-0053-and-post-test-recording-plan-0054) records actual execution, bundle size and warnings; no human approval or confirmed chain receipt is inferred.
+
+Session 0054 records the human's [demo preparation order and sound/narration requirements](../prompts/0054-record-updated-demo-after-testing.md). Code/testing precede replacement recording; native site effects may be retained and English narration is optional. No new competition footage, narration or TTS authorization is claimed by this documentation update.
 
 Sessions 0048–0051: Codex refined the mailbox's invisible target and 48px coin cursor in `src/mailbox-demo.ts`, `src/town.ts`, `src/ui/theme.css` and `public/ui/cursors/coin.svg`, leaving the ten accepted GLBs unchanged. Codex integrated the human-supplied Suno track through `src/ui/planner-music.ts`, the shared sound control and application navigation, plus provenance/documentation and focused browser checks. Seven music groups passed native decoding, planner lifecycle, mute/visibility and explicit failure fixtures; five mailbox groups passed targeting/cursor continuity, neighboring actions and cancellation. Five existing audio fallback fixtures also passed, all without page errors. The combined build passed with 56 modules. [Verification](../docs/verification.md) records exact evidence; human listening/visual approval is not inferred.
 

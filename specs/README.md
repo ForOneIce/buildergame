@@ -16,7 +16,7 @@ Preserve actual specs, plans, and important revisions. Acceptance targets are no
 
 Current workflow increment: [0012 — Named towns and deliberate snapshot publication](0012-named-towns-and-static-snapshots.md), including browser-only exploration, persistent town addresses and static deployment boundaries.
 
-Current optional support increment: [0016 — Optional Privy support for builders](0016-optional-privy-support.md), authorized for implementation with Ethereum Sepolia. Existing virtual mailbox interactions remain available without recipient configuration. Code, fixture and live-chain verification are separate milestones; consult current verification before claiming a completed integration.
+Current optional support increment: [0016 — Optional Privy support for builders](0016-optional-privy-support.md), implemented for Ethereum Sepolia with 65 passing Node tests, scoped browser fixtures and a passing production build including the optional wallet bundle. Existing virtual mailbox interactions remain available without recipient configuration. Hosted and live-chain verification remain separate pending milestones; consult current verification before claiming a confirmed transfer.
 
 Previous interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation. Scoped mailbox browser checks and the production build for that revision passed; human visual review remains pending.
 

@@ -54,5 +54,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0052 — Present the product vision and planned Web3 extensions](0052-submission-vision-and-web3-roadmap.md)
 - [0053 — Add optional Privy support for builders](0053-optional-privy-support.md)
 - [0054 — Record the updated demo after functional testing](0054-record-updated-demo-after-testing.md)
+- [0055 — Document optional wallet deployment prerequisites](0055-optional-wallet-deployment-guide.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

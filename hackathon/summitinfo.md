@@ -1,6 +1,6 @@
 # Buildergame — final submission sheet
 
-Prepared for ETHOnline 2026. Copy the answers below into the form. Upload, submission and prize eligibility remain unverified.
+Prepared for ETHOnline 2026. The optional Privy extension is implemented, with 65 passing Node tests, scoped browser checks and a passing production build. Hosted/live verification remains in progress. Use the answers matching the revision actually submitted. Dashboard submission, prize eligibility and live-chain confirmation are not established by this document.
 
 ## Short description
 
@@ -14,7 +14,9 @@ Every repository has a permanent plot. Five building appearances grow from green
 
 Individual developers can create a home for their public projects; hackathon organizers and communities can bring many builders together. Visitors explore flat streets, a valley or cloud neighborhoods, open wooden signs to meet creators, discover projects through the directory and minimap, and follow links to the work itself. Personal and community planning, GitHub data capture, snapshot playback, portable JSON backups, static deployment, and English/Chinese interfaces form the working demo.
 
-The broader vision is to turn discovery into lasting participation. Our planned Web3 extensions include wallet-based appreciation through project mailboxes, wallet/ENS identity, and permissions for community membership and town management. A personal town could direct support to its builder, while a community town could route it to individual projects. The mailbox coin interaction in this demo is the first prototype of that support experience. Future on-chain records could also preserve the connection between an event, its projects and meaningful milestones.
+The broader vision is to turn discovery into lasting participation. Our optional Privy-powered support extension starts with native test ETH on Ethereum Sepolia. A personal town can nominate its builder's receiving address; a community can configure a separate recipient for each participating project. The flow lets a visitor review the recipient, network and amount before confirming a direct wallet transfer, then celebrates only a successful chain receipt. Projects without a recipient keep the playful virtual coin interaction, so each town creator chooses whether wallet support belongs in their community. The extension's code and local behavior checks are complete; live transfer verification is in progress.
+
+Wallet/ENS identity, community membership and town-management permissions remain future directions. On-chain milestone records could also preserve the relationship between an event, its projects and their continuing progress.
 
 Buildergame starts by making creation visible and inviting. It aims to grow into a place where attention, encouragement and community support help builders keep building long after a hackathon ends.
 
@@ -30,7 +32,7 @@ Town JSON committed to `public/data/towns/` produces physical `/towns/<name-and-
 
 Native Web Audio plays six locally hosted Kenney CC0 interface effects. A single lazy HTMLAudioElement loops a supplied Suno track quietly on the planner only and shares the mute control. The submission recording excludes background music. The mailbox prototype combines a Three.js raycast target, contextual coin cursor, animated delivery and a demo receipt to make builder support tangible within the town.
 
-The current implementation establishes the visualization, data and interaction foundation. Planned Web3 work adds wallet-based support, wallet/ENS identity and community permissions around the same projects and town experience. These are the next development layer; the mailbox currently demonstrates its intended interaction. Partner technology choices will follow the requirements of those integrations.
+The optional support layer uses Privy's React SDK in an on-demand React island, preserving the main TypeScript/Three.js application. Its first scope is direct native test-ETH transfers on Ethereum Sepolia, using public recipient configuration rather than a custody or payment contract. Personal towns use one recipient; community towns map recipients to repositories. The confirmation and transaction lifecycle separate wallet approval, submission, confirmation and unconfirmed/error states. Receipt checks gate the existing coin animation; unconfigured mailboxes keep virtual feedback. Public pending transaction checkpoints allow receipt-only recovery without automatically resending. Configuration, browser compatibility and controller fixtures have passed; live-chain evidence is verified separately. ENS identity and community permissions remain on the roadmap.
 
 Codex assisted with specifications, research, implementation, Blender authoring scripts, tests and documentation. The human supplied the concept, growth policy, visual references, acceptance of the five building stages and successive interaction revisions.
 
@@ -38,15 +40,15 @@ Codex assisted with specifications, research, implementation, Blender authoring 
 
 | Form field | Current answer |
 | --- | --- |
-| Ethereum developer tools | None |
-| Blockchain networks | None in the current demo |
+| Ethereum developer tools | Ethers.js; Privy React SDK 3.42.0. viem supplies chain definitions/SDK support and can be listed under Other if absent from the dropdown |
+| Blockchain networks | Optional extension targets Ethereum Sepolia, chain ID 11155111; live transaction verification pending |
 | Programming languages | TypeScript, JavaScript, Python; HTML/CSS for the interface |
-| Web frameworks | No component framework; Vite is the build tool |
+| Web frameworks | Main app: TypeScript/DOM. Optional wallet panel: React 19.3.0. Vite is the build tool |
 | Databases | None; JSON snapshot files and browser local storage |
 | Design tools | Blender; human-supplied reference artwork |
-| Other technologies | Three.js, GitHub REST API, Node.js, GLB/glTF, Web Audio API, Git, Playwright, FFmpeg |
+| Other technologies | Three.js, GitHub REST API, Node.js, GLB/glTF, Web Audio API, Git, Playwright, FFmpeg; viem 2.56.0 in the optional wallet extension |
 
-This table describes the implemented stack. The Web3 roadmap in the project description is separate from technologies already used in the build.
+The core stack and optional wallet code are implemented. A listed SDK/network is not evidence of a successful transaction. Reconcile selections with the final installed code and actual verification. ENS, Solidity, custom contracts, onramps and gas sponsorship are not part of this increment.
 
 ## AI tools disclosure
 
@@ -58,7 +60,42 @@ See [AI disclosure](../collaboration/AI_USAGE.md), [human–AI log](../collabora
 
 ## Partner prizes
 
-Partner selection is still open. Wallet-based developer support and wallet/ENS identity for community permissions are the planned integration directions. Complete prize selections against the technologies actually integrated in the submitted revision and the relevant partner criteria; the roadmap can explain where Buildergame goes next. Confirm the Classic/Continuity route and prize choices in the Dashboard.
+**Current candidate: Privy — Best financial flow.** [Official prize page](https://ethglobal.com/events/ethonline2026/prizes/privy). This aligns the optional wallet extension with the project's actual goal: helping visitors support the builders they discover. The relevant prize requires a functional financial flow using Privy wallets. A wallet icon, provider mock, future plan or virtual coin animation does not by itself demonstrate that requirement. Verify the final prize wording and Classic/Continuity conditions against the submitted revision; no award or eligibility is guaranteed.
+
+### How are you using this Protocol / API?
+
+Current accurate text while live integration is being verified:
+
+> Buildergame integrates Privy as an optional wallet layer for developer-support mailboxes. Town creators opt in by configuring a personal recipient or explicit per-project recipients for a community. The first implementation targets native test ETH on Ethereum Sepolia: visitors review the destination and amount, confirm a direct transfer through Privy, and receive the in-town coin animation only after a successful transaction receipt. Towns and projects without recipients keep their existing virtual mailbox interaction. Local configuration, browser compatibility and transaction-controller fixtures have passed. Live transaction verification is pending; confirmed chain evidence will be added for the tested revision.
+
+### Link to the line of code where the tech is used
+
+The implementation is recorded in local commit `8722006235fd9ed88776d19ab967f95b67c2656e`. The following exact permalinks are prepared from that commit, **but it has not yet been pushed; verify they open on GitHub before pasting them into the form**:
+
+- [Privy embedded-wallet transfer through useSendTransaction](https://github.com/ForOneIce/buildergame/blob/8722006235fd9ed88776d19ab967f95b67c2656e/src/support/wallet-panel.tsx#L111)
+- [PrivyProvider, email/wallet login and embedded Sepolia configuration](https://github.com/ForOneIce/buildergame/blob/8722006235fd9ed88776d19ab967f95b67c2656e/src/support/wallet-panel.tsx#L246)
+- [Receipt verification before confirmed feedback](https://github.com/ForOneIce/buildergame/blob/8722006235fd9ed88776d19ab967f95b67c2656e/src/support/transaction.mjs#L100)
+
+Implementation locations for review: [Privy provider and wallet panel](../src/support/wallet-panel.tsx), [lazy panel entry](../src/support/panel.ts), [transaction lifecycle](../src/support/transaction.mjs) and [public recipient validation](../src/support-config.mjs). Embedded Privy wallets use the SDK's `useSendTransaction`; connected external wallets use their EIP-1193 provider. An external-wallet-only test must not be labeled proof of an embedded Privy-wallet transfer.
+
+### Integration evidence
+
+| Evidence | Current status |
+| --- | --- |
+| Scope and lifecycle acceptance | [Optional Privy specification](../specs/0016-optional-privy-support.md) |
+| Implementation commit and line links | Local commit `8722006`; exact links prepared above, remote push/reachability pending |
+| Automated behavior / compatibility / failure tests | Final 65/65 Node suite, scoped planner/mailbox browser checks and production build passed. Exact boundaries are in [verification](../docs/verification.md#optional-privy-support-0053-and-post-test-recording-plan-0054) |
+| Hosted opted-in town | Pending deployed configuration and verification |
+| Live Privy session and Sepolia receipt | Pending; add the real explorer link only after confirmation |
+| Updated no-music competition demo | Record after functionality and live-flow checks; current published videos predate this extension |
+
+Test ETH has no monetary value. A successful test-network receipt validates that demonstrated flow, not mainnet readiness or real financial support received by a builder.
+
+### Ease-of-use rating and sponsor feedback
+
+Leave the numerical rating and experience feedback for actual integration observations. Do not prefill a perfect score or invented developer experience. Record concrete SDK/setup issues and improvements after testing, then write the final answer from those observations.
+
+**ENS remains a roadmap item.** There is no implemented ENS evidence in this increment; do not claim it as a used protocol or describe the Privy integration as ENS usage. Select only partner technologies actually integrated in the submitted revision.
 
 ## Links and images
 
@@ -77,6 +114,8 @@ Partner selection is still open. Wallet-based developer support and wallet/ENS i
 
 Images and both finished videos are included in the repository. The video files in `public/demo/` are served directly by the static deployment after this revision builds. [Media provenance](media/README.md), [video files](../public/demo/README.md) and [verification](../docs/verification.md) record preparation and export checks. Confirm the direct URL opens before pasting it into the form.
 
+The currently linked competition video and still images show the earlier town demo; they do not constitute Privy transaction evidence. Prepare replacement demonstration footage after functionality is tested. Retain original site interface sounds and exclude added background music. Any English presentation script is separate from the actual recorded narration and must not be treated as permission for AI/TTS competition narration.
+
 ## Video requirements
 
 The supplied requirements state **2–4 minutes**, **at least 720p**, and **"Audio without music."** The main export shows the working interface with interaction effects and no background music. The extra silent export removes its audio stream completely. This initial feature demo does not add narration; an [optional English live-demo script](demo-script.md) is kept for later use.
@@ -91,4 +130,4 @@ The earlier unconditional human-narration statement was an interpretation, not a
 - Upload the video, square logo, 16:9 cover and at least three screenshots. Paste only real public links into the form.
 - Confirm team, check-ins, Classic/Continuity route and final prize choices in the Dashboard.
 - Review the noncommercial source-available [license](../LICENSE) against competition source requirements. It is not an OSI-approved open-source license; no eligibility ruling is claimed.
-- Confirm the submitted revision and success before the recorded deadline, **2026-09-13 16:00 UTC**.
+- Confirm the final submitted revision and success before the recorded deadline, **2026-09-13 16:00 UTC**.

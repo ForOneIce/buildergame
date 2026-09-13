@@ -1,5 +1,18 @@
 # Decision log
 
+## D-038 — Give optional wallet deployments a separate setup guide
+
+- 2026-09-13 (UTC): the human requested `readme_web3.md` with prerequisites and deployment steps for developers enabling wallet services. [Instruction](../prompts/0055-optional-wallet-deployment-guide.md).
+- Keep the default user README focused on the town experience and link to [the optional Privy guide](../readme_web3.md). Explain public App ID and exact-origin setup, build-time environment and redeployment, creator-supplied recipients, test funding and receipt verification. The base application requires no Privy setup; local tests and a successful build do not prove a live transfer.
+
+## D-037 — Make direct developer support an optional Privy extension
+
+- 2026-09-13 (UTC): the human authorized Privy integration and prioritized test-chain verification, leaving adoption to each town creator. Support must not disrupt existing features or redesign the accepted buildings. [Instruction excerpts](../prompts/0053-optional-privy-support.md).
+- Personal towns configure one optional recipient; community towns map recipients per repository with no shared-address fallback. Existing mailboxes and virtual coin interactions remain when an address is absent. A wallet icon appears only in towns with a configured valid recipient; a configured mailbox opens a review card rather than sending immediately.
+- Implementation scope: an on-demand wallet panel using Privy, native test ETH on Ethereum Sepolia, explicit confirmation and receipt-gated success. Treat rejected/unconfirmed transfers, duplicate input and late responses separately. Mainnet, gas sponsorship, onramps, custom contracts and ENS/permissions remain outside this increment.
+- The five accepted appearances, growth rules, snapshots, GitHub workflows and browser-only exploration retain their existing contracts. Missing new configuration preserves old JSON behavior. [Specification 0016](../specs/0016-optional-privy-support.md).
+- This supersedes the Web3 pause only for the authorized support extension. Implementation, fixture testing, deployed availability, live transaction evidence and partner eligibility must be recorded separately. The project's existing license is unchanged.
+
 ## D-036 — Present the demo as a foundation for Buildergame's broader vision
 
 - 2026-09-13 (UTC): the human requested that submission copy include planned developer support and permissions instead of defining the project by unfinished integrations.

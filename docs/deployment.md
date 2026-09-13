@@ -69,6 +69,38 @@ The existing Node service is an alternative when towns must become publicly acce
 
 This is a single-process local-disk implementation. Vercel Functions have ephemeral filesystems and distributed instances, so this backend must not be deployed there unchanged. A future immediate-publishing Vercel backend needs durable ownership/data storage and shared or signed OAuth state. Browser-token capture plus GitHub files avoids that backend requirement.
 
+## Optional Privy support on Ethereum Sepolia
+
+Follow the dedicated [optional wallet prerequisites and deployment guide](../readme_web3.md) for Privy onboarding, exact allowed origins, ignored `.env.local`, Vercel build-time settings, recipient setup and a real test-transfer checklist. The base deployment requires no Privy account or wallet.
+
+The optional extension is implemented, with 65 passing Node tests, scoped browser checks and a passing production build including the wallet bundle. Hosted configuration and an actual Privy Sepolia transaction still require live verification. The existing application can be deployed without this extension. [Scope and acceptance](../specs/0016-optional-privy-support.md) distinguish fixture results from a signed Sepolia transaction; see [verification](verification.md) for the current revision's evidence.
+
+Town creators decide whether to offer wallet support. A personal town has one optional recipient; a community town maps recipients to specific repositories. Unconfigured projects retain the existing virtual mailbox interaction, and old town/configuration files need no new fields. Only towns with a valid configured recipient show the wallet control. Existing building models, GitHub capture, snapshots and exploration remain independent.
+
+To prepare an opted-in deployment:
+
+1. Create an application in the [Privy Dashboard](https://dashboard.privy.io/). Enable the login methods needed by the community and Ethereum wallet support, with **Ethereum Sepolia (11155111)** available. Review embedded-wallet and external-wallet options against the installed SDK's setup guide.
+2. Add the exact local/deployed origins that will use the app to its allowed-origin settings. Configure the final Vercel domain and each intentional preview origin; do not assume a new preview domain is already permitted.
+3. Set the application's **public App ID** as `VITE_PRIVY_APP_ID` in ignored local `.env.local` or the host's build environment. Vite embeds `VITE_` values in browser code: do not put a Privy App Secret, GitHub token, wallet private key or seed phrase there. The public App ID is an identifier, not a secret.
+4. Rebuild/redeploy after changing build-time configuration. A build without an App ID may tree-shake the wallet SDK; adding a host runtime variable without rebuilding cannot enable that previous build. This client integration does not require a Privy App Secret or an application payment backend.
+5. During town creation, optionally enter the public receiving address for the personal builder or each participating community project. The recipient mapping belongs in public exported configuration. Verify the address separately before publishing; Buildergame does not verify control or developer identity.
+6. Complete a test with a funded Sepolia wallet. Review the project, recipient, network and test-ETH amount; confirm in the wallet; verify the receipt through the displayed explorer link. A connected wallet or returned transaction hash alone is not proof of receipt.
+
+The panel configures standard email and wallet login. Leave Custom authentication and Custom OAuth disabled for this demo. It creates an embedded Ethereum wallet for users without a wallet; the explicit create-wallet action supports existing-wallet users who also want an embedded wallet. The interface prefers the embedded wallet when available. Privy SDK confirmation is retained for its transfers, while a connected external wallet uses its own provider. Test the embedded-wallet path itself when collecting Privy integration evidence. Check current pricing and production activation/billing prerequisites before hosting for a community, even when choosing a Free plan.
+
+The initial extension supports native **test ETH on Ethereum Sepolia only**. Test coins have no monetary value. Visitors pay the network's test fee from their test balance; this increment does not include fiat purchases, gas sponsorship, an ERC-20 token, escrow or a custom contract. Mainnet use requires a separate design/review and is not enabled by changing a town's recipient.
+
+For file-based configuration, the optional `support` object belongs to the event manifest (under `event.support` in a complete town backup). It contains `version: 1` and `chainId: 11155111`, plus exactly one recipient form:
+
+| Town mode | Public field | Meaning |
+| --- | --- | --- |
+| Personal (`collectionType: "personal"`) | `recipient` | One valid, nonzero Ethereum address for the builder |
+| Community (`collectionType: "hackathon"`) | `projectRecipients` | Object mapping canonical lowercase `owner/repository` names in the roster to their valid receiving addresses |
+
+Omit `support` to retain the ordinary experience. Do not combine the personal address and project map. Unlisted repositories, duplicate normalized names, wrong chains and invalid/zero addresses are rejected. Use the actual recipients agreed by the builders; no example address in documentation should be treated as a destination.
+
+Network rejection, unavailable RPC, missing app settings or a failed SDK load should affect the optional panel alone. If a broadcast transaction is still unconfirmed, use its explorer/status check rather than resubmitting automatically. A tab-local `sessionStorage` checkpoint preserves public pending details and a known hash when storage is available; it contains no key, signature or login token and is excluded from town backups. Returning permits a receipt recheck and never automatically sends again. Closing the page cannot cancel a transaction already sent to the network. Confirm the real reconnect/reload behavior before presenting a town as ready for real support.
+
 ## Verification and license
 
 Run `npm test` and `npm run build`. Browser scripts need Playwright and Chrome; their fixtures, limits and executed results are in [verification](verification.md).

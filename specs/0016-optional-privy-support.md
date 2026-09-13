@@ -1,6 +1,6 @@
 # Optional Privy support for builders
 
-Status: **implementing**. Scope defined 2026-09-13 (UTC) before completion. [Human instructions](../prompts/0053-optional-privy-support.md).
+Status: **implemented; local automated checks passed; live verification pending**. Scope defined 2026-09-13 (UTC), committed as `22de9db` before final implementation verification. The final 65-test suite, scoped browser fixtures and production build with the optional wallet bundle enabled passed. A live Privy receipt and hosted integration verification remain pending. [Human instructions](../prompts/0053-optional-privy-support.md), [exact results and limits](../docs/verification.md#optional-privy-support-0053-and-post-test-recording-plan-0054).
 
 ## Product boundary
 
@@ -26,6 +26,7 @@ All ten accepted full/distant GLBs, terrain geometry, scores and snapshot histor
 - A deployment's public `VITE_PRIVY_APP_ID`; no App Secret, private key or seed phrase is needed in the frontend. Configure allowed origins, login methods, embedded Ethereum wallets and the Sepolia network in the deployment's Privy application as required by the SDK.
 - A Sepolia JSON-RPC endpoint for chain reads. Missing app configuration, unavailable RPC or SDK loading errors must affect only optional support.
 - Public recipient addresses belong in the exported town data by creator choice. Do not serialize login sessions, access tokens, signatures or wallet secrets into snapshots or backups.
+- A tab-local `sessionStorage` checkpoint may retain the public pending intent, sender, state and known transaction hash, keyed by town, to prevent blind resends after returning/reloading. Restored data is untrusted and must only enable receipt checks, never authorize a new transaction. This recovery record is separate from public town exports and carries no wallet secret or login token. Lack of storage must not break the base application.
 
 The optional public event field is `support: { version: 1, chainId: 11155111, recipient?: string, projectRecipients?: Record<string, string> }`. Personal towns (`collectionType: "personal"`) use `recipient`; community towns (`collectionType: "hackathon"`) use `projectRecipients` keyed by canonical lowercase `owner/repository` identifiers from that town. The two recipient forms are mutually exclusive. Reject zero addresses, invalid checksums, unlisted repositories and normalized duplicate mappings. Omit an empty optional configuration. Preserve no more than 200 explicit community recipients, consistent with the roster limit.
 

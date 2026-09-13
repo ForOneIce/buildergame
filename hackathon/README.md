@@ -2,9 +2,9 @@
 
 This directory is the entry point for ETHOnline 2026 reviewers. For the product introduction, see the [main README](../README.md).
 
-A 3D town where GitHub projects become houses that evolve with their recorded history. Designed for hackathon showcases and individual developers' public portfolios. Intended pilot: ETHOnline 2026. Basic viewing requires no wallet; ENS integration is deferred.
+A 3D town where GitHub projects become houses that evolve with their recorded history. Designed for hackathon showcases and individual developers' public portfolios. Intended pilot: ETHOnline 2026. Town creators can opt into Privy-based developer support on Ethereum Sepolia while ordinary viewing remains independent. ENS integration is deferred.
 
-Human–AI collaboration is recorded from workspace preparation onward. A playable demo and final-submission materials are prepared locally; user requirements, AI proposals and verified results are recorded separately. Submission and hosted production have not been verified.
+Human–AI collaboration is recorded from workspace preparation onward. The playable demo and earlier submission media are publicly available; user requirements, AI proposals and verified results are recorded separately. The new Privy code has passed local checks and a production build, while its hosted configuration and live transaction evidence remain pending. This record does not establish Dashboard submission or prize eligibility.
 
 The checkout contains a **playable local Demo**: five accepted building appearances, flat/valley/cloud landscapes, floating map controls, project cards/minimap, bilingual personal/hackathon setup, direct browser GitHub capture, snapshots and portable backups. Exploration progress is browser-only. Towns start with a visual founding baseline and receive independent addresses; exported repository JSON produces static town pages. Optional Node OAuth supports immediate publication with private ownership checks. Exact executed checks and their revision scope are in [verification](../docs/verification.md). Real token/OAuth login and hosted production remain unverified; provider tests use fixtures. Sample data is fictional, actual event projects remain pending, and no adoption is claimed. See [deployment](../docs/deployment.md) and [current specification](../specs/0012-named-towns-and-static-snapshots.md).
 
@@ -49,12 +49,12 @@ buildergame/
 
 ## Current status
 
-- Phase: final-submission preparation for the Web2-first Demo authorized in prompt 0007; the human has accepted and locked five building appearances. Sample mailbox interaction, control sounds and planner-only music are implemented; submission video excludes music.
+- Phase: optional Privy developer-support increment authorized in prompt 0053, extending the Web2-first demo without changing the five accepted building appearances. Mailbox interaction, control sounds and planner-only music are retained; competition video excludes background music and will be updated after functional verification.
 - Current proposal: a Three.js hackathon town driven by curated event/project links and GitHub snapshots.
-- Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle; Classic/Continuity route and partners are undecided.
+- Concept: Hackathon Town. Organizer-defined growth is confirmed as a product principle. Privy financial flow is the current partner-prize candidate; eligibility and Classic/Continuity conditions require the final submitted revision and actual evidence.
 - Outputs: collaboration records, feasibility review and a tested local Demo. No user-adoption validation or hosted production verification yet.
 - Snapshot schema compatibility retains six scoring labels but renders five building appearances. Landscape and project membership are fixed for each town's history; larger initial collections generate larger layouts.
-- Walking, building interiors, project-list sorting and the resident world map remain deferred. Three.js/Blender and Web2 GitHub integration are the implemented stack; no partner integration or on-chain deployment is claimed.
+- Walking, building interiors, project-list sorting and the resident world map remain deferred. Three.js/Blender and GitHub snapshots form the base. Optional Privy/React and Ethers/viem support targets native test ETH on Sepolia; 65 Node tests, scoped browser fixtures and the production build passed. A live Privy receipt and hosted wallet verification are still pending; no mainnet payment or custom contract is claimed.
 
 ## Workflow
 
@@ -73,6 +73,7 @@ Project prompt records 0002–0007 preserve the concept, product decisions and D
 - [Timeline interaction draft](../specs/0001-town-timeline.md)
 - [Organizer-defined growth rules](../specs/0002-organizer-growth-rules.md)
 - [Current landscape/player specification](../specs/0010-landscapes-and-player-ui.md)
+- [Optional Privy support scope and acceptance](../specs/0016-optional-privy-support.md)
 - [Automatic-generation assessment](../docs/procedural-town-plan.md)
 - [Landscape/player implementation and evidence](../collaboration/landscapes-player-ui.md)
 - [Competition rules](rules.md)

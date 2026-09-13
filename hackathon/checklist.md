@@ -31,4 +31,18 @@ Check items only with evidence. Final submission status has not been verified.
 
 | Partner and prize | Official link | Route eligibility | Required integration/materials | Evidence/status |
 | --- | --- | --- | --- | --- |
-| None selected for this build | — | Unverified | No implemented partner integration | ENS/wallet work deferred; mailbox coins are fictional |
+| Privy — Best financial flow, candidate | [Official requirements](https://ethglobal.com/events/ethonline2026/prizes/privy) | Verify final route requirements | Functional financial flow using Privy wallets; specific source links and actual demo evidence | Optional Sepolia code, 65-test suite, scoped browser fixtures and production build passed; deployment/live receipt pending |
+| ENS — roadmap only | [Official requirements](https://ethglobal.com/events/ethonline2026/prizes/ens) | Not assessed for this increment | Actual ENS integration required | Not implemented; do not claim as a used protocol |
+
+## Optional Privy increment
+
+- [x] Record creator opt-in, recipient scope, unchanged virtual mailboxes and locked buildings in [specification 0016](../specs/0016-optional-privy-support.md).
+- [x] Verify personal recipient and per-project community mapping, including unconfigured and legacy JSON; configuration tests and the community browser fixture passed.
+- [x] Verify ordinary configured-town creation/browsing does not load the wallet panel or request a provider; browser fixture passed. Broader hosted regression remains separate.
+- [ ] Verify wrong network, rejected login/signing, insufficient balance, invalid amount, receipt failure, unconfirmed timeout, double clicks and late callbacks.
+- [x] Run the production build/model-lock and relevant mailbox/browser regressions; all ten accepted GLBs unchanged. See verification for the exact scope.
+- [ ] Complete an actual user-confirmed Ethereum Sepolia transfer through Privy and verify its successful receipt. Mocked hashes do not satisfy this item.
+- [ ] Add the actual committed/pushed provider and transfer code permalinks and authorized public chain evidence to [summitinfo.md](summitinfo.md).
+- [ ] Verify the deployed App ID/origin configuration and test the exact hosted town used in the demonstration.
+- [ ] Record the updated competition feature video after testing: original site UI sound is permitted; no added background music. Keep any English script separate from a claim of recorded narration.
+- [ ] Reconcile technology selections, prize answers, rating and feedback with demonstrated functionality; remove any integration still represented only by a roadmap.
