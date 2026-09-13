@@ -37,6 +37,8 @@ Both completed MP4s are **187.04 seconds**, **1280×720**, **25 fps**, H.264/yuv
 
 The repository's public metadata listed [buildergame-two.vercel.app](https://buildergame-two.vercel.app/). An anonymous HTTP check returned 200 and title `Buildergame · Hackathon Town`; this does not establish the latest local commit's deployment or full hosted functionality. The submission sheet now includes the observed URL and its verification boundary.
 
+After video publication in commit `5c630dc`, anonymous HEAD requests to both `/demo/` MP4 URLs returned HTTP 200, `Content-Type: video/mp4`, `Accept-Ranges: bytes`, and the exact reviewed file lengths (15,367,370 and 14,964,201). The GitHub raw URL also returned HTTP 200 but uses `application/octet-stream`, so the Vercel MP4 URL is the submission link. This verifies public video delivery, not completion of the competition form.
+
 ## Interface sounds and closer sample entry 0046–0047
 
 The [audio increment](../specs/0014-ui-interaction-sounds.md) uses six unchanged CC0 Kenney clips, served locally through a single gesture-unlocked Web Audio mixer. Buttons, paper/map transitions, eligible pointer/keyboard focus and virtual mailbox receipts have distinct cues. A shared speaker button remembers mute on this device; hover and overlapping voices are bounded. The [sample camera increment](../specs/0015-sample-town-default-camera.md) changes entry/reset to the previous fit followed by four zoom-in steps (`0.8 ** 4`, with existing limits), preserving the target/direction and normal non-sample framing.
