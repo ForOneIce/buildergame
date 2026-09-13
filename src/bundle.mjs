@@ -1,16 +1,19 @@
 import { assert, validateManifest, validateSnapshots } from './model.mjs';
 import { plotAt } from './landscape.mjs';
+import { cleanSupport } from './support-config.mjs';
 export const defaultRule = { version: 'linear-v1', mode: 'weighted', weights: { commits: 1, stars: 3, forks: 6 }, thresholds: [0, 30, 100, 220, 450] };
-export function configuration({ name, collectionType = 'hackathon', landscape = 'flat', repositories, projects = undefined, rule = defaultRule, customScores = undefined }) {
+export function configuration({ name, collectionType = 'hackathon', landscape = 'flat', repositories, projects = undefined, rule = defaultRule, customScores = undefined, support = undefined }) {
   const list = projects || repositories.map((repository, i) => ({ id: `plot-${i}`, name: repository.split('/').at(-1), repository, description: '', color: '#427baa', plot: plotAt(i), builder: { name: repository.split('/').at(-2), url: repository.split('/').slice(0, 4).join('/') } }));
-  return validateManifest({ schemaVersion: 1, id: `town-${crypto.randomUUID()}`, name, subtitle: '', url: '', sampleData: false, collectionType, landscape, mode: 'static', refreshSeconds: 300, rule, projects: list, ...(customScores ? { customScores } : {}) });
+  const publicSupport = cleanSupport(support, collectionType, list);
+  return validateManifest({ schemaVersion: 1, id: `town-${crypto.randomUUID()}`, name, subtitle: '', url: '', sampleData: false, collectionType, landscape, mode: 'static', refreshSeconds: 300, rule, projects: list, ...(customScores ? { customScores } : {}), ...(publicSupport ? { support: publicSupport } : {}) });
 }
 function only(object, keys) { return Object.fromEntries(keys.filter(k => object[k] !== undefined).map(k => [k, object[k]])); }
 function cleanRule(rule) { return rule ? { ...only(rule, ['version', 'mode', 'thresholds']), ...(rule.weights ? { weights: only(rule.weights, ['commits', 'stars', 'forks']) } : {}) } : null; }
 export function cleanEvent(event) {
   validateManifest(event);
   const mapEnabled=event.collectionType!=='personal'&&event.residentMap?.enabled;
-  return { ...only(event, ['schemaVersion', 'id', 'name', 'subtitle', 'url', 'sampleData', 'collectionType', 'landscape', 'mode', 'refreshSeconds', 'customScores']), ...(event.deployment?{deployment:only(event.deployment,['slug','createdAt'])}:{}), ...(event.residentMap?{residentMap:{enabled:Boolean(mapEnabled),fetchProfiles:Boolean(mapEnabled&&event.residentMap.fetchProfiles)}}:{}),rule: cleanRule(event.rule), projects: event.projects.map(p => ({ ...only(p, ['id', 'name', 'repository', 'description', 'homepage', 'color']), plot: only(p.plot, ['x', 'z']), builder: {...only(p.builder, ['name', 'bio', 'url', 'avatar', 'followers']),...(mapEnabled?{...(p.builder.locationText?{locationText:p.builder.locationText}:{}),...(p.builder.location?{location:only(p.builder.location,['label','lat','lon','source'])}:{})}:{})} })) };
+  const support = cleanSupport(event.support, event.collectionType, event.projects);
+  return { ...only(event, ['schemaVersion', 'id', 'name', 'subtitle', 'url', 'sampleData', 'collectionType', 'landscape', 'mode', 'refreshSeconds', 'customScores']), ...(support ? { support } : {}), ...(event.deployment?{deployment:only(event.deployment,['slug','createdAt'])}:{}), ...(event.residentMap?{residentMap:{enabled:Boolean(mapEnabled),fetchProfiles:Boolean(mapEnabled&&event.residentMap.fetchProfiles)}}:{}),rule: cleanRule(event.rule), projects: event.projects.map(p => ({ ...only(p, ['id', 'name', 'repository', 'description', 'homepage', 'color']), plot: only(p.plot, ['x', 'z']), builder: {...only(p.builder, ['name', 'bio', 'url', 'avatar', 'followers']),...(mapEnabled?{...(p.builder.locationText?{locationText:p.builder.locationText}:{}),...(p.builder.location?{location:only(p.builder.location,['label','lat','lon','source'])}:{})}:{})} })) };
 }
 // Export only the public schema, never arbitrary import fields or OAuth session data.
 export function publicBundle(input) {

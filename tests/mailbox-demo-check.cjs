@@ -72,7 +72,7 @@ async function openDemo(page, keyboard = false) {
   if (keyboard) { await button.focus(); await page.keyboard.press('Enter'); }
   else await button.click();
   await page.locator('#investment-dialog[open]').waitFor();
-  assert.equal(await page.locator('#connect-demo-wallet').isDisabled(), true, 'Wallet connection is explicitly unavailable in this visual demo');
+  assert.equal(await page.locator('#connect-demo-wallet, #investment-dialog .support-ideas').count(), 0, 'Virtual coins show no wallet setup controls or speculative payment strategies');
 }
 async function activateMailbox(page, selector, mode = 'click') {
   const button = page.locator(selector);
@@ -174,9 +174,9 @@ async function sceneFixture(page) {
     assert.ok(invest.y >= tour.y + tour.height - 1, 'Investment demo appears below Tour landscapes');
     const before = await storage(page), storedWrites = await page.evaluate(() => window.__mailboxAudit.storageWrites.length);
     await openDemo(page, true); await fits(page, '#investment-dialog');
-    assert.match(await page.locator('#investment-dialog').innerText(), /wallet.*not connected|not connected.*wallet/is);
     assert.match(await page.locator('#investment-dialog').innerText(), /demo|virtual/i);
-    assert.match(await page.locator('#investment-dialog').innerText(), /no real|not.*real|no.*transaction|does not.*transaction/i);
+    assert.match(await page.locator('#investment-dialog').innerText(), /no monetary value/i);
+    assert.doesNotMatch(await page.locator('#investment-dialog').innerText(), /wallet|connect|coming later/i);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#sample-invest').evaluate(element => element === document.activeElement), true, 'Closing the modal returns keyboard focus');
     await openDemo(page);
@@ -211,8 +211,8 @@ async function sceneFixture(page) {
     const chineseBefore = await storage(page);
     await openDemo(page, true);
     assert.match(await page.locator('#sample-invest').innerText(), /投资|投币/);
-    assert.match(await page.locator('#investment-dialog').innerText(), /钱包.*未连接|未连接.*钱包/s);
     assert.match(await page.locator('#investment-dialog').innerText(), /演示|虚拟/);
+    assert.doesNotMatch(await page.locator('#investment-dialog').innerText(), /钱包|连接|稍后开放/);
     await activateMailbox(page, '#try-demo-coin', 'keyboard'); await receipt(page, 1);
     assert.match(await page.locator('#demo-wallet-receipt').innerText(), /演示|虚拟/);
     await noSideEffects(page, chineseBefore, audit);
@@ -274,7 +274,35 @@ async function sceneFixture(page) {
         await openDemo(fixturePage);
         assert.equal(await fixturePage.locator('#find-mailbox').isDisabled(), true);
         assert.equal(await fixturePage.locator('#try-demo-coin').isDisabled(), true);
-      } else assert.equal(await fixturePage.locator('#sample-invest, #investment-dialog, #demo-wallet-receipt').count(), 0, 'Real towns do not advertise the sample-only demo');
+      } else {
+        assert.equal(await fixturePage.locator('#sample-invest, #town-wallet').count(), 0, 'Unconfigured real towns show no demo launcher or wallet button');
+        assert.equal(await fixturePage.locator('#investment-dialog[open], #demo-wallet-receipt:visible').count(), 0, 'Virtual UI stays hidden until an interaction');
+        assert.equal(await fixturePage.locator('#demo-wallet-receipt').count(), 1, 'Real towns keep the virtual mailbox receipt without needing a launcher');
+        const before = await storage(fixturePage);
+        const result = await fixturePage.evaluate(async () => {
+          const { mountMailboxUI } = await import('/src/mailbox-ui.ts');
+          const { sampleTown } = await import('/src/sample.mjs');
+          const base = sampleTown(), snapshot = structuredClone(base.history.snapshots.at(-1));
+          const project = base.event.projects[0];
+          snapshot.projects = [{ ...snapshot.projects[0], stage: 'decorated' }];
+          const host = document.createElement('div'); document.body.append(host);
+          const ui = mountMailboxUI({ host, projects: [project], snapshot: () => snapshot, scene: () => undefined, stopHistory() {}, t: en => en });
+          ui.credit(project.id);
+          const total = host.querySelector('#demo-wallet-receipt').dataset.demoTotal;
+          const visible = !host.querySelector('#demo-wallet-receipt').hidden;
+          const text = host.innerText;
+          ui.refresh();
+          const hiddenAfterRefresh = host.querySelector('#demo-wallet-receipt').hidden;
+          ui.dispose();
+          const remaining = host.children.length;
+          host.remove();
+          return { total, visible, text, hiddenAfterRefresh, remaining };
+        });
+        assert.equal(result.total, '1'); assert.equal(result.visible, true);
+        assert.match(result.text, /Virtual coin received/);
+        assert.equal(result.hiddenAfterRefresh, true); assert.equal(result.remaining, 0);
+        await noSideEffects(fixturePage, before, audit);
+      }
       await fixtureContext.close();
       console.log(`Mailbox eligibility guard passed: ${kind}.`);
     }

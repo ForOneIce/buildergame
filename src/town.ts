@@ -11,7 +11,7 @@ import { createMailboxDemo } from './mailbox-demo';
 import type { Landscape, Project, Snapshot } from './types';
 import './town.css';
 
-export type TownOptions = { initialZoomSteps?: number; mailboxDemo?: boolean; onMailbox?: (id: string) => void; onHover?: () => void };
+export type TownOptions = { initialZoomSteps?: number; mailboxDemo?: boolean; onMailbox?: (id: string) => void; onMailboxClick?: (id: string) => boolean; mailboxHint?: (id: string) => string | undefined; onHover?: () => void };
 
 export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void, landscape: Landscape = 'flat', options: TownOptions = {}) {
   const zh = document.documentElement.lang.startsWith('zh');
@@ -114,7 +114,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     if(nextHover&&nextHover!==hovered&&e.isTrusted&&e.pointerType==='mouse'&&matchMedia('(hover: hover) and (pointer: fine)').matches)options.onHover?.();
     hovered=nextHover;
     greeting.hidden=!!e.buttons||(!mailbox&&hit?.action!=='visit')||e.pointerType==='touch';
-    greeting.textContent=mailbox?(mailboxes?.activeId?t('Delivering a demo coin…','正在投递演示金币…'):t('Drop a demo coin','投一枚演示金币')):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
+    greeting.textContent=mailbox?(mailboxes?.activeId?t('Delivering a coin…','正在投递金币…'):options.mailboxHint?.(hit?.id)||t('Drop a demo coin','投一枚演示金币')):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
     if(!greeting.hidden){const bounds=host.getBoundingClientRect(),margin=greeting.offsetWidth/2+8;greeting.style.left=Math.min(Math.max(margin,e.clientX-bounds.left),Math.max(margin,bounds.width-margin))+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
   });
   renderer.domElement.addEventListener('pointerleave',()=>{down=undefined;dragged=false;clearHover();});
@@ -122,7 +122,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   renderer.domElement.addEventListener('pointerup', e => {
     const press=down;down=undefined;lastPointer=e;greeting.hidden=true;
     if (!press || press.pointerId!==e.pointerId || press.button!==0 || dragged || e.button!==0 || Math.hypot(e.clientX-press.x,e.clientY-press.y)>6) { clearHover(); return; }
-    const hit=pick(e);if(hit?.action==='mailbox'){tossCoin(hit.id);return;}setCursor(hit);if(hit)select(hit.id,hit.action==='visit');
+    const hit=pick(e);if(hit?.action==='mailbox'){if(!options.onMailboxClick?.(hit.id))tossCoin(hit.id);return;}setCursor(hit);if(hit)select(hit.id,hit.action==='visit');
   });
 
   function reset() {

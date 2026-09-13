@@ -13,27 +13,26 @@ type Options = {
   t: (en: string, zh: string) => string;
 };
 
-/** Sample-only play money stays in this mounted view. 演示金币只保留在当前视图。 */
+/** Playful coins stay in this mounted view, independently of optional wallet support. */
 export function mountMailboxUI({ host, projects, snapshot, scene, stopHistory, t }: Options) {
   const layer = document.createElement('div');
   layer.className = 'mailbox-ui';
   layer.innerHTML = `<dialog id="investment-dialog" class="paper-panel" aria-labelledby="investment-title" aria-describedby="investment-note">
     <div class="panel-title"><h2 id="investment-title">${t('Support builders', '投资建设')}</h2><button type="button" id="close-investment" class="hud-button icon-button" aria-label="${t('Close', '关闭')}">${icon('x')}</button></div>
-    <div class="demo-wallet-card"><span class="demo-wallet-art" aria-hidden="true">${icon('wallet')}<i>${icon('coin')}</i></span><div><span class="demo-tag">${t('PLAY DEMO', '虚拟演示')}</span><strong>${t('Wallet not connected', '钱包未连接')}</strong><button type="button" id="connect-demo-wallet" class="hud-button" disabled>${t('Connect wallet · Coming later', '连接钱包 · 稍后开放')}</button></div></div>
-    <p id="investment-note">${t('Drop a coin into a garden-house mailbox and watch it arrive. Demo coins have no monetary value; no wallet or transaction is involved.', '向花园屋的邮箱投一枚金币，看看入账效果。演示金币没有货币价值，无需钱包，不产生交易。')}</p>
-    <details class="support-ideas"><summary>${t('Future ways to support a town', '未来可以怎样赞助小镇')}</summary><ul><li>${t('Support a project through its own mailbox.', '通过邮箱，赞助你喜欢的项目。')}</li><li>${t('A personal town could use one builder’s wallet.', '个人小镇可以共用一个开发者钱包。')}</li><li>${t('A community could set up a shared maintenance fund.', '社区可以设置共同维护基金。')}</li></ul><p>${t('Ideas for a future version. No payments, ownership or financial returns are offered here.', '以上为后续版本构想；当前不提供支付、所有权或投资回报。')}</p></details>
+    <div class="demo-wallet-card"><span class="demo-wallet-art" aria-hidden="true">${icon('house')}<i>${icon('coin')}</i></span><div><span class="demo-tag">${t('PLAYFUL COINS', '投币彩蛋')}</span><strong>${t('A little encouragement', '给建设者一点鼓励')}</strong></div></div>
+    <p id="investment-note">${t('Drop a coin into a garden-house mailbox and watch it arrive. Virtual coins have no monetary value and stay in this visit only.', '向花园屋的邮箱投一枚金币，看看落入邮箱的效果。虚拟金币没有货币价值，仅保留在本次游览中。')}</p>
     <label class="mailbox-picker" for="mailbox-project">${t('Choose a garden-house mailbox', '选择花园屋的邮箱')}<select id="mailbox-project"></select></label>
     <p id="mailbox-status" class="mailbox-status" role="status"></p>
     <div class="paired-actions mailbox-actions"><button type="button" id="find-mailbox" class="hud-button">${icon('compass')}${t('Find mailbox', '找到邮箱')}</button><button type="button" id="try-demo-coin" class="hud-button">${icon('coin')}${t('Try a demo coin', '试投金币')}</button></div>
   </dialog>
-  <section id="demo-wallet-receipt" class="hud-glass" role="status" aria-live="polite" aria-atomic="true" hidden><span class="receipt-art" aria-hidden="true">${icon('wallet')}<b>+1</b></span><div><small>${t('Demo wallet · Coin received', '演示钱包 · 金币已入账')}</small><strong id="demo-wallet-project"></strong><span id="demo-wallet-balance"></span></div></section>`;
+  <section id="demo-wallet-receipt" class="hud-glass" role="status" aria-live="polite" aria-atomic="true" hidden><span class="receipt-art" aria-hidden="true">${icon('coin')}<b>+1</b></span><div><small>${t('Mailbox · Virtual coin received', '邮箱 · 收到虚拟金币')}</small><strong id="demo-wallet-project"></strong><span id="demo-wallet-balance"></span></div></section>`;
   host.append(layer);
   const get = <T extends HTMLElement>(selector: string) => layer.querySelector<T>(selector)!;
   const dialog = get<HTMLDialogElement>('#investment-dialog');
   const picker = get<HTMLSelectElement>('#mailbox-project');
   const find = get<HTMLButtonElement>('#find-mailbox'), toss = get<HTMLButtonElement>('#try-demo-coin');
   const receipt = get('#demo-wallet-receipt'), status = get('#mailbox-status');
-  const button = host.querySelector<HTMLButtonElement>('#sample-invest')!;
+  const button = host.querySelector<HTMLButtonElement>('#sample-invest');
   const counts = new Map<string, number>();
   let disposed = false, hideTimer: ReturnType<typeof setTimeout> | undefined;
   let snapshotId = snapshot().id;
@@ -50,16 +49,16 @@ export function mountMailboxUI({ host, projects, snapshot, scene, stopHistory, t
     picker.disabled = find.disabled = toss.disabled = choices.length === 0 || !scene();
     status.textContent = !scene() ? t('The 3D scene is unavailable. Reload to try the mailbox demo.', '3D 场景暂不可用，请重新加载后体验邮箱演示。') : !choices.length ? t('No garden houses in this snapshot. Choose a later moment on the timeline.', '这个快照还没有花园屋，请选择时间线中较后的时刻。') : '';
   }
-  button.onclick = () => {
+  if (button) button.onclick = () => {
     stopHistory(); refresh(); focusSceneOnClose = false;
     host.querySelector<HTMLDetailsElement>('.sample-tour-picker')?.removeAttribute('open');
     button.classList.add('active'); button.setAttribute('aria-expanded', 'true'); dialog.showModal();
   };
   get('#close-investment').onclick = () => dialog.close();
   dialog.onclose = () => {
-    button.classList.remove('active'); button.setAttribute('aria-expanded', 'false');
+    button?.classList.remove('active'); button?.setAttribute('aria-expanded', 'false');
     if (disposed) return;
-    const target = focusSceneOnClose ? host.querySelector<HTMLCanvasElement>('#scene canvas') : button;
+    const target = focusSceneOnClose || !button ? host.querySelector<HTMLCanvasElement>('#scene canvas') : button;
     if (target) { target.tabIndex = 0; target.focus({ preventScroll: true }); }
   };
   function tryMailbox(send: boolean) {
@@ -87,7 +86,7 @@ export function mountMailboxUI({ host, projects, snapshot, scene, stopHistory, t
       hideTimer = setTimeout(hideReceipt, 4400);
     },
     dispose() {
-      disposed = true; hideReceipt(); counts.clear(); button.onclick = null;
+      disposed = true; hideReceipt(); counts.clear(); if (button) button.onclick = null;
       dialog.onclose = null; if (dialog.open) dialog.close(); layer.remove();
     },
   };

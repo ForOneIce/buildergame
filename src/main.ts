@@ -17,6 +17,8 @@ import { siteBase, siteUrl, townUrl, previewUrl, requestedTown } from './site-pa
 import { connectToken, listRepositories, captureTown } from './browser-github.mjs';
 import { sampleTown } from './sample.mjs';
 import { planningDraft } from './planning-draft.mjs';
+import { cleanSupport, hasSupport, recipientForProject, SUPPORT_CHAIN_ID } from './support-config.mjs';
+import type { mountSupportPanel } from './support/panel';
 import type { Bundle, TownEvent, Project, Landscape, Snapshot } from './types';
 import { projectDestination } from './links';
 import './map-ui.css';
@@ -57,6 +59,10 @@ let cancelArrival: (()=>void)|undefined, doorTimer: ReturnType<typeof setTimeout
 let entryFromCard=false;
 let homeShowcase:ReturnType<typeof createHomeShowcase>|undefined;
 let mailboxUI:ReturnType<typeof mountMailboxUI>|undefined;
+let supportPanel:ReturnType<typeof mountSupportPanel>|undefined;
+let supportPanelLoading:Promise<void>|undefined, supportGeneration=0;
+let supportRecipient='', supportRecipientsText='';
+const paidCoinAnimations=new Set<string>();
 let planTurn:'forward'|'backward'|undefined;
 let publishDraft:boolean|undefined;
 let snapshotLabel='';
@@ -94,7 +100,31 @@ function navigate(to: typeof screen) {
 }
 function avatar(p: Project) {return p.builder.avatar ? `<img class="avatar" alt="" src="${escape(p.builder.avatar)}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="avatar">${escape(p.builder.name.slice(0,2).toUpperCase())}</span>`;}
 function link(url: string | undefined, text: string, css = 'button') { const safe=safeUrl(url);return safe ? `<a class="${css}" href="${escape(safe)}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`:''; }
-function header() { return gameHeader(t,session,lang,true,false,audioControls); }
+function header() { return gameHeader(t,session,lang,true,false,audioControls,screen==='town'&&hasSupport(bundle.event)); }
+async function openBuilderSupport(project?:Project) {
+  if(screen!=='town'||!hasSupport(bundle.event)||project&&!recipientForProject(bundle.event,project))return;
+  stop();document.querySelector('#play')?.replaceChildren();const play=document.querySelector('#play');if(play)play.innerHTML=icon('play');
+  if(supportPanel){supportPanel.open(project);return;}
+  if(supportPanelLoading)return;
+  const generation=supportGeneration,event=bundle.event;
+  const button=document.querySelector<HTMLButtonElement>('#town-wallet');if(button)button.setAttribute('aria-busy','true');
+  supportPanelLoading=(async()=>{
+    try {
+      const {mountSupportPanel}=await import('./support/panel');
+      if(generation!==supportGeneration||screen!=='town'||bundle.event!==event)return;
+      supportPanel=mountSupportPanel(app,{event,t,onConfirmed:(id)=>{
+        if(generation!==supportGeneration||screen!=='town'||bundle.event!==event)return;
+        // A chain receipt authorizes the visual celebration, never the reverse.
+        paidCoinAnimations.add(id);
+        if(!scene?.tossCoin(id))paidCoinAnimations.delete(id);
+        void interfaceAudio.play('success');
+      }});
+      supportPanel.open(project);
+    }catch(error){if(generation===supportGeneration)notice(t('Wallet panel could not load. Your town is still available. Please try again.','钱包面板加载失败，小镇仍可正常游览，请重试。'),true);}
+    finally{if(generation===supportGeneration){supportPanelLoading=undefined;button?.removeAttribute('aria-busy');}}
+  })();
+  await supportPanelLoading;
+}
 function connectGitHub(){
   const dialog=$<HTMLDialogElement>('#github-connect-dialog');
   const request=new AbortController();dialog.onclose=()=>request.abort();
@@ -103,7 +133,7 @@ function connectGitHub(){
   $('#close-github').onclick=()=>dialog.close();dialog.showModal();
   $('#github-token-form').onsubmit=async event=>{
     event.preventDefault();const input=$<HTMLInputElement>('#github-token'),button=$<HTMLButtonElement>('#connect-token');const candidate=input.value.trim();button.disabled=true;$('#github-token-error').textContent='';
-    try{const profile=await connectToken(candidate,{signal:request.signal});if(!dialog.open||!dialog.isConnected)return;githubToken=candidate;session={...session,authenticated:true,isDeployer:false,login:profile.login,avatar:profile.avatar};sessionSource='token';input.value='';dialog.close();if(screen!=='setup'){collection='personal';imported=null;usePrevious=false;title='';}navigate('setup');}
+    try{const profile=await connectToken(candidate,{signal:request.signal});if(!dialog.open||!dialog.isConnected)return;githubToken=candidate;session={...session,authenticated:true,isDeployer:false,login:profile.login,avatar:profile.avatar};sessionSource='token';input.value='';dialog.close();if(screen!=='setup'){collection='personal';imported=null;usePrevious=false;title='';supportRecipient='';supportRecipientsText='';}navigate('setup');}
     catch(error){if(dialog.open&&dialog.isConnected)$('#github-token-error').textContent=(error as Error).message;}
     finally{button.disabled=false;}
   };
@@ -113,12 +143,14 @@ function render() {
   plannerMusic.setActive(screen === 'setup');
   reposRequest?.abort();reposRequest=undefined;reposGeneration++;
   mailboxUI?.dispose();mailboxUI=undefined;
+  supportGeneration++;supportPanel?.dispose();supportPanel=undefined;supportPanelLoading=undefined;paidCoinAnimations.clear();
   homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
   document.body.classList.remove('project-detail-open');document.body.dataset.screen=screen;document.body.classList.toggle('town-view',screen==='town');
   scene?.dispose();scene=undefined;stop();document.documentElement.lang=lang==='en'?'en':'zh-CN';document.title=`Buildergame · ${t('Your repos, your town','你的仓库，你的小镇')}`;
   app.innerHTML=header()+`<div id="notice" class="notice" role="status" aria-live="polite" hidden></div>`+(screen==='welcome'?welcome():screen==='setup'?setup():screen==='success'?success():town())+`<input type="file" id="import" accept=".json,application/json" hidden><dialog id="detail" class="paper-panel" aria-labelledby="detail-title"><button class="close hud-button icon-button" id="close" aria-label="${t('Close','关闭')}">×</button><div id="detail-body"></div></dialog><dialog id="project-entry" class="paper-panel" aria-labelledby="entry-title"><button class="close hud-button icon-button" id="close-entry" aria-label="${t('Close','关闭')}">×</button><div class="entry-door" aria-hidden="true"><span></span></div><h2 id="entry-title"></h2><p id="entry-status" role="status"></p><div id="entry-actions"></div></dialog>`;
   app.insertAdjacentHTML('beforeend','<dialog id="github-connect-dialog" class="paper-panel" aria-label="'+t('Connect GitHub','连接 GitHub')+'"></dialog>');
   $('#home').onclick=()=>navigate('welcome');
+  document.querySelector('#town-wallet')?.addEventListener('click',()=>void openBuilderSupport());
   document.querySelector<HTMLButtonElement>('#sound-toggle')?.addEventListener('click',event=>{
     interfaceAudio.toggle(event);
     plannerMusic.setEnabled(interfaceAudio.enabled);
@@ -131,7 +163,7 @@ function render() {
   document.querySelector('#player-login')?.setAttribute('aria-label',session.authenticated?t(`GitHub account: ${session.login}`,`GitHub 账号：${session.login}`):t('Sign in with GitHub','通过 GitHub 登录'));
   document.querySelector('#logout')?.addEventListener('click',async()=>{if(sessionSource==='server'){try{await api('auth/logout',{});}catch(error){notice((error as Error).message,true);return;}}githubToken='';sessionSource='guest';session.authenticated=false;session.isDeployer=false;session.login=null;session.avatar=null;repositories=[];checked.clear();render();});
   document.querySelector('#player-login')?.addEventListener('click',()=>{
-    if(session.authenticated){if(screen!=='setup'){collection='personal';imported=null;usePrevious=false;title='';navigate('setup');}return;}
+    if(session.authenticated){if(screen!=='setup'){collection='personal';imported=null;usePrevious=false;title='';supportRecipient='';supportRecipientsText='';navigate('setup');}return;}
     connectGitHub();
   });
   $('#close-entry').onclick=()=>$<HTMLDialogElement>('#project-entry').close();
@@ -156,7 +188,7 @@ function render() {
   document.querySelectorAll<HTMLElement>('[data-import]').forEach(el=>el.onclick=()=>$<HTMLInputElement>('#import').click());
   document.querySelectorAll<HTMLElement>('[data-connect-github]').forEach(el=>el.onclick=connectGitHub);
   document.querySelectorAll<HTMLElement>('[data-export]').forEach(el=>el.onclick=exportTown);
-  document.querySelector('[data-create]')?.addEventListener('click',()=>{imported=null;usePrevious=false;title='';navigate('setup');});
+  document.querySelector('[data-create]')?.addEventListener('click',()=>{imported=null;usePrevious=false;title='';supportRecipient='';supportRecipientsText='';navigate('setup');});
   document.querySelectorAll<HTMLElement>('[data-mode]').forEach(el=>el.onclick=()=>{
     const next=el.dataset.mode as typeof collection;if(next===collection)return;
     const scroll=window.scrollY;planTurn=next==='hackathon'?'forward':'backward';
@@ -198,6 +230,7 @@ function setup() {
         <details class="growth" open><summary>${t('House growth settings','房屋成长设置')}</summary><p class="helper">${t('Your town, your values. These weights shape the buildings.','你的小镇，你的价值取向。用权重决定建筑的成长。')}</p><div class="weight-fields">${(['commits','stars','forks'] as const).map((key,i)=>`<label>${[t('Commits','累计提交'),t('Stars','星标'),t('Forks','分叉')][i]}<input data-weight="${key}" type="number" min="0" step="0.1" value="${weights[key]??0}"></label>`).join('')}</div>${imported?.rule.mode==='custom'?`<p class="helper">${t('Your custom scores are retained. Editing weights switches to weighted growth.','保留已导入的自定义评分；修改权重将切换为加权成长。')}</p>`:''}</details>
         <label>${t('Snapshot occasion (optional)','快照纪念名称（可选）')}<input id="snapshot-label" maxlength="100" placeholder="${t('e.g. Demo day · First release','例如：演示日 · 首次发布')}" value="${escape(snapshotLabel)}"></label>
         <p class="helper">${t('Capture this moment. Recorded data stays unchanged until you create another snapshot.','记录此刻。已保存的数据保持不变，直到你主动创建下一张快照。')}</p>
+        <details class="config-backup support-settings" ${supportRecipient||supportRecipientsText?'open':''}><summary>${t('Builder support (optional)','开发者赞赏（可选）')}</summary><p class="helper">${t('Ethereum Sepolia · Test ETH only. Leave this empty to keep playful mailbox coins without wallet prompts.','Ethereum Sepolia · 仅测试 ETH。留空时保留投币彩蛋，不显示钱包提示。')}</p>${collection==='personal'?`<label>${t('Your public receiving address','公开收款地址')}<input id="support-recipient" maxlength="100" autocomplete="off" spellcheck="false" placeholder="0x…" value="${escape(supportRecipient)}"></label>`:`<label>${t('Project receiving addresses','项目收款地址')}<textarea id="support-recipients" rows="3" maxlength="30000" spellcheck="false" placeholder="owner/repository = 0x…">${escape(supportRecipientsText)}</textarea></label><p class="helper">${t('One owner/repository = address per line. Projects without an address keep virtual mailbox coins.','每行填写 owner/repository = 地址。未配置地址的项目保留虚拟投币。')}</p>`}<p class="helper">${t('Use an address designated by the builder. It will be public in the exported town. Never enter a private key or recovery phrase.','请填写开发者指定的地址；地址会随小镇配置公开。不要填写私钥或助记词。')}</p></details>
         <label class="publish-option"><input type="checkbox" id="publish" ${canPublishHere()?'checked':'disabled'}> ${t('Publish for everyone to explore','发布小镇，供所有人探索')}</label>
         <p class="helper publish-hint">${canPublishHere()?t('Saved at its own address. Your other towns stay available.','保存到独立地址，其他小镇仍可访问。'):t('Create in your browser, then commit the exported snapshot to your deployment repository to share its address.','在浏览器中创建后，将导出的快照提交至部署仓库，即可分享小镇地址。')}</p>
         <div class="capture-actions"><button class="button primary" id="capture">${captureLabel()}</button></div>
@@ -214,6 +247,7 @@ function loadConfiguration(input: unknown) {
   const event=cleanEvent(input) as TownEvent;
   imported=event;collection=event.collectionType||'hackathon';title=event.name;landscape=event.landscape||'flat';
   repoText=event.projects.map(p=>p.repository).join('\n');weights={...event.rule.weights};usePrevious=false;
+  supportRecipient=event.support?.recipient||'';supportRecipientsText=Object.entries(event.support?.projectRecipients||{}).map(([repo,address])=>`${repo} = ${address}`).join('\n');
   repositories=event.projects.map(p=>({repository:p.repository,name:p.name,description:p.description,builder:p.builder}));
   checked.clear();repositories.forEach(r=>checked.add(r.repository));nextPage=null;
 }
@@ -221,6 +255,7 @@ function loadPlanningDraft(input: unknown) {
   const draft=planningDraft(input);
   collection=draft.collection;landscape=draft.landscape;title=draft.title;username=draft.username;repoText=draft.repoText;
   weights={commits:draft.weights.commits,stars:draft.weights.stars,forks:draft.weights.forks};publishDraft=draft.publish;
+  supportRecipient=draft.supportRecipient??draft.configuration?.support?.recipient??'';supportRecipientsText=draft.supportRecipientsText??Object.entries(draft.configuration?.support?.projectRecipients||{}).map(([repo,address])=>`${repo} = ${address}`).join('\n');
   imported=draft.configuration as TownEvent|null;usePrevious=false;nextPage=null;
   repositories=draft.selected.map((repository:string)=>{
     const [owner,name]=repositoryKey(repository).split('/');
@@ -235,16 +270,34 @@ function updateTerrainThumbnail(){
   thumbnail.src=import.meta.env.BASE_URL+'ui/landscapes/'+landscape+'.png';
   thumbnail.alt=t({flat:'Flat town preview',valley:'Valley town preview',clouds:'Cloud town preview'}[landscape],{flat:'平地城镇缩略图',valley:'山谷城镇缩略图',clouds:'云端城镇缩略图'}[landscape]);
 }
+function withSupportConfiguration(event:TownEvent):TownEvent {
+  let support:unknown;
+  if(collection==='personal'){
+    if(supportRecipient.trim())support={version:1,chainId:SUPPORT_CHAIN_ID,recipient:supportRecipient.trim()};
+  }else if(supportRecipientsText.trim()){
+    const entries=supportRecipientsText.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
+      const parts=line.split('=');
+      if(parts.length!==2)throw Error(t('Use owner/repository = address on each support line.','赞赏地址请每行按 owner/repository = 地址 填写。'));
+      const source=parts[0].trim(),key=repositoryKey(source.startsWith('https://')?source:`https://github.com/${source}`);
+      return [key,parts[1].trim()] as const;
+    });
+    if(new Set(entries.map(([key])=>key)).size!==entries.length)throw Error(t('Remove duplicate project support addresses.','请删除重复配置的项目收款地址。'));
+    support={version:1,chainId:SUPPORT_CHAIN_ID,projectRecipients:Object.fromEntries(entries)};
+  }
+  const normalized=cleanSupport(support,event.collectionType,event.projects);
+  if(normalized)event.support=normalized;else delete event.support;
+  return cleanEvent(event) as TownEvent;
+}
 function currentConfiguration(): TownEvent {
   const name=title.trim();if(!name)throw Error(t('Give your town a name.','请为小镇起个名字。'));
-  if(imported){const result=structuredClone(imported);result.name=name;if(!usePrevious)result.landscape=landscape;return cleanEvent(result) as TownEvent;}
+  if(imported){const result=structuredClone(imported);result.name=name;if(!usePrevious)result.landscape=landscape;return withSupportConfiguration(result);}
   const urls=collection==='personal'?[...checked]:repoText.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
   if(!urls.length)throw Error(t('Choose at least one public repository before creating your town.','创建小镇前，请至少选择或填写一个公开仓库。'));
   const unique=new Set(urls.map(repositoryKey));if(unique.size!==urls.length)throw Error(t('Remove duplicate repository URLs.','请删除重复仓库地址。'));
   const event=configuration({ name, collectionType:collection, landscape, repositories:urls, rule:{...defaultRule,version:`linear-${weights.commits}-${weights.stars}-${weights.forks}`,weights:{...weights}} }) as TownEvent;
   const normalized=name.normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase('en-US');
   if(townDirectory.some(town=>town.townId!==event.id&&town.name.normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase('en-US')===normalized))throw Error(t('A town with this name already exists. Choose a different name.','此站点已有同名小镇，请换一个名称。'));
-  event.projects.forEach(p=>{const source=repositories.find(r=>r.repository===p.repository);if(source)p.builder=source.builder;});return event;
+  event.projects.forEach(p=>{const source=repositories.find(r=>r.repository===p.repository);if(source)p.builder=source.builder;});return withSupportConfiguration(event);
 }
 function bindSetup() {
   landscape=imported ? imported.landscape||'flat' : landscape;
@@ -260,6 +313,8 @@ function bindSetup() {
   publishInput.onchange=()=>{publishDraft=publishInput.checked;$('#capture').textContent=captureLabel();};
   $<HTMLInputElement>('#town-name').oninput=e=>title=(e.target as HTMLInputElement).value;
   $<HTMLInputElement>('#snapshot-label').oninput=e=>snapshotLabel=(e.target as HTMLInputElement).value;
+  document.querySelector<HTMLInputElement>('#support-recipient')?.addEventListener('input',e=>supportRecipient=(e.target as HTMLInputElement).value);
+  document.querySelector<HTMLTextAreaElement>('#support-recipients')?.addEventListener('input',e=>supportRecipientsText=(e.target as HTMLTextAreaElement).value);
   if(collection==='hackathon')$<HTMLTextAreaElement>('#repositories').oninput=e=>{repoText=(e.target as HTMLTextAreaElement).value;imported=null;usePrevious=false;$('#capture').textContent=captureLabel();};
   else {
     $<HTMLInputElement>('#username').oninput=e=>username=(e.target as HTMLInputElement).value;
@@ -281,7 +336,7 @@ function bindSetup() {
   document.querySelectorAll<HTMLInputElement>('[data-weight]').forEach(e=>e.oninput=()=>{weights[e.dataset.weight as keyof typeof weights]=Number(e.value);if(imported)imported.rule={...defaultRule,mode:'weighted',version:`linear-${weights.commits}-${weights.stars}-${weights.forks}`,weights:{...weights}};});
   $('#export-config').onclick=()=>{try{download(currentConfiguration(),'town.config.json');}catch(e){notice((e as Error).message,true);}};
   $('#save-draft').onclick=()=>{
-    try{download(planningDraft({kind:'buildergame-plan/v1',collection,landscape,title,username:session.login||username,repoText,selected:[...checked],weights,publish:publishInput.checked,configuration:imported}),'town.plan.json');notice(t('Plan saved. Load this file here to pick up where you left off.','草稿已保存。之后在此导入文件，即可继续填写。'));}
+    try{download(planningDraft({kind:'buildergame-plan/v1',collection,landscape,title,username:session.login||username,repoText,selected:[...checked],weights,publish:publishInput.checked,configuration:imported,supportRecipient,supportRecipientsText}),'town.plan.json');notice(t('Plan saved. Load this file here to pick up where you left off.','草稿已保存。之后在此导入文件，即可继续填写。'));}
     catch(error){notice((error as Error).message,true);}
   };
   $('#capture').onclick=async()=>{
@@ -344,9 +399,11 @@ function details(id: string) {
   const p=bundle.event.projects.find(p=>p.id===id)!;const r=timelineSnapshots()[snapshotIndex].projects.find(r=>r.projectId===id)!;
   const noSampleLinks=bundle.event.sampleData;
   const body=r.status==='baseline'?'<p class="helper">'+t('The town’s starting view. GitHub measurements begin in the next snapshot.','小镇的起始画面，GitHub 数据记录从下一张快照开始。')+'</p>':r.status==='stale'?'<p class="helper">'+t('Showing the last available snapshot.','展示最近一次可用快照。')+'</p>':!r.metrics?'<p class="helper">'+t('Repository data unavailable.','仓库数据暂不可用。')+'</p>':'';
-  const links=`<button class="button" data-visit ${noSampleLinks?'disabled':''}>${t('Visit project','访问项目')}</button>${noSampleLinks?`<p class="helper">${t('Fictional sample project','虚构示例项目')}</p>`:''}`;
+  const supportLink=recipientForProject(bundle.event,p)?`<button type="button" class="button" data-support-project>${icon('coin')}${t('Support builder','支持开发者')}</button>`:'';
+  const links=`<button class="button" data-visit ${noSampleLinks?'disabled':''}>${t('Visit project','访问项目')}</button>${supportLink}${noSampleLinks?`<p class="helper">${t('Fictional sample project','虚构示例项目')}</p>`:''}`;
   $('#detail-body').innerHTML=projectCard(p,body,links,'',t);
   document.querySelector('[data-visit]')?.addEventListener('click',()=>openProjectEntry(p));
+  document.querySelector('[data-support-project]')?.addEventListener('click',()=>{$<HTMLDialogElement>('#detail').close();void openBuilderSupport(p);});
   markVisited(id);
   list();if(matchMedia('(max-width: 760px)').matches){$('#project-panel').hidden=true;$('#show-projects').setAttribute('aria-expanded','false');returnFocus=$('#show-projects');}else if(returnFocus?.dataset.project)returnFocus=document.querySelector<HTMLElement>('[data-project="'+id+'"]');document.body.classList.add('project-detail-open');$<HTMLDialogElement>('#detail').showModal();
 }
@@ -362,8 +419,15 @@ function showSnapshot(index: number) {
   refreshProgress();$('#snapshot-label').textContent=`${sampleLabel}${changes?` · ${changes} ${t('buildings changed','栋建筑发生变化')}`:''}`;list();
 }
 function bindTown() {
-  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{void interfaceAudio.play('open');const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat',{initialZoomSteps:bundle.event.sampleData?4:0,mailboxDemo:bundle.event.sampleData,onHover:()=>void interfaceAudio.play('hover'),onMailbox:id=>{mailboxUI?.credit(id);void interfaceAudio.play('success');}});}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
-  if(bundle.event.sampleData)mailboxUI=mountMailboxUI({host:app,projects:bundle.event.projects,snapshot:()=>timelineSnapshots()[snapshotIndex],scene:()=>scene,t,stopHistory:()=>{stop();$('#play').innerHTML=icon('play');$('#play').setAttribute('aria-label',t('Play history','播放历史'));}});
+  const support=cleanSupport(bundle.event.support,bundle.event.collectionType,bundle.event.projects);
+  const recipients=new Map(bundle.event.projects.map(p=>[p.id,bundle.event.collectionType==='personal'?support?.recipient:support?.projectRecipients?.[repositoryKey(p.repository)]]));
+  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{void interfaceAudio.play('open');const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat',{
+    initialZoomSteps:bundle.event.sampleData?4:0,mailboxDemo:true,onHover:()=>void interfaceAudio.play('hover'),
+    mailboxHint:id=>recipients.get(id)?t('Support this builder · Sepolia','支持这位开发者 · Sepolia'):undefined,
+    onMailboxClick:id=>{const project=bundle.event.projects.find(p=>p.id===id);if(!project||!recipients.get(id))return false;void openBuilderSupport(project);return true;},
+    onMailbox:id=>{if(paidCoinAnimations.delete(id))return;mailboxUI?.credit(id);void interfaceAudio.play('success');}
+  });}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
+  mailboxUI=mountMailboxUI({host:app,projects:bundle.event.projects,snapshot:()=>timelineSnapshots()[snapshotIndex],scene:()=>scene,t,stopHistory:()=>{stop();$('#play').innerHTML=icon('play');$('#play').setAttribute('aria-label',t('Play history','播放历史'));}});
   $('#reset').onclick=()=>scene?.reset();$('#zoom-in').onclick=()=>scene?.zoom(1);$('#zoom-out').onclick=()=>scene?.zoom(-1);
   visited=localProgress(bundle.event.id,null);progressStatus='local';
   $('#map-home').onclick=()=>scene?.reset();
@@ -456,7 +520,7 @@ async function start() {
   bundle=loaded||sampleTown() as Bundle;snapshotIndex=timelineSnapshots().length-1;
   if(slug!==null&&loaded)screen='town';
   if(query.get('town')==='1')screen='town';
-  if(query.get('setup')==='personal'){screen='setup';collection='personal';username=session.login||'';title=username?username+"'s town":'';imported=null;usePrevious=false;}
+  if(query.get('setup')==='personal'){screen='setup';collection='personal';username=session.login||'';title=username?username+"'s town":'';imported=null;usePrevious=false;supportRecipient='';supportRecipientsText='';}
   if(screen==='town'&&loaded?.event.deployment)history.replaceState(null,'',(published?townUrl:previewUrl)(loaded.event.deployment.slug));
   else if(query.has('town')||query.has('setup'))history.replaceState(null,'',location.pathname);
   try{const directory=serverAvailable?await api('towns'):await(await fetch(siteUrl('data/towns/index.json'),{cache:'no-cache'})).json();townDirectory=Array.isArray(directory.towns)?directory.towns:[];}catch{townDirectory=[];}

@@ -21,5 +21,7 @@ export function planningDraft(input) {
   return { kind: 'buildergame-plan/v1', collection: input.collection, landscape: input.landscape,
     title: text(input.title, 80), username: text(input.username, 100), repoText: text(input.repoText, 100000),
     selected, weights, publish: input.publish === true,
+    ...(input.supportRecipient !== undefined ? { supportRecipient: text(input.supportRecipient, 100) } : {}),
+    ...(input.supportRecipientsText !== undefined ? { supportRecipientsText: text(input.supportRecipientsText, 30000) } : {}),
     configuration: input.configuration ? cleanEvent(input.configuration) : null };
 }

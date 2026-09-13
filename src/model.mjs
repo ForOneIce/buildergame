@@ -1,5 +1,6 @@
 // Shared browser / capture contract. 中文：数据失败不等于零，历史快照不重算。
 import { validLocation } from './locations.mjs';
+import { cleanSupport } from './support-config.mjs';
 export const STAGES = ['land', 'foundation', 'frame', 'cottage', 'townhouse', 'decorated'];
 export function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -54,6 +55,7 @@ export function validateManifest(event) {
     if(event.residentMap?.enabled&&p.builder.locationText)assert(typeof p.builder.locationText==='string'&&p.builder.locationText.length<=160,`Invalid public location text: ${p.id}`);
     ids.add(p.id); repos.add(repo); plots.add(key);
   }
+  cleanSupport(event.support, event.collectionType, event.projects);
   if (event.rule.mode === 'custom') {
     assert(event.customScores && typeof event.customScores === 'object', 'Custom scores are required');
     const scores = new Map();
