@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { canConfirmDonation, createBrowserTransferGuard, createDonationFlow, createSupportActionGate, donationIntent, estimateDonation, SUPPORT_CHAIN_HEX, validateAmount } from '../src/support/transaction.mjs';
+import { assertNoLegacyRecovery, atSupportStage, canConfirmDonation, classifyError, createBrowserTransferGuard, createDonationFlow, createSupportActionGate, donationIntent, estimateDonation, sameRecoveryIntent, SUPPORT_CHAIN_HEX, validateAmount } from '../src/support/transaction.mjs';
+import { EstimateGasExecutionError, InsufficientFundsError } from 'viem';
 
 const sender = '0x1111111111111111111111111111111111111111';
 const recipient = '0x2222222222222222222222222222222222222222';
@@ -133,7 +134,7 @@ test('restored public checkpoint only checks an existing hash, without a new sen
 
 test('invalid recovery data cannot become confirmed or authorize a transfer', async () => {
   const flow = makeFlow();
-  for (const saved of [{ ...input, sender, phase: 'pending', hash: 'not-a-hash' }, { ...input, sender, phase: 'confirmed', hash }, { ...input, sender: 'bad', phase: 'pending', hash }]) assert.equal(flow.restore(saved), false);
+  for (const saved of [{ ...input, sender, phase: 'pending', hash: 'not-a-hash' }, { ...input, sender, phase: 'confirmed', hash }, { ...input, sender: 'bad', phase: 'pending', hash }, { ...input, sender, phase: 'pending', hash, version: 99 }]) assert.equal(flow.restore(saved), false);
   assert.equal(flow.getSnapshot().phase, 'idle'); flow.dispose();
 });
 
@@ -265,4 +266,36 @@ test('closing before a queued wallet setup starts never opens a late wallet prom
   const gate = createSupportActionGate(); let starts = 0;
   const queued = gate.run(async () => { starts++; }); gate.cancel(); await queued;
   assert.equal(starts, 0); assert.equal(gate.busy, false); gate.dispose();
+});
+
+test('actual viem insufficient-funds error and its estimate wrapper show funding guidance instead of network failure', () => {
+  const cause = new InsufficientFundsError(), wrapped = new EstimateGasExecutionError(cause, {});
+  assert.equal(classifyError(cause), 'funds'); assert.equal(classifyError(wrapped), 'funds');
+});
+
+test('empty embedded wallet is identified before any gas estimate request', async () => {
+  const f = fixture({ eth_getBalance: '0x0', eth_estimateGas: () => { throw new Error('Gas estimate should not run'); } }), flow = makeFlow();
+  await flow.prepare(input, f.adapter);
+  assert.equal(flow.getSnapshot().error, 'funds'); assert.equal(flow.getSnapshot().errorStage, 'balance');
+  assert.equal(f.calls.some(call => call.method === 'eth_estimateGas'), false); assert.equal(f.sent.length, 0); flow.dispose();
+});
+
+test('RPC diagnostics expose only allow-listed stage and classified error, never raw provider details', async () => {
+  const raw = 'mock private RPC details';
+  await assert.rejects(atSupportStage('balance', async () => { throw Error(raw); }), error => error.code === 'network' && error.stage === 'balance' && error.message === 'network' && error.cause === undefined && !JSON.stringify(error).includes(raw));
+});
+
+test('malformed and unknown legacy records block new transfers and are never silently removed', async () => {
+  for (const raw of ['{broken', JSON.stringify({version:99,phase:'unknown'}), JSON.stringify({...input,sender,phase:'unknown',hash:null})]) {
+    const browser = browserFixture(), legacy = new Map([['legacy',raw]]), storage = {getItem:key=>legacy.get(key) ?? null};
+    const guard = createBrowserTransferGuard({eventId:'test-town',storage:browser.storage,locks:browser.locks,randomId:()=> 'legacy-guard-fixture',assertNoLegacy:()=>assertNoLegacyRecovery(storage,'legacy')});
+    const f = fixture(), flow = makeFlow({guard}); await flow.prepare(input,f.adapter); await flow.send();
+    assert.equal(flow.getSnapshot().error,'legacy_pending'); assert.equal(f.sent.length,0); assert.equal(legacy.get('legacy'),raw); flow.dispose();
+  }
+});
+
+test('legacy terminal matching rejects a different project, recipient, sender, amount or transaction hash', () => {
+  const saved = {...input,sender,phase:'pending',hash};
+  assert.equal(sameRecoveryIntent(saved,saved),true);
+  for(const change of [{projectId:'another-project'},{recipient:other},{sender:other},{amount:'0.002'},{hash:'0x'+'cd'.repeat(32)}]) assert.equal(sameRecoveryIntent(saved,{...saved,...change}),false);
 });

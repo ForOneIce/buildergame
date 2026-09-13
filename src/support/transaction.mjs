@@ -33,12 +33,41 @@ export function canConfirmDonation({ state, walletAddress, authenticated, ready,
 
 export function classifyError(error) {
   if (error instanceof SupportError) return error.code;
-  const code = error?.code ?? error?.cause?.code;
-  const message = String(error?.shortMessage || error?.message || '').toLowerCase();
-  if (code === 4001 || code === 'ACTION_REJECTED' || /user rejected|user denied|user cancelled|user canceled/.test(message)) return 'rejected';
-  if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds|insufficient balance/.test(message)) return 'funds';
-  if (code === 4902 || /unsupported chain|chain.*not supported/.test(message)) return 'chain';
+  const queue = [error], seen = new Set();
+  for (let checked = 0; queue.length && checked < 6; checked++) {
+    const current = queue.shift(); if (!current || seen.has(current)) continue; seen.add(current);
+    const code = current.code, name = current.name;
+    const message = `${current.shortMessage || ''} ${current.message || ''}`.toLowerCase();
+    if (code === 4001 || code === 'ACTION_REJECTED' || name === 'UserRejectedRequestError' || /user rejected|user denied|user cancelled|user canceled/.test(message)) return 'rejected';
+    if (code === 'INSUFFICIENT_FUNDS' || name === 'InsufficientFundsError' || /insufficient funds|insufficient balance|exceeds the balance of the account|exceeds transaction sender account balance/.test(message)) return 'funds';
+    if (code === 4902 || /unsupported chain|chain.*not supported/.test(message)) return 'chain';
+    if (current.cause) queue.push(current.cause);
+    if (current.error) queue.push(current.error);
+  }
   return 'network';
+}
+
+/** Only an allow-listed stage and classification cross the UI boundary. Never raw RPC data. */
+export async function atSupportStage(stage, task) {
+  try { return await task(); }
+  catch (error) {
+    const sanitized = new SupportError(classifyError(error));
+    sanitized.stage = ['switch', 'provider', 'chain', 'account', 'balance', 'fee', 'estimate', 'receipt', 'transaction'].includes(stage) ? stage : 'provider';
+    throw sanitized;
+  }
+}
+
+export function sameRecoveryIntent(left, right) {
+  try {
+    const a = donationIntent(left), b = donationIntent(right);
+    return a.projectId === b.projectId && a.recipient === b.recipient && a.value === b.value && getAddress(left.sender) === getAddress(right.sender) && (!left.hash || left.hash.toLowerCase() === String(right.hash).toLowerCase());
+  } catch { return false; }
+}
+
+export function assertNoLegacyRecovery(storage, key) {
+  let raw;
+  try { raw = storage.getItem(key); } catch { throw new SupportError('storage'); }
+  if (raw !== null) throw new SupportError('legacy_pending');
 }
 
 /** Exclusive non-transfer actions can time out or be cancelled without stale UI writes. */
@@ -68,9 +97,9 @@ export function createSupportActionGate() {
 const PENDING_KEY = 'buildergame.support.pending.v2';
 const TRANSFER_LOCK = 'buildergame.support.transfer.v2';
 /** Same-origin cooperative guard. Blockchain nonces, not this UI, prevent signed-tx replay. */
-export function createBrowserTransferGuard({ eventId, storage, locks = globalThis.navigator?.locks, randomId = () => globalThis.crypto.randomUUID() }) {
+export function createBrowserTransferGuard({ eventId, storage, locks = globalThis.navigator?.locks, randomId = () => globalThis.crypto.randomUUID(), assertNoLegacy = () => {} }) {
   if (storage === undefined) { try { storage = globalThis.localStorage; } catch { /* Send fails closed in acquire. */ } }
-  let attemptId, release;
+  let attemptId, release, migratingLegacy = false;
   function read() {
     let raw;
     try { raw = storage?.getItem(PENDING_KEY); } catch { throw new SupportError('storage'); }
@@ -91,7 +120,7 @@ export function createBrowserTransferGuard({ eventId, storage, locks = globalThi
       if (checkpoint) {
         const intent = donationIntent(checkpoint), sender = getAddress(checkpoint.sender);
         if (!['pending', 'unknown'].includes(checkpoint.phase) || (checkpoint.hash && !HASH.test(checkpoint.hash))) throw new SupportError('storage');
-        storage.setItem(PENDING_KEY, JSON.stringify({ version: 2, attemptId, eventId: current?.eventId || eventId, phase: checkpoint.hash ? 'pending' : 'unknown', projectId: intent.projectId, recipient: intent.recipient, amount: intent.amount, sender, hash: checkpoint.hash || null }));
+        storage.setItem(PENDING_KEY, JSON.stringify({ version: 2, attemptId, eventId: current?.eventId || eventId, ...(migratingLegacy || current?.legacyVersion === 1 ? { legacyVersion: 1 } : {}), phase: checkpoint.hash ? 'pending' : 'unknown', projectId: intent.projectId, recipient: intent.recipient, amount: intent.amount, sender, hash: checkpoint.hash || null }));
       }
       else if (current?.attemptId === attemptId) storage.removeItem(PENDING_KEY);
     } catch { throw new SupportError('storage'); }
@@ -102,11 +131,13 @@ export function createBrowserTransferGuard({ eventId, storage, locks = globalThi
     async migrate(saved) {
       // Preserve legacy metadata until a verified result; never overwrite an existing v2 record.
       donationIntent(saved); getAddress(saved.sender);
+      if (saved.version !== undefined && saved.version !== 1) throw new SupportError('storage');
       if (!['pending', 'unknown'].includes(saved.phase) || (saved.hash && !HASH.test(saved.hash))) throw new SupportError('storage');
-      await this.acquire();
-      try { save(saved); } finally { this.release(); }
+      await this.acquire(true);
+      migratingLegacy = true;
+      try { save(saved); } finally { migratingLegacy = false; this.release(); }
     },
-    async acquire() {
+    async acquire(forLegacyMigration = false) {
       if (!locks?.request || !storage) throw new SupportError('browser_guard');
       if (release) throw new SupportError('other_tab');
       await new Promise((resolve, reject) => {
@@ -117,6 +148,7 @@ export function createBrowserTransferGuard({ eventId, storage, locks = globalThi
           try {
             // The check occurs inside the browser-wide lock, before any wallet request.
             if (read()) throw new SupportError('unfinished');
+            if (!forLegacyMigration) assertNoLegacy();
             const probe = `${PENDING_KEY}.probe`; storage.setItem(probe, '1'); storage.removeItem(probe);
             attemptId = randomId();
             const lease = new Promise(done => { release = done; });
@@ -138,7 +170,8 @@ function timeout(promise, milliseconds) {
 }
 
 function reader(adapter, timeoutMs) {
-  return (method, params = []) => timeout(Promise.resolve().then(() => adapter.request({ method, params })), timeoutMs);
+  const stages = { eth_chainId: 'chain', eth_accounts: 'account', eth_getBalance: 'balance', eth_gasPrice: 'fee', eth_estimateGas: 'estimate', eth_getTransactionReceipt: 'receipt', eth_getTransactionByHash: 'transaction' };
+  return (method, params = []) => atSupportStage(stages[method] || 'provider', () => timeout(Promise.resolve().then(() => adapter.request({ method, params })), timeoutMs));
 }
 
 async function assertAccountAndChain(adapter, read) {
@@ -156,10 +189,11 @@ export async function estimateDonation(intent, adapter, timeoutMs = 12000) {
   const sender = await assertAccountAndChain(adapter, read);
   if (sender.toLowerCase() === intent.recipient.toLowerCase()) throw new SupportError('self');
   const request = { from: sender, to: intent.recipient, value: `0x${intent.value.toString(16)}` };
-  const [gasResult, priceResult, balanceResult] = await Promise.all([
-    read('eth_estimateGas', [request]), read('eth_gasPrice'), read('eth_getBalance', [sender, 'pending']),
-  ]);
-  const gas = BigInt(gasResult), gasPrice = BigInt(priceResult), balance = BigInt(balanceResult);
+  // An unfunded new embedded wallet should show a funding hint before gas estimation fails.
+  const balance = BigInt(await read('eth_getBalance', [sender, 'pending']));
+  if (balance < intent.value) { const error = new SupportError('funds'); error.stage = 'balance'; throw error; }
+  const [gasResult, priceResult] = await Promise.all([read('eth_estimateGas', [request]), read('eth_gasPrice')]);
+  const gas = BigInt(gasResult), gasPrice = BigInt(priceResult);
   if (gas <= 0n || gasPrice < 0n || balance < 0n) throw new SupportError('network');
   const fee = gas * gasPrice;
   if (balance < intent.value + fee) throw new SupportError('funds');
@@ -168,7 +202,7 @@ export async function estimateDonation(intent, adapter, timeoutMs = 12000) {
 
 /** Modal closure preserves this flow; route disposal suppresses late UI callbacks. */
 export function createDonationFlow({ onConfirmed = () => {}, persist = () => {}, guard, timeoutMs = 12000, receiptWaitMs = 90000, pollMs = 3000, sendWaitMs = 120000 } = {}) {
-  let state = { phase: 'idle', intent: null, estimate: null, hash: null, error: null, critical: false };
+  let state = { phase: 'idle', intent: null, estimate: null, hash: null, error: null, errorStage: null, critical: false };
   let adapter, disposed = false, revision = 0, confirmationReported = false;
   const listeners = new Set();
   function checkpoint() {
@@ -188,7 +222,7 @@ export function createDonationFlow({ onConfirmed = () => {}, persist = () => {},
   const reset = () => {
     if (disposed || locked()) return false;
     revision++; adapter = undefined; confirmationReported = false;
-    update({ phase: 'idle', intent: null, estimate: null, hash: null, error: null, critical: false });
+    update({ phase: 'idle', intent: null, estimate: null, hash: null, error: null, errorStage: null, critical: false });
     return true;
   };
 
@@ -222,7 +256,7 @@ export function createDonationFlow({ onConfirmed = () => {}, persist = () => {},
       } while (active(token));
       if (active(token)) update({ phase: 'pending', error: 'pending' });
     } catch (error) {
-      if (active(token)) update({ phase: 'pending', error: classifyError(error) });
+      if (active(token)) update({ phase: 'pending', error: classifyError(error), errorStage: error?.stage || null });
     }
   }
 
@@ -239,6 +273,7 @@ export function createDonationFlow({ onConfirmed = () => {}, persist = () => {},
     restore(saved) {
       if (disposed || !saved || !['idle', 'unknown', 'pending'].includes(state.phase)) return false;
       try {
+        if (saved.version !== undefined && ![1, 2].includes(saved.version)) return false;
         const intent = donationIntent(saved), sender = getAddress(saved.sender);
         if (!['pending', 'unknown'].includes(saved.phase) || (saved.hash && !HASH.test(saved.hash))) return false;
         revision++;
@@ -256,7 +291,7 @@ export function createDonationFlow({ onConfirmed = () => {}, persist = () => {},
         const estimate = await estimateDonation(intent, adapter, timeoutMs);
         if (active(token)) update({ phase: 'ready', intent, estimate, error: null });
       } catch (error) {
-        if (active(token)) update({ phase: 'error', error: classifyError(error) });
+        if (active(token)) update({ phase: 'error', error: classifyError(error), errorStage: error?.stage || null });
       }
     },
     async send() {
@@ -273,7 +308,7 @@ export function createDonationFlow({ onConfirmed = () => {}, persist = () => {},
         update({ phase: 'signing', estimate });
         guard?.save(checkpoint()); // Without durable recovery metadata, do not open a send request.
       } catch (error) {
-        if (active(token)) update({ phase: 'error', error: classifyError(error), critical: false });
+        if (active(token)) update({ phase: 'error', error: classifyError(error), errorStage: error?.stage || null, critical: false });
         guard?.release();
         return;
       }
