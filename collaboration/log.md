@@ -1,5 +1,11 @@
 # Human–AI collaboration log
 
+## 0045 — Add sample-town mailbox coins
+
+- 2026-09-13 (UTC): the human paused Web3 and requested a mailbox coin cursor/virtual deposit Easter egg for sample-town visits, plus an investment action below landscape tours with wallet/sponsorship explanations. Codex preserved the [exact input and English translation](../prompts/0045-sample-mailbox-coins.md) and authored [specification 0013](../specs/0013-sample-mailbox-coins.md) before implementation completion.
+- Scope is existing stage-five sample mailboxes, temporary original coin feedback, an accessible modal alternative and cancellation/reduced-motion handling. Real wallet/provider/payment/sponsor integration, persisted balances and scoring changes are excluded. Ten accepted building GLBs stay locked.
+- Implementation and acceptance verification are pending. Final executed checks belong in [verification](../docs/verification.md); no live funds, real wallet connection or human visual acceptance is claimed.
+
 ## 0044 — Animate the README homepage preview
 
 - 2026-09-13 (UTC): the human requested a homepage GIF and limited recording to the project presentation. Codex used a dedicated English guest Chrome page with Playwright to capture the existing five-stage homepage carousel, then encoded webpage-only frames using the installed FFmpeg. No desktop, browser chrome or other application was recorded.

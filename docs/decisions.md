@@ -1,5 +1,11 @@
 # Decision log
 
+## D-030 — Demonstrate mailbox support without real Web3
+
+- 2026-09-13 (UTC): the human paused Web3 work and authorized a sample-town Easter egg: a coin cursor at the stage-five mailbox, a virtual deposit animation and an investment button beneath landscape tours with future wallet/sponsorship explanations. [Exact instruction](../prompts/0045-sample-mailbox-coins.md).
+- AI implementation boundary: use a ray target on the existing mailbox, original temporary coin feedback and accessible modal alternatives. Restrict interaction to eligible fictional sample buildings; cancel effects on view changes and respect reduced motion. All ten GLBs, growth/snapshots and storage remain unchanged.
+- No provider connection, token, payment, sponsor integration or balance is implemented by this scope. Funding explanations are illustrative, not a selected strategy. [Specification 0013](../specs/0013-sample-mailbox-coins.md) records acceptance targets; implementation verification is pending.
+
 ## D-029 — Use an actual homepage animation in the README
 
 - 2026-09-13 (UTC): the human requested a homepage GIF instead of the README screenshot. Capture only the project viewport and preserve the application's existing five-stage carousel. [Project instruction excerpts](../prompts/0044-homepage-readme-gif.md).

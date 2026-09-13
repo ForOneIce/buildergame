@@ -44,5 +44,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0042 — Direct GitHub token access from the browser](0042-browser-github-token-access.md)
 - [0043 — Discuss optional Web3 support](0043-optional-web3-support.md)
 - [0044 — Show the homepage as a README GIF](0044-homepage-readme-gif.md)
+- [0045 — Add virtual mailbox coins to sample towns](0045-sample-mailbox-coins.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

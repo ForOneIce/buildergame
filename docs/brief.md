@@ -59,7 +59,7 @@ Source: [prompt 0006](../prompts/0006-cumulative-commit-growth.md).
 
 ## Current refinement: stable landscapes and project discovery
 
-The next-version [Web3 discussion](ideation/0043-web3-support-options.md) considers optional mailbox tips and delegated community records. The human requested discussion before development; no wallet, chain or partner integration is selected.
+Real Web3 work is paused. The human authorized a [sample-town mailbox Easter egg](../specs/0013-sample-mailbox-coins.md): hover a stage-five mailbox for a coin cursor, play a virtual deposit animation and open a future wallet/sponsorship explanation below landscape tours. It is a visual simulation with no payment, provider connection, saved balance or growth change; implementation verification is pending. The earlier [Web3 discussion](ideation/0043-web3-support-options.md) remains research with no selected wallet, chain or partner integration.
 
 The human accepted the five building appearances and redirected the visual iteration to scenery and interaction. Organizers choose flat ground with concrete streets, a valley with water/gravel paths, or cloud districts at creation; subsequent snapshots retain that landscape and project locations. The game uses floating map controls, a searchable project list, minimap and sign-opened project cards. Exploration progress stays in the visitor's browser. GitHub connection adds an avatar and repository selection; direct browser tokens are supported without a backend. Named towns and static snapshot publication are defined in [specification 0012](../specs/0012-named-towns-and-static-snapshots.md).
 

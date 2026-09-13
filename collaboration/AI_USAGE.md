@@ -13,6 +13,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
+Session 0045: the human paused Web3 work and specified a stage-five mailbox coin Easter egg in sample towns plus an investment explanation. Codex preserved the [exact instruction and translation](../prompts/0045-sample-mailbox-coins.md) and defined [scope and acceptance](../specs/0013-sample-mailbox-coins.md) before implementation completion. AI choices add a mailbox ray target, temporary coin feedback, keyboard/touch alternatives and lifecycle/reduced-motion handling while preserving locked models and excluding actual wallet/payment/storage behavior. Implementation evidence and human visual review are pending.
+
 Session 0044: Codex captured the actual homepage carousel in a dedicated guest browser viewport using Playwright/Chrome and encoded a README GIF with FFmpeg. This is a recording of the existing application, not new AI-generated artwork. The [record](log.md#0044--animate-the-readme-homepage-preview) identifies its scope and verification; source behavior and building assets are unchanged.
 
 Session 0043: Codex researched optional mailbox support, ENS community records and funding-board alternatives against official prize/SDK documentation. The [discussion record](../docs/ideation/0043-web3-support-options.md) distinguishes the human's idea from AI proposals and unresolved integration/license requirements. No Web3 implementation or selection is claimed.

@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0045: the sample-mailbox plan reuses the existing stage-five mailbox GLB, Three.js and shared free UI materials. Coin/effect visuals and hit/interaction logic are to be original application additions, with no paid asset, new pack, sponsor SDK or dependency planned. All ten model files remain locked. [Scope](../specs/0013-sample-mailbox-coins.md); implementation/reuse verification is pending.
+
 Session 0044: `docs/images/homepage-showcase.gif` is captured from the existing Buildergame homepage, including its approved models and previously disclosed UI materials. Playwright/Chrome and the installed FFmpeg were local capture/encoding tools; no new application dependency or third-party artwork was imported. Existing asset notices remain applicable.
 
 Session 0043: read-only research of ENSv2, Privy and current prize requirements; no SDK, code, asset or contract was imported. These remain [unapproved candidates](../docs/ideation/0043-web3-support-options.md).
