@@ -15,7 +15,7 @@
 - Keep the root README focused on the user experience, features, usage and accurate availability. Keep event-specific review materials in hackathon/ and link to development evidence from there.
 
 - Use English for public product copy, documentation, code identifiers and commit messages.
-- Publish only project ideation, requirements, architecture, implementation, tests, design prompts and necessary AI/reuse disclosure.
+- Publish only project ideation, requirements, architecture, implementation, tests, design prompts and necessary AI/reuse disclosure. Do not publish prompt transcripts or conversational logs about hackathon submissions, rehearsal, narration or demo preparation; retain finalized deliverables and necessary artifact provenance.
 - Do not publish personal preferences, language/timezone setup, unrelated interests, account or Git troubleshooting, or conversations about documentation privacy. Do not create public prompt/log records for those conversations.
 - Do not record personal style, preferences or casual conversation with no material effect on project development in any file, including private notes, backups, prompts or collaboration logs.
 - Reserve the ignored private/ directory for necessary local project material only. Do not automatically archive conversations. Never link to private material from public documents or stage it with git add -f.
@@ -52,4 +52,6 @@ Record project facts, plans and artifacts. Exclude personal administration and s
 
 - Sources are in `hackathon/rules.md`. Check partner eligibility against the final product and Classic/Continuity route.
 - Disclose AI assistance and actual human contributions. Preserve specs, prompts, and planning artifacts used in spec-driven development.
-- Video: 2–4 minutes, at least 720p, audio without music. Prepare the initial feature demo without added narration, plus an additional no-audio export as requested. Keep an optional live-demo script for later use. Do not infer an unconditional narration mandate from the recorded guidance; TTS/AI voiceover and speeding up footage remain prohibited.
+- Video: follow the current official rules in `hackathon/rules.md`: human-spoken audio, no music or AI voiceover, normal speed, 2–4 minutes and at least 720p. Upload the actual file to the project page and click Submit; a hosted video URL is not a substitute.
+- Interrupted session/reload recovery verification is deferred to the next-version backlog; do not describe it as passed.
+- Keep earlier demo exports identified as archives; distinguish final deliverables from rehearsal artifacts.

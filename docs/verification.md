@@ -2,6 +2,18 @@
 
 Updated: 2026-09-13 (UTC). Local fixture results and hosted observations are recorded separately. They do not establish real user adoption. Historical results below apply to their recorded revisions.
 
+## Published HTML demonstration — 2026-09-13 (UTC)
+
+The five-slide presentation source in `hackathon/demo.html` matches the deployment copy in `public/demo/index.html`. Desktop (1440 × 900) and mobile (390 × 844) checks passed for loaded images, single-slide visibility, no horizontal overflow, button and keyboard navigation, and no JavaScript errors. The production build passed. After publishing commit `94f2c56`, `https://buildergame-two.vercel.app/demo/` returned the complete presentation; its SHA-256 matched both the verified source and built copy. This URL is for the optional demonstration-link field, separate from the required video-file upload.
+
+## Updated recorded demonstration — 2026-09-13 (UTC)
+
+The deployed application was recorded in an isolated Chrome webpage viewport: 1600 × 900 proportionally encoded to 1280 × 720 at 25 fps. The take explores the fictional sample, creates a personal town from actual anonymous GitHub API responses for this repository, captures a measured snapshot, and replays its founding baseline. It then shows real Privy login, funded review, and a new 0.001 Sepolia test-ETH transfer personally confirmed by the human. The app displayed a matching successful receipt; Back to town, closing the directory and zooming worked afterward. This was a new recorded transaction, not a replay of the earlier explorer observation.
+
+The current edit is 189.56 seconds at normal speed. It retains the actual Privy approval with shortened addresses. Ordinary cuts omit idle time and recipient entry; opaque mosaic tiles cover email and verification-code regions. The interface-only track uses the original Kenney clips at their captured native cue times and gains. The planner music is excluded. An English female TTS mix is a rehearsal reference, with separate interface-effects-only and silent copies. All three exports passed full FFmpeg decoding, dimension/duration/audio-stream checks, and identical-video-stream checks. Visual privacy and narration alignment review accompanies the export; passing file checks is not human approval.
+
+The human narration needed for the competition final has not yet been received. The reference and backups are local preparation artifacts, not a completed competition upload. No new app code or automated app tests changed. Interrupted session/reload recovery remains explicitly deferred to the [next-version backlog](backlog.md).
+
 ## Published Sepolia extension checkpoint
 
 ### Successful hosted Sepolia transfer observed on 2026-09-13 (UTC)

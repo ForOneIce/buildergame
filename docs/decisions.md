@@ -1,5 +1,9 @@
 # Decision log
 
+## D-041 — Deferred deployed recovery validation
+
+- Interrupted session/reload recovery verification remains in the [next-version backlog](backlog.md). The observed funded transfer and cancellation do not establish interrupted recovery.
+
 ## D-040 — Share the accepted town HUD without a wallet-driven redesign
 
 - 2026-09-13 (UTC): the human required preservation of the accepted town interface when adding optional wallet support. [Requirement summary and separate AI diagnosis](../prompts/0060-preserve-the-accepted-town-interface.md).
@@ -32,6 +36,8 @@
 - Lead with belonging, project discovery and continuing community support. Describe the current mailbox as an interaction prototype and wallet-based appreciation, wallet/ENS identity and community permissions as planned extensions. Keep implemented technology selections factual. [Instruction](../prompts/0052-submission-vision-and-web3-roadmap.md), [submission sheet](../hackathon/summitinfo.md).
 
 ## D-035 — Prepare a feature demo with no background music
+
+Superseded for current video preparation by the [verified video requirements](../hackathon/rules.md#video-wording-and-current-preparation). Retained as history of the earlier instruction.
 
 - 2026-09-13 (UTC): the human requested completed submission materials, quoted a 2–4 minute, minimum-720p, "Audio without music" video requirement and asked for an extra export with no audio stream. The human clarified that the initial video should demonstrate features, with an optional script reserved for a later live presentation.
 - Prepare the main export with interface effects and no music or added narration, plus a separate silent export. Correct the earlier AI inference of an unconditional narration mandate while retaining the recorded no-TTS/AI-voiceover and no-speed-up guidance. No organizer clarification or eligibility decision is invented. [Prompt](../prompts/0051-demo-video-audio-versions.md), [rule wording](../hackathon/rules.md), [submission sheet](../hackathon/summitinfo.md).

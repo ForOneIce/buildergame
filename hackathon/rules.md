@@ -1,6 +1,6 @@
 # ETHOnline 2026 competition rules
 
-Event: ETHOnline 2026. Based on official pages read in this conversation on 2026-09-10; recorded on 2026-09-11. Recheck updates and personal Dashboard status before submission.
+Event: ETHOnline 2026. Initial official-page reading was recorded on 2026-09-11. The official event-details video guidance was fetched again on 2026-09-13 (HTTP 200). The later Discord notice was supplied by the user, not independently fetched. Recheck personal Dashboard status before submission.
 
 ## Official sources
 
@@ -32,16 +32,21 @@ Final deadline: September 13 at 12:00 pm EDT. Individual judging assignments app
 - AI tools are generally permitted. Disclose purposes and affected code/files/assets. Team members must contribute meaningfully.
 - Spec-driven workflows must include all specs, prompts, and planning artifacts in the submission repository. This structure retains evidence; it does not guarantee eligibility or awards.
 - Select at most three partner prizes in the form. Multiple subtracks from one partner count as one partner. Explain actual integration.
-- Video: 2–4 minutes, at least 720p, audio without music. No speeding up to fit the limit, phone recording, or TTS/AI voiceover. Waiting time may be edited out.
+- Video: mandatory, 2–4 minutes, at least 720p, with human-spoken audio and no music. Current official guidance prohibits speeding up to fit the limit, phone recording and TTS/AI voiceover. Waiting time may be edited out.
+- Upload the actual video file to the project page. YouTube, cloud-storage or other video URLs do not satisfy the upload instruction. After any edits, click **Submit** before 2026-09-13 16:00 UTC (September 13, 12:00 pm ET).
 - Finalist live judging: four-minute demo plus three-minute Q&A. Partners judge asynchronously.
 
 ## Video wording and current preparation
 
-The latest submission-field text supplied on 2026-09-13 states: "To be eligible for Top 10 Finalist prizes, you must upload a demo video," with "Between 2 and 4 minutes long," "Minimum resolution of 720p," and "Audio without music."
+The organizer announcement pasted by the user from ETHGlobal Discord on 2026-09-13 requires spoken audio, a 2–4 minute video at minimum 720p, actual file upload instead of cloud/YouTube/other URLs, and **Submit** after edits before September 13 at 12:00 pm ET. This notice was not independently retrieved.
 
-Earlier official guidance recorded in this conversation says: "DO NOT play music with text on video describing project (instead of talking)" and "DO NOT use TTS/AI Voiceover." This wording is not a literal unconditional requirement for narration. An earlier local summary overstated it as mandatory human narration; that interpretation is corrected here. No new organizer clarification or independent live-page recheck is claimed.
+The current [official event-details page — Tips for a Great Demo Video](https://ethglobal.com/events/ethonline2026/info/details#tips-for-a-great-demo-video) was independently fetched on 2026-09-13, returning HTTP 200. Under **Common mistakes to avoid in your demo video**, it states:
 
-Current preparation follows the requested feature demonstration: actual interface effects, no background music, and no added narration. A separate completely silent export is an additional option; the main export retains audio for the quoted audio requirement. The [English script](demo-script.md) is optional preparation for a later live presentation, distinct from the initial uploaded demonstration. No TTS/AI voiceover is planned.
+> 🚨 DO NOT use a text to speech synthesizer / AI Voiceover
+
+The preceding paragraph says: "If we see one or more of these items on your submission, you will be asked to re-submit the video." This confirms the current restriction; it is not merely a historical local quotation.
+
+The competition export requires human narration. TTS references, interface-effects-only files and silent files are not the competition final. Keep earlier exports as archives. [Recording plan](demo-script.md); [narration](demo-narration.txt).
 
 ## Checks after topic selection
 

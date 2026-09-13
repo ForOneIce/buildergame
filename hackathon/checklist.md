@@ -20,18 +20,20 @@ Check items only with evidence. Final submission status has not been verified.
 - [ ] Record actual verification and unfinished work.
 - [ ] Explain integration locations, functions, and evidence for each partner.
 - [ ] Complete the selected partner's required feedback and live integration evidence. This direct-transfer implementation has no custom contract to deploy or verify.
-- [ ] Verify a 2–4 minute feature video at 720p or higher, with interface audio and no background music; keep a separate export without an audio stream.
-- [x] Prepare English submission answers and an optional later live-demo script; added narration is not a blocker for the initial feature recording.
+- [ ] Verify the mandatory final video is 2–4 minutes at 720p or higher, includes intelligible spoken audio and no background music. The old UI-effects-only and silent videos fail the latest spoken-audio requirement and must not be submitted.
+- [x] Prepare English submission answers, the [recording timeline](demo-script.md) and [213-word narration](demo-narration.txt).
+- [ ] Receive and review the user's human narration, then replace the TTS reference in the final competition mix. Human audio is not yet received.
 - [x] Prepare a 512×512 logo, 1280×720 cover and three actual app screenshots; see [media and provenance](media/README.md).
-- [ ] Check for no AI voiceover, speeding up to fit the limit, or phone recording.
-- [ ] Submit and confirm success before 2026-09-13 16:00 UTC.
+- [ ] Verify normal-speed screen capture, no phone recording and human narration with no TTS in the final export. See [verified official video rules](rules.md#video-wording-and-current-preparation).
+- [ ] Upload the actual final video file to the project page; do not substitute a YouTube, cloud-storage or other video URL.
+- [ ] Click **Submit** after all edits and confirm success before 2026-09-13 16:00 UTC (September 13, 12:00 pm ET).
 - [ ] If seeking Finalist consideration, check the individual assignment and prepare a four-minute demo plus three-minute Q&A.
 
 ## Partner-specific register
 
 | Partner and prize | Official link | Route eligibility | Required integration/materials | Evidence/status |
 | --- | --- | --- | --- | --- |
-| Privy — Best financial flow, candidate | [Official requirements](https://ethglobal.com/events/ethonline2026/prizes/privy) | Verify final route requirements | Core Privy integration, creation/use of a Privy wallet, and a functional financial flow; specific source links and actual demo evidence | Source published; 82 Node tests, 21 compact-wallet scenarios and combined build passed. Vercel town release deployed; hosted wallet activation and live receipt pending |
+| Privy — Best financial flow, candidate | [Official requirements](https://ethglobal.com/events/ethonline2026/prizes/privy) | Verify final route requirements | Core Privy integration, creation/use of a Privy wallet, and a functional financial flow; specific source links and actual demo evidence | Source published; 82 Node tests, 21 compact-wallet scenarios and combined build passed. Hosted login, funded review, human-approved Sepolia transfer, matching receipt and final-preview cancellation verified; replacement video pending |
 | ENS — roadmap only | [Official requirements](https://ethglobal.com/events/ethonline2026/prizes/ens) | Not assessed for this increment | Actual ENS integration required | Not implemented; do not claim as a used protocol |
 
 ## Optional Privy increment
@@ -41,11 +43,16 @@ Check items only with evidence. Final submission status has not been verified.
 - [x] Verify ordinary configured-town creation/browsing does not load the wallet panel or request a provider; browser fixture passed. Broader hosted regression remains separate.
 - [x] Exercise wrong-network, signing-rejection, balance/amount, receipt-failure, timeout, repeated-action and late-callback cases with controller/browser fixtures. These do not replace actual hosted login and transaction checks.
 - [x] Run the production build/model-lock and relevant mailbox/browser regressions; all ten accepted GLBs unchanged. See verification for the exact scope.
-- [ ] Complete an actual user-confirmed Ethereum Sepolia transfer through Privy and verify its successful receipt. Mocked hashes do not satisfy this item.
+- [x] Complete an actual user-confirmed Ethereum Sepolia transfer through Privy and verify its successful receipt. The observed 0.001 test-ETH result matched Sepolia Etherscan success, sender, recipient and value; see [verification](../docs/verification.md#successful-hosted-sepolia-transfer-observed-on-2026-09-13-utc). This does not prove every recovery case.
 - [x] Add publicly accessible provider and transfer code permalinks to [summitinfo.md](summitinfo.md).
 - [ ] Add actual chain evidence only after a successful test and approval to publish identifying transaction data.
 - [ ] Verify the deployed App ID/origin configuration and test the exact hosted town used in the demonstration.
-- [ ] Record the updated competition feature video only after successful functional/live-flow testing: sample exploration → actual public-GitHub town creation with support enabled → new-town exploration → human-confirmed Sepolia transfer and matching successful receipt. Follow the [updated recording plan](demo-script.md).
-- [ ] Keep sensitive setup and full test recipients out of public footage, using clearly labeled normal cuts where needed; preserve actual metrics, the same transaction and genuine pending/confirmed states. No AI/TTS voiceover, fabricated success or accelerated footage.
-- [ ] Verify the replacement is 2–4 minutes at 720p or higher, with original site effects and no background music; export the identical footage without an audio stream as well. Existing published videos remain the previous revision until replacement links are verified.
+- [ ] Record the final spoken demonstration as the current priority: sample exploration → actual public-GitHub town creation with support enabled → new-town exploration → funded Privy review → human-confirmed Sepolia transfer and matching successful receipt. The prerequisite live transfer and cancellation have been verified. Follow the [updated recording plan](demo-script.md); preserve actual building stages and do not invent a coin animation for a timber-frame town.
+- [ ] Keep sensitive setup and full test recipients out of public footage, using clearly labeled normal cuts where needed; preserve actual metrics, the same transaction and genuine pending/confirmed states. No fabricated success or accelerated footage. The human must still approve the actual wallet transaction, regardless of voice source.
+- [ ] Verify the replacement is 2–4 minutes at 720p or higher, with the user's human narration and original site effects mixed in stereo, and no background music. Keep the TTS reference and old silent videos out of the competition final.
+- [ ] Prepare the same replacement footage with original interface effects only as the requested upload contingency. Clearly identify that it lacks spoken audio and is not verified to satisfy the latest notice.
 - [ ] Reconcile technology selections, prize answers, rating and feedback with demonstrated functionality; remove any integration still represented only by a roadmap.
+
+## Explicitly deferred to the next version
+
+- [ ] Verify interrupted session/reload recovery on the deployed origin. The human deferred this work to the [next-version backlog](../docs/backlog.md); it is unverified and is not a blocker for the final video. Passing controller/mock-SDK fixtures and a successful ordinary transfer do not complete this item.
