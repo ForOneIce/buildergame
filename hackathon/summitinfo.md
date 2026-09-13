@@ -1,6 +1,6 @@
 # Buildergame — final submission sheet
 
-Prepared for ETHOnline 2026. The optional Privy SDK integration and notice/recovery baseline are recorded in `315f65d`, with later interface and review refinements prepared for release. The latest suite passed 82 Node tests, including 33 transaction fixtures; 21 compact-wallet browser scenarios and the final production build also passed. The new deployment, fresh Privy login and a confirmed Sepolia transfer still require verification. The copy below describes implemented code and identifies the remaining verification milestones. Use the answers matching the revision actually submitted.
+Prepared for ETHOnline 2026. Release `3bf2596` is now public on GitHub and deployed on Vercel; the homepage and sample-town interface were checked online. The latest suite passed 82 Node tests, including 33 transaction fixtures, and 21 compact-wallet browser scenarios; the combined production build passed. The Privy extension is implemented in the published source. Hosted wallet activation and a confirmed Sepolia transaction remain in verification. The fields below reflect this checkpoint.
 
 ## Short description
 
@@ -14,7 +14,7 @@ Every repository has a permanent plot. Five building appearances grow from green
 
 Individual developers can create a home for their public projects; hackathon organizers and communities can bring many builders together. Visitors explore flat streets, a valley or cloud neighborhoods, open wooden signs to meet creators, discover projects through the directory and minimap, and follow links to the work itself. Personal and community planning, GitHub data capture, snapshot playback, portable JSON backups, static deployment, and English/Chinese interfaces form the working demo.
 
-The broader vision is to turn discovery into lasting participation. Our optional Privy-powered support extension starts with native test ETH on Ethereum Sepolia. A personal town can nominate its builder's receiving address; a community can configure a separate recipient for each participating project. Visitors can sign in by email or connect a wallet, review the recipient, network and amount, and explicitly confirm a transfer directly to the builder. The mailbox celebrates only a successful chain receipt. Clear notices, acknowledgment, repeat-send guards and pending-transaction recovery support this flow. Projects without recipients keep their playful virtual coins, so each creator decides how support belongs in their community. Local implementation and automated checks are complete; live login, transfer and deployment verification are the next milestone.
+The broader vision is to turn discovery into lasting participation. We have implemented an optional Privy-powered support extension, starting with native test ETH on Ethereum Sepolia. A personal town can nominate its builder's receiving address; a community can configure a separate recipient for each participating project. In a wallet-enabled deployment, visitors can sign in by email or connect a wallet, review the recipient, network and amount, and explicitly confirm a transfer directly to the builder. The mailbox celebrates only a verified successful chain receipt. Concise notices, acknowledgment, repeat-send guards and pending-transaction recovery support this flow. The sample town demonstrates the playful coin animation; configured towns connect that interaction to builder support. Each creator decides whether to enable wallets for their community. The town experience is deployed, with hosted wallet activation and end-to-end Sepolia verification in progress.
 
 Wallet/ENS identity, community membership and town-management permissions remain future directions. On-chain milestone records could also preserve the relationship between an event, its projects and their continuing progress.
 
@@ -28,11 +28,11 @@ The five accepted building appearances were authored with reproducible Blender P
 
 Repository capture is separate from rendering. Shared GitHub REST transport gathers public repository and builder data, handles pagination, cancellation, timeouts, rate limits and unavailable observations, then stores deliberate snapshots in validated JSON. Personal-access-token connection runs directly in the browser; the token stays in page memory and is excluded from URLs, backups and persistent storage. An optional Node service supports OAuth and owner-checked publication.
 
-Town snapshot JSON committed to `public/data/towns/` produces physical `/towns/<name-and-timestamp>/` pages during the build, supporting static hosting such as Vercel. This keeps project history portable and lets organizers manage it through their own repository. Optional recipient configuration has a separate publication boundary that is still being finalized. Browser storage remembers exploration progress, and an all-land founding snapshot makes the first measured version replayable.
+Town snapshot JSON committed to `public/data/towns/` produces physical `/towns/<name-and-timestamp>/` pages during the build, supporting static hosting such as Vercel. This keeps project history portable and lets organizers manage it through their own repository. Complete backups can also be imported locally on the deployed site, letting us test recipient-configured towns without publishing test-wallet data in GitHub. Browser storage remembers exploration progress, and an all-land founding snapshot makes the first measured version replayable.
 
 Native Web Audio plays six locally hosted Kenney CC0 interface effects. A single lazy HTMLAudioElement loops a supplied Suno track quietly on the planner only and shares the mute control. The submission recording excludes background music. The mailbox prototype combines a Three.js raycast target, contextual coin cursor, animated delivery and a demo receipt to make builder support tangible within the town.
 
-The optional support layer uses Privy's React SDK in an on-demand React island, preserving the main TypeScript/Three.js application. Standard Email/Wallet login supports embedded or connected wallets. Native Sepolia test ETH goes directly to the configured builder recipient, with no custody contract or platform transaction fee. Personal towns use one recipient; community towns map recipients to repositories. Creator/login notices and a fresh per-transfer acknowledgment precede explicit approval. Recipient addresses are shortened by default with full review and copy available. Critical signing and pending states lock unrelated controls; Web Locks and public localStorage checkpoints coordinate participating tabs on the same origin. Recovery checks the original transaction instead of automatically resending. Receipt sender, destination, value and success checks gate the existing coin animation. Local controller and real-React/mock-SDK browser fixtures have passed; actual Privy login and chain evidence remain separate verification work. ENS identity and community permissions remain on the roadmap.
+The optional support layer uses Privy's React SDK in an on-demand React island, preserving the main TypeScript/Three.js application. Privy's standard Email/Wallet login offers embedded or connected wallets, making wallet onboarding accessible to builders and visitors. The implemented transfer path sends native Sepolia test ETH directly to the configured builder recipient, with no custody contract or platform transaction fee. Personal towns use one recipient; community towns map recipients to repositories. Creator/login notices and a fresh per-transfer acknowledgment precede explicit approval. Recipient addresses are shortened by default with full review and copy available. Critical signing and pending states lock unrelated controls; Web Locks and public localStorage checkpoints coordinate participating tabs on the same origin. Recovery checks the original transaction instead of automatically resending. Receipt sender, destination, value and success checks gate the existing coin animation. Controller and real-React/mock-SDK browser fixtures have passed; hosted wallet activation and live transaction evidence are the remaining integration checks. ENS identity and community permissions remain on the roadmap.
 
 Codex assisted with specifications, research, implementation, Blender authoring scripts, tests and documentation. The human supplied the concept, growth policy, visual references, acceptance of the five building stages and successive interaction revisions.
 
@@ -64,17 +64,17 @@ See [AI disclosure](../collaboration/AI_USAGE.md), [human–AI log](../collabora
 
 ### How are you using this Protocol / API?
 
-Current accurate text while live integration is being verified:
+Copy for the protocol/API field at the current verification checkpoint:
 
-> Buildergame integrates Privy's React SDK as an optional wallet layer for developer-support mailboxes. Standard Email/Wallet login supports an embedded wallet or a connected external wallet. Town creators configure one personal recipient or explicit per-project community recipients. Visitors review a native Sepolia test-ETH transfer, acknowledge its risks and explicitly approve it; support goes directly to the builder, and a matching successful receipt triggers the coin celebration. The implementation adds critical-state interaction locks and receipt-only pending recovery while preserving virtual mailboxes in unconfigured projects. Local configuration, transaction-controller and mock-SDK browser checks have passed. Real Privy login and confirmed chain evidence are the next verification step.
+> Buildergame uses Privy to turn project discovery into optional direct support for builders. The published integration uses PrivyProvider for Email/Wallet onboarding and useSendTransaction for embedded-wallet transfers. A personal town configures one receiving address; community towns map recipients to individual projects. The visitor reviews the recipient and native Sepolia test-ETH amount, acknowledges the notice, and approves through the wallet. A matching successful receipt triggers the mailbox coin celebration. Wallet creation, recovery and confirmation fit into a compact interface while the ordinary town experience remains accessible. Configuration, transaction and mock-SDK browser checks have passed; hosted activation and end-to-end Sepolia receipt verification are in progress.
 
 ### Link to the line of code where the tech is used
 
-The wallet implementation and notices/recovery refinement are recorded in local commit `315f65dc39a67c8dcf3f4f2274abb6946af25696`. The following exact permalinks were checked against that local commit, **but it has not yet been pushed; verify they open on GitHub before pasting them into the form**:
+The following permalinks point to published release `3bf259670170fe6bdb1fa37aed63eae437fcb3e5`. Both source files were fetched successfully from GitHub, and the line numbers were checked. Use the first link if the form accepts only one:
 
-- [Privy embedded-wallet transfer through useSendTransaction](https://github.com/ForOneIce/buildergame/blob/315f65dc39a67c8dcf3f4f2274abb6946af25696/src/support/wallet-panel.tsx#L143)
-- [PrivyProvider, email/wallet login and embedded Sepolia configuration](https://github.com/ForOneIce/buildergame/blob/315f65dc39a67c8dcf3f4f2274abb6946af25696/src/support/wallet-panel.tsx#L304)
-- [Receipt verification before confirmed feedback](https://github.com/ForOneIce/buildergame/blob/315f65dc39a67c8dcf3f4f2274abb6946af25696/src/support/transaction.mjs#L206)
+- [Privy embedded-wallet transfer through useSendTransaction](https://github.com/ForOneIce/buildergame/blob/3bf259670170fe6bdb1fa37aed63eae437fcb3e5/src/support/wallet-panel.tsx#L148)
+- [PrivyProvider, email/wallet login and embedded Sepolia configuration](https://github.com/ForOneIce/buildergame/blob/3bf259670170fe6bdb1fa37aed63eae437fcb3e5/src/support/wallet-panel.tsx#L335)
+- [Receipt verification before confirmed feedback](https://github.com/ForOneIce/buildergame/blob/3bf259670170fe6bdb1fa37aed63eae437fcb3e5/src/support/transaction.mjs#L229)
 
 Implementation locations for review: [Privy provider and wallet panel](../src/support/wallet-panel.tsx), [lazy panel entry](../src/support/panel.ts), [transaction lifecycle](../src/support/transaction.mjs) and [public recipient validation](../src/support-config.mjs). Embedded Privy wallets use the SDK's `useSendTransaction`; connected external wallets use their EIP-1193 provider. An external-wallet-only test must not be labeled proof of an embedded Privy-wallet transfer.
 
@@ -83,20 +83,21 @@ Implementation locations for review: [Privy provider and wallet panel](../src/su
 | Evidence | Current status |
 | --- | --- |
 | Scope and lifecycle acceptance | [Optional Privy specification](../specs/0016-optional-privy-support.md) |
-| Implementation commit and line links | Local wallet commit `315f65d`; exact links prepared above, remote push/reachability pending |
-| Automated behavior / compatibility / failure tests | Latest 82/82 Node suite includes 33 transaction fixtures; final compact-card run passed 21 real-React/mock-SDK browser scenarios in English/Chinese at desktop/mobile sizes. Four loading-wrapper and three page-lock groups also passed. Earlier production compilation passed; final release compilation remains separate. [Exact evidence and timing](../docs/verification.md#creator-and-visitor-notices-0059) |
+| Implementation commit and line links | Published release `3bf2596`; exact source files and line references checked above |
+| Automated behavior / compatibility / failure tests | Latest 82/82 Node suite includes 33 transaction fixtures; final compact-card run passed 21 real-React/mock-SDK browser scenarios in English/Chinese at desktop/mobile sizes. Four loading-wrapper and three page-lock groups also passed. Final combined production compilation passed. [Exact evidence and timing](../docs/verification.md#creator-and-visitor-notices-0059) |
 | Shared sample/actual-town interface | Six desktop/mobile sample/actual/configured variants passed layout parity, followed by map and support browser regressions. Actual towns omit landscape tours; camera rules and locked models are preserved |
-| Hosted optional-wallet test | Planned via browser import of a local complete town bundle after configured deployment; no recipient-containing public test data is required |
+| Hosted deployment | Vercel reports release `3bf2596` successfully deployed; homepage and sample-town controls checked online. Its current build still needs the public Privy App ID configured in the host environment and a rebuild to activate the wallet SDK |
+| Hosted optional-wallet test | After activation, create a recipient-configured town or import a complete local backup; no recipient-containing public test data is required |
 | Live Privy session and Sepolia receipt | Pending; add the real explorer link only after confirmation |
-| Updated no-music competition demo | Record after functionality and live-flow checks; current published videos predate this extension |
+| Updated no-music competition demo | Planned: explore the sample, create a town from real GitHub repositories with wallet support, then demonstrate a confirmed Sepolia transaction. Record after live checks; current videos predate this extension |
 
 Test ETH has no monetary value. A successful test-network receipt validates that demonstrated flow, not mainnet readiness or real financial support received by a builder.
 
 ### Next release sequence
 
-1. Complete the combined release checks, then verify an actual Privy login and Sepolia transfer, including rejection and pending recovery.
-2. Finalize recipient configuration delivery, publish the tested revision, and verify the deployed town and source links.
-3. Record the updated music-free demonstration from that verified revision, then refresh the form's evidence and media links.
+1. Configure the public Privy App ID in the host's Production build environment and rebuild the already published release.
+2. Create a wallet-enabled town using real GitHub data; verify Privy login, a confirmed Sepolia transfer, rejection and pending recovery on the deployed origin.
+3. Record the updated music-free demonstration: sample exploration, actual town creation, and verified wallet support. Refresh the form's evidence and media links after recording.
 
 Wallet/ENS identity, community permissions and on-chain milestones remain subsequent product directions. This sequence is the current development plan, not a claim that deployment, recording or partner eligibility is already complete.
 
@@ -112,7 +113,7 @@ Leave the numerical rating and experience feedback for actual integration observ
 | --- | --- |
 | Project name | Buildergame |
 | Repository | https://github.com/ForOneIce/buildergame |
-| Live project URL | [buildergame-two.vercel.app](https://buildergame-two.vercel.app/), as listed in the repository's public metadata; HTTP 200 and Buildergame title checked |
+| Live project URL | [buildergame-two.vercel.app](https://buildergame-two.vercel.app/) — published release `3bf2596`; homepage and sample-town interface checked online |
 | Video | [Direct video URL](https://buildergame-two.vercel.app/demo/buildergame-demo-no-music.mp4) — 3:07, 1280×720, interface audio without music |
 | Silent alternative | [Direct silent video URL](https://buildergame-two.vercel.app/demo/buildergame-demo-silent.mp4) — identical video with no audio stream |
 | Square logo | [buildergame-logo.png](media/buildergame-logo.png), 512×512; [SVG source](media/buildergame-logo.svg) |
