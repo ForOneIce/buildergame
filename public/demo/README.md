@@ -1,9 +1,13 @@
-# Buildergame demo videos
+# Buildergame presentation and earlier video archives
 
-Both videos are 3 minutes 7 seconds, 1280×720, 25 fps, with identical H.264 video.
+[Open the interactive presentation](index.html). Its standalone source is [hackathon/demo.html](../../hackathon/demo.html); the deployment copy is served at `/demo/`. It uses actual project images and supports keyboard navigation. This supplemental page is separate from the required video-file upload.
 
-- [Interface audio, without music](buildergame-demo-no-music.mp4): the primary submission version.
-- [Completely silent](buildergame-demo-silent.mp4): the same video with every audio stream removed.
+Both archived videos are 3 minutes 7 seconds, 1280×720, 25 fps, with identical H.264 video. They predate the wallet extension and lack spoken audio, so neither meets the current competition video requirements. See the [current recording plan](../../hackathon/demo-script.md) and [video rules](../../hackathon/rules.md).
+
+Three replacement drafts are verified locally at 189.56 seconds, 1280×720/25 fps: TTS reference, effects-only stereo and silent. Full decode, stream checks, identical video and privacy-frame review passed. They remain ignored local files and are not published here. Human narration, the competition final and project-page upload remain pending.
+
+- [Interface audio, without music](buildergame-demo-no-music.mp4): earlier effects-only archive, not the final submission.
+- [Completely silent](buildergame-demo-silent.mp4): the same archived video with every audio stream removed.
 
 The videos show the actual project viewport, including sample exploration, the mailbox interaction prototype, planning and public GitHub snapshot capture. The six original Kenney CC0 interface clips were mixed at their recorded native cue times and gains. No background music, voiceover, microphone or unrelated desktop content is included. Two real-time segments use one normal editorial cut; actions are not accelerated. The visible cursor and short feature captions are recording overlays.
 
