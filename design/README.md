@@ -2,7 +2,7 @@
 
 ## Current visual priority
 
-The accepted five building assets are locked and now render in the main town's three landscape modes. The current review concerns a shared game interface across entrance, setup, success and town views. See [UI component research](../docs/ui-kit-research.md) and [the proposed visual system](../specs/0011-shared-game-interface.md). The proposal has not replaced the application skin.
+The accepted five building assets are locked and render in the main town's three landscape modes. The shared game interface is implemented across entrance, setup, success and town views, with wooden controls, planning paper and translucent teal panels. See [UI component research](../docs/ui-kit-research.md), [the visual specification](../specs/0011-shared-game-interface.md) and [current verification](../docs/verification.md). Earlier milestone notes below describe their historical checkpoints.
 
 ### Earlier visual milestones
 
