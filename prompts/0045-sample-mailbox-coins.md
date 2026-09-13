@@ -12,4 +12,4 @@ Pause Web3 work for now. Add an animation of putting a coin into a mailbox as an
 
 ## Implementation boundary
 
-This authorizes a visual sample-town demonstration, not a real wallet connection or payment. [Specification 0013](../specs/0013-sample-mailbox-coins.md) separates the human's animation/UI request from AI implementation choices for hit targets, accessibility and effect cleanup. No partner or funding strategy is adopted by the demo copy. Verification remains pending until recorded in the [verification log](../docs/verification.md).
+This authorizes a visual sample-town demonstration, not a real wallet connection or payment. [Specification 0013](../specs/0013-sample-mailbox-coins.md) separates the human's animation/UI request from AI implementation choices for hit targets, accessibility and effect cleanup. No partner or funding strategy is adopted by the demo copy. Scoped mailbox browser checks and the final production build passed; human visual review remains pending. Actual checks are recorded in the [verification log](../docs/verification.md).

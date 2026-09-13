@@ -8,6 +8,7 @@ import {createHomeShowcase} from './home-showcase';
 import {gameHeader,gameLayout,projectCard} from './game-ui';
 import {localProgress,saveProgress} from './player-progress';
 import { createTown } from './town';
+import { mountMailboxUI } from './mailbox-ui';
 import { safeUrl, repositoryKey, baselineSnapshot } from './model.mjs';
 import { publicBundle, configuration, cleanEvent, defaultRule, assertAppend } from './bundle.mjs';
 import { siteBase, siteUrl, townUrl, previewUrl, requestedTown } from './site-paths';
@@ -17,6 +18,7 @@ import { planningDraft } from './planning-draft.mjs';
 import type { Bundle, TownEvent, Project, Landscape, Snapshot } from './types';
 import { projectDestination } from './links';
 import './map-ui.css';
+import './mailbox-ui.css';
 
 declare const __DEPLOYED_AT__: string;
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -45,6 +47,7 @@ let returnFocus: HTMLElement | null = null;
 let cancelArrival: (()=>void)|undefined, doorTimer: ReturnType<typeof setTimeout>|undefined;
 let entryFromCard=false;
 let homeShowcase:ReturnType<typeof createHomeShowcase>|undefined;
+let mailboxUI:ReturnType<typeof mountMailboxUI>|undefined;
 let planTurn:'forward'|'backward'|undefined;
 let publishDraft:boolean|undefined;
 let snapshotLabel='';
@@ -99,6 +102,7 @@ function connectGitHub(){
 
 function render() {
   reposRequest?.abort();reposRequest=undefined;reposGeneration++;
+  mailboxUI?.dispose();mailboxUI=undefined;
   homeShowcase?.dispose();homeShowcase=undefined;cancelArrival?.();cancelArrival=undefined;clearTimeout(doorTimer);
   document.body.classList.remove('project-detail-open');document.body.dataset.screen=screen;document.body.classList.toggle('town-view',screen==='town');
   scene?.dispose();scene=undefined;stop();document.documentElement.lang=lang==='en'?'en':'zh-CN';document.title=`Buildergame · ${t('Your repos, your town','你的仓库，你的小镇')}`;
@@ -332,6 +336,7 @@ function details(id: string) {
 function showSnapshot(index: number) {
   const snapshots=timelineSnapshots();if(index<0||index>=snapshots.length)return;
   const previous=snapshots[snapshotIndex];snapshotIndex=index;const snap=snapshots[index];scene?.update(snap);
+  mailboxUI?.refresh();
   const baseline=snapshots[0]?.kind==='baseline',position=baseline?index:index+1,total=baseline?snapshots.length-1:snapshots.length;
   $<HTMLInputElement>('#timeline').value=String(index);$<HTMLInputElement>('#timeline').setAttribute('aria-valuetext',`${position} / ${total}, ${date(snap.capturedAt)} UTC`);
   $('#snapshot-date').textContent=snap.kind==='baseline'?t('Starting view','起始画面'):date(snap.capturedAt)+' UTC';$('#snapshot-count').textContent=`${position} / ${total}`;
@@ -340,7 +345,8 @@ function showSnapshot(index: number) {
   refreshProgress();$('#snapshot-label').textContent=`${sampleLabel}${changes?` · ${changes} ${t('buildings changed','栋建筑发生变化')}`:''}`;list();
 }
 function bindTown() {
-  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat');}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
+  try{scene=createTown($('#scene'),bundle.event.projects,(id,open)=>{const p=bundle.event.projects.find(p=>p.id===id)!;if(open){openProjectEntry(p);}else details(id);},bundle.event.landscape||'flat',{mailboxDemo:bundle.event.sampleData,onMailbox:id=>mailboxUI?.credit(id)});}catch{ $('#scene').innerHTML=`<div class="webgl-error">${t('3D is unavailable in this browser. Every project is still accessible in the directory.','此浏览器无法显示 3D，仍可通过项目列表访问所有项目。')}</div>`; }
+  if(bundle.event.sampleData)mailboxUI=mountMailboxUI({host:app,projects:bundle.event.projects,snapshot:()=>timelineSnapshots()[snapshotIndex],scene:()=>scene,t,stopHistory:()=>{stop();$('#play').innerHTML=icon('play');$('#play').setAttribute('aria-label',t('Play history','播放历史'));}});
   $('#reset').onclick=()=>scene?.reset();$('#zoom-in').onclick=()=>scene?.zoom(1);$('#zoom-out').onclick=()=>scene?.zoom(-1);
   visited=localProgress(bundle.event.id,null);progressStatus='local';
   $('#map-home').onclick=()=>scene?.reset();

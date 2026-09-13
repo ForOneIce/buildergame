@@ -41,6 +41,8 @@ For GitHub connection and hosting, follow the [deployment guide](docs/deployment
 
 **Keep track of your discoveries.** Opening project cards records which projects you have explored in this browser only. **Random explore** introduces an undiscovered project when one is available.
 
+**Leave a little encouragement.** In the sample town, hover over a garden home's mailbox to turn your pointer into a coin, then click to watch a pretend deposit. **Support builders**, below **Tour landscapes**, offers a keyboard/touch alternative and explains future sponsorship ideas. This Easter egg uses temporary demo coins, with no wallet connection, payment or saved balance.
+
 | In the town | What it represents |
 | --- | --- |
 | 🏡 A house | A GitHub repository |
@@ -98,6 +100,7 @@ Static deployments support token connection and manual captures directly in the 
 | Personal and hackathon setup; English/Chinese | Implemented; both UI flows checked |
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
+| Sample-town mailbox Easter egg | Virtual coin animation and temporary project receipt; real Web3 remains paused |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |

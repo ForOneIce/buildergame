@@ -16,4 +16,4 @@ Preserve actual specs, plans, and important revisions. Acceptance targets are no
 
 Current workflow increment: [0012 — Named towns and deliberate snapshot publication](0012-named-towns-and-static-snapshots.md), including browser-only exploration, persistent town addresses and static deployment boundaries.
 
-Current interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), a visual Easter egg with a future-support explanation; real Web3 work remains paused. Implementation and verification are pending.
+Current interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation; real Web3 work remains paused. Scoped mailbox browser checks and the final production build passed; human visual review remains pending.

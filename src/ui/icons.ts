@@ -1,5 +1,7 @@
 // Original geometric UI drawings. Labels belong to the surrounding control.
 const drawings: Record<string, string> = {
+  coin: '<ellipse cx="12" cy="12" rx="9" ry="10"/><ellipse cx="12" cy="12" rx="6" ry="7"/><path d="m12 8 1.1 2.7 2.9.3-2.2 2 .6 3-2.4-1.5L9.6 16l.6-3L8 11l2.9-.3Z"/>',
+  wallet: '<path d="M4 7V5l14-2v4M3 7h17v14H3V7Z"/><path d="M20 12h-6v5h6M17 14.5h.1"/>',
   house: '<path d="M3 11 12 3l9 8M5 10v11h5v-7h4v7h5V10"/>',
   map: '<path d="m2.5 5 6-2 7 3 6-2v16l-6 2-7-3-6 2V5Zm6-2v16m7-13v16"/>',
   plan: '<path d="M5 4h14v16H5zM5 4H3v5m16 11h2v-5M8 11l4-4 4 4M9 10v6h6v-6M9 18h6"/>',

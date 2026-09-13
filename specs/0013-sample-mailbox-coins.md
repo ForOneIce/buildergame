@@ -1,6 +1,6 @@
 # Sample-town mailbox coin demonstration
 
-Date: 2026-09-13 (UTC). Status: implementing; acceptance checks pending. Source: [instruction 0045](../prompts/0045-sample-mailbox-coins.md).
+Date: 2026-09-13 (UTC). Status: implemented; scoped browser checks and final production build passed. Human visual review remains pending. Source: [instruction 0045](../prompts/0045-sample-mailbox-coins.md).
 
 ## Purpose and smallest workflow
 
@@ -13,9 +13,11 @@ Give visitors a playful way to imagine supporting a project while exploring a fi
 
 ## Implementation choices and dependencies
 
-AI implementation choices: attach a raycast target to the mailbox already present in the accepted stage-five GLB; use original lightweight coin/effect geometry or CSS with the existing Three.js and UI stack. Do not add another mailbox model or modify any of the ten locked GLBs. The five-stage growth rules, cumulative metrics and snapshot data remain unchanged.
+AI implementation: `src/town.ts` and `src/town.css` attach the hit/cursor behavior to the mailbox already present in the accepted stage-five GLB. `src/mailbox-demo.ts` supplies original Three.js coin/drop/sparkle effects; `src/mailbox-ui.ts` and `src/mailbox-ui.css` supply the bilingual modal and receipt, integrated through `src/main.ts` and `src/game-ui.ts`. Original coin/wallet SVGs in `src/ui/icons.ts`, `public/ui/cursors/coin.svg` and the cursor rule in `src/ui/theme.css` use the existing UI stack. No additional mailbox model, external pack or dependency is introduced. All ten locked GLBs, five-stage growth rules, cumulative metrics and snapshot data remain unchanged.
 
 The effect exists only in the current sample-view lifecycle. Snapshot switches, landscape switches and navigation cancel it and clear temporary feedback/cursor state. Repeated activation remains bounded. Reduced motion replaces the flight/burst with gentle, short feedback. Modal controls retain accessible names, keyboard focus, Escape/close behavior and focus restoration.
+
+The receipt counts demo coins per fictional project in the mounted view's memory. Reopening the dialog retains this temporary count; changing the snapshot ID or rerendering the view clears it. Nothing is serialized into browser storage, a town snapshot or an export. This is a visual play counter with no monetary value or persistent wallet balance.
 
 ## Scope and external boundaries
 
@@ -35,6 +37,8 @@ The effect exists only in the current sample-view lifecycle. Snapshot switches, 
 
 ## Verification plan and status
 
-Check the sample pointer and modal paths, keyboard/touch alternatives, cancellation and reduced motion, and stage/non-sample exclusions. Verify bilingual narrow/desktop presentation, production build and the locked-model fingerprints. Record executed commands, fixtures and screenshots in [verification](../docs/verification.md); plans above are not passing results. No implementation acceptance, actual funds, live wallet integration or human visual approval is claimed yet.
+Scoped mailbox browser checks passed. The unchanged scene's earlier checks covered actual ray hits, drag/right-click behavior, inactive stages one through four and bounded flight/cancellation/disposal. Checks after the UI fixes passed English/Chinese keyboard access, computed coin cursor, count progression and reset, touch/reduced-motion behavior at 360×800 and 360×640, and receipt/menu geometry at 844×390. Corrected early-stage and non-sample fixtures passed. These checks observed no page errors, external requests, HTTP writes, wallet-provider calls, downloads, popups or storage mutations.
+
+The final production build passed with 52 modules, nine fictional projects, three snapshots and all ten locked GLBs unchanged. Codex inspected desktop English dialog/flight/receipt and narrow dialog/receipt/menu screenshots; human visual review remains pending. [Verification](../docs/verification.md) records exact script execution boundaries, screenshot coverage and any separate regression results. No actual funds or live wallet integration is claimed.
 
 中文简注：仅示例小镇的第五阶段邮箱投虚拟金币；不连接钱包、不转账、不保存余额。

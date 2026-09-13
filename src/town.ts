@@ -7,13 +7,17 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { appearance, release, townAssets } from './town-assets';
 import {createLandscape} from './terrain';
+import { createMailboxDemo } from './mailbox-demo';
 import type { Landscape, Project, Snapshot } from './types';
 import './town.css';
 
-export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void, landscape: Landscape = 'flat') {
+export type TownOptions = { mailboxDemo?: boolean; onMailbox?: (id: string) => void };
+
+export function createTown(host: HTMLElement, projects: Project[], select: (id: string, open: boolean) => void, landscape: Landscape = 'flat', options: TownOptions = {}) {
   const zh = document.documentElement.lang.startsWith('zh');
   const t = (en: string, cn: string) => zh ? cn : en;
   let disposed = false, dirty = true;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new THREE.Scene(); scene.background = new THREE.Color(landscape==='clouds'?'#bddbef':'#b8d9df');
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.shadowMap.enabled = true;
@@ -73,24 +77,34 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     marker.position.y = -.08; root.add(marker);
     buildings.set(p.id, { root, sign, marker, stage: 0, progress: 1 });
   }
+  const mailboxes = options.mailboxDemo ? createMailboxDemo(scene, camera, renderer.domElement, projects.map(p => ({ id: p.id, ...layout.positions.get(p.id)! })), reducedMotion, options.onMailbox) : undefined;
+  if (mailboxes) hitTargets.push(...mailboxes.hitTargets);
   const ring = new THREE.Mesh(new THREE.RingGeometry(6.6, 6.72, 4), new THREE.MeshBasicMaterial({ color: '#fff4c2', side: THREE.DoubleSide }));
   ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); ring.position.y = -.025; ring.visible = false; scene.add(ring);
-  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down = { x: 0, y: 0 }, dragged = false;
+  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down: { x: number; y: number; pointerId: number; button: number } | undefined, dragged = false;
   const greeting=document.createElement('span');greeting.className='scene-greeting';greeting.textContent=t('Say hi','打个招呼');greeting.hidden=true;greeting.setAttribute('aria-hidden','true');host.append(greeting);
   renderer.domElement.dataset.cursor='walk';
+  function clearHover() { greeting.hidden = true; renderer.domElement.dataset.cursor = 'walk'; }
+  function tossCoin(id: string) { clearHover(); return mailboxes?.toss(id) ?? false; }
   const pick = (e: PointerEvent) => {
     const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1);
-    ray.setFromCamera(pointer, camera); return ray.intersectObjects(hitTargets.filter(o => o.visible), false)[0]?.object.userData;
+    camera.updateMatrixWorld(); ray.setFromCamera(pointer, camera); return ray.intersectObjects(hitTargets.filter(o => o.visible), false)[0]?.object.userData;
   };
-  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY }; dragged = false;renderer.domElement.dataset.cursor='grabbing';greeting.hidden=true; });
+  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, button: e.button }; dragged = false;renderer.domElement.dataset.cursor='grabbing';greeting.hidden=true; });
   renderer.domElement.addEventListener('pointermove', e => {
-    if(e.buttons&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)dragged=true;
-    const hit=pick(e);renderer.domElement.dataset.cursor=e.buttons?'grabbing':hit?.action==='visit'?'visit':hit?'grab':'walk';
-    greeting.hidden=!!e.buttons||hit?.action!=='visit'||e.pointerType==='touch';
-    if(!greeting.hidden){const bounds=host.getBoundingClientRect();greeting.style.left=Math.min(Math.max(50,e.clientX-bounds.left),bounds.width-50)+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
+    if(e.buttons&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)dragged=true;
+    const hit=pick(e), mailbox=hit?.action==='mailbox';renderer.domElement.dataset.cursor=e.buttons?'grabbing':mailbox?'coin':hit?.action==='visit'?'visit':hit?'grab':'walk';
+    greeting.hidden=!!e.buttons||(!mailbox&&hit?.action!=='visit')||e.pointerType==='touch';
+    greeting.textContent=mailbox?t('Drop a demo coin','投一枚演示金币'):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
+    if(!greeting.hidden){const bounds=host.getBoundingClientRect(),margin=greeting.offsetWidth/2+8;greeting.style.left=Math.min(Math.max(margin,e.clientX-bounds.left),Math.max(margin,bounds.width-margin))+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
   });
-  renderer.domElement.addEventListener('pointerleave',()=>{greeting.hidden=true;renderer.domElement.dataset.cursor='walk';});
-  renderer.domElement.addEventListener('pointerup', e => { renderer.domElement.dataset.cursor='walk';greeting.hidden=true;if (dragged || e.button !== 0) return; const hit = pick(e); if (hit) select(hit.id, hit.action === 'visit'); });
+  renderer.domElement.addEventListener('pointerleave',clearHover);
+  renderer.domElement.addEventListener('pointercancel',()=>{down=undefined;dragged=false;clearHover();});
+  renderer.domElement.addEventListener('pointerup', e => {
+    const press=down;down=undefined;clearHover();
+    if (!press || press.pointerId!==e.pointerId || press.button!==0 || dragged || e.button!==0 || Math.hypot(e.clientX-press.x,e.clientY-press.y)>6) return;
+    const hit=pick(e);if(hit?.action==='mailbox'){tossCoin(hit.id);return;}if(hit)select(hit.id,hit.action==='visit');
+  });
 
   function reset() {
     camera.aspect = Math.max(1, host.clientWidth) / Math.max(1, host.clientHeight); camera.updateProjectionMatrix();
@@ -104,7 +118,6 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   }
   const observer = new ResizeObserver(resize); observer.observe(host); resize(); reset();
   const matrix = new THREE.Matrix4(), transform = new THREE.Matrix4();
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let last = performance.now(), lastBatch = 0;
   let preview: ((data:string)=>void)|undefined;
   function batches() {
@@ -114,11 +127,12 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     for (const a of assets.ready.values()) for (const p of a.parts) p.mesh.count = 0;
     let unknown = 0, highCount = 0;
     const wanted = new Set<string>();
-    for (const b of buildings.values()) {
+    for (const [id, b] of buildings) {
       if (b.stage) { wanted.add(`${b.stage}-low`); assets.request(b.stage, 'low'); }
       if (b.stage && near.has(b)) { wanted.add(`${b.stage}-high`); assets.request(b.stage, 'high'); }
       const high = near.has(b) && assets.ready.get(`${b.stage}-high`);
       const asset = high || assets.ready.get(`${b.stage}-low`);
+      mailboxes?.available(id, Boolean(asset) && b.stage === 5 && b.progress >= 1);
       b.marker.visible = !asset; if (!b.stage) unknown++; if (high) highCount++;
       b.sign.visible = !!asset;
       if (!asset) continue;
@@ -143,12 +157,20 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     const delta = Math.min((now - last) / 1000, .06); last = now; if (document.hidden) return;
     for (const b of buildings.values()) if (b.progress < 1) { b.progress = Math.min(1, b.progress + delta * 2); dirty = true; }
     controls.update(); if (dirty && now - lastBatch > 80) { batches(); lastBatch = now; }
+    mailboxes?.update(delta);
     renderer.info.autoReset = false; renderer.info.reset(); composer.render();
     host.dataset.drawCalls = String(renderer.info.render.calls); host.dataset.triangles = String(renderer.info.render.triangles);
     if(preview){const done=preview;preview=undefined;const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const side=Math.min(renderer.domElement.width,renderer.domElement.height)*.67;canvas.getContext('2d')!.drawImage(renderer.domElement,(renderer.domElement.width-side)/2,(renderer.domElement.height-side)/2,side,side,0,0,256,256);done(canvas.toDataURL('image/png'));}
   });
   return {
     reset,
+    tossCoin,
+    mailboxPoints() { return mailboxes?.points() ?? []; },
+    focusMailbox(id: string) {
+      const target=mailboxes?.target(id);if(!target||disposed)return false;
+      clearHover();controls.target.copy(target);camera.position.copy(target).add(new THREE.Vector3(4.1,3.6,6.4));
+      controls.update();camera.updateMatrixWorld();dirty=true;return true;
+    },
     capturePreview(callback:(data:string)=>void){preview=callback;},
     mapPoints: projects.map(p=>({id:p.id,...layout.positions.get(p.id)!})),
     focus(id: string) {
@@ -158,6 +180,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
       camera.position.copy(controls.target).add(new THREE.Vector3(10, 11, 16)); controls.update(); dirty = true;
     },
     update(snapshot: Snapshot) {
+      mailboxes?.reset();clearHover();down=undefined;
       const states = new Map(snapshot.projects.map(r => [r.projectId, appearance(r.stage)]));
       for (const [id, b] of buildings) { const next = states.get(id) ?? 0; if (next !== b.stage) { b.stage = next; b.progress = 0; } }
       host.dataset.snapshot = snapshot.id; dirty = true;
@@ -169,6 +192,7 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
     },
     dispose() {
       disposed = true; renderer.setAnimationLoop(null); observer.disconnect(); controls.dispose();
+      mailboxes?.dispose();clearHover();
       avatars.forEach(a => { a.onload = null; a.onerror = null; }); assets.dispose();
       release([terrain, ring, ...[...buildings.values()].map(b => b.root)]);
       signGeometry.dispose(); hitGeometry.dispose(); hitMaterial.dispose(); sun.shadow.dispose();

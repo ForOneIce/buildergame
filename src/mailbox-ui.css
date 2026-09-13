@@ -1,0 +1,65 @@
+/* The sample mailbox uses the same paper, wood and sea-glass materials. */
+#investment-dialog{width:560px;max-width:calc(100vw - 28px);max-height:calc(100dvh - 28px);padding:28px;overflow:auto;color:var(--bg-ink)}
+#investment-dialog .panel-title{align-items:center;gap:20px;margin-bottom:22px}
+#investment-dialog h2{font-size:25px;line-height:1.35;margin:0}
+#investment-dialog p{font-size:14px;line-height:1.7;margin:18px 0}
+.demo-wallet-card{display:flex;align-items:center;gap:24px;padding:22px;background:rgb(61 163 154 / .16);border:1px solid #7cad9d;border-radius:16px}
+.demo-wallet-card>div{display:grid;gap:10px;min-width:0;flex:1}
+.demo-tag{font-size:11px;letter-spacing:1.4px;font-weight:bold;color:#426c58}
+.demo-wallet-card strong{font-size:18px;line-height:1.45}
+#connect-demo-wallet{font-size:13px;min-height:44px;padding:8px 10px;opacity:.7}
+.demo-wallet-art{position:relative;width:80px;flex:0 0 80px;color:#947140}
+.demo-wallet-art>.ui-icon{width:80px;height:80px;fill:#d7b785;stroke-width:1.1}
+.demo-wallet-art i{position:absolute;right:-3px;top:-10px;color:#a16d1f;background:#ffe28c;border-radius:50%}
+.demo-wallet-art i .ui-icon{width:35px;height:35px}
+.support-ideas{border-top:1px solid #a9834d50;border-bottom:1px solid #a9834d50;padding:13px 0}
+.support-ideas summary{font-size:14px;line-height:1.6;color:#526a53;min-height:28px}
+.support-ideas ul{padding-left:22px;font-size:14px;line-height:1.7;margin:14px 0}
+.support-ideas li+li{margin-top:8px}
+#investment-dialog .support-ideas p{font-size:12px;margin-bottom:4px;color:var(--bg-muted)}
+.mailbox-picker{display:grid;gap:10px;margin-top:20px;font-size:14px;line-height:1.6}
+.mailbox-picker select{width:100%;min-width:0;min-height:48px;margin:0;font-size:15px}
+#investment-dialog .mailbox-status{font-size:13px;color:#80522d;margin:12px 0 0}
+.mailbox-status:empty{display:none}
+#investment-dialog .mailbox-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-items:center;align-items:center;gap:14px;margin:24px 0 0}
+.mailbox-actions .hud-button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:50px;max-width:100%;font-size:14px;padding:9px 12px}
+.mailbox-actions .ui-icon{width:21px;height:21px;flex:0 0 21px}
+#demo-wallet-receipt{position:fixed;right:32px;top:138px;z-index:8;width:280px;display:flex;align-items:center;gap:17px;padding:18px;pointer-events:none;background:rgb(211 237 208 / .94)}
+#demo-wallet-receipt[hidden]{display:none}
+#demo-wallet-receipt>div{display:grid;gap:7px;min-width:0}
+#demo-wallet-receipt small{font-size:11px;line-height:1.5;color:#4b7057}
+#demo-wallet-project{font-size:16px;line-height:1.4;overflow-wrap:anywhere}
+#demo-wallet-balance{font-size:12px;line-height:1.5;color:#526b54}
+.receipt-art{position:relative;flex:0 0 46px;width:46px;color:#98733e}
+.receipt-art>.ui-icon{width:46px;height:46px;fill:#e3c68f;stroke-width:1.4}
+.receipt-art>b{position:absolute;top:-18px;right:-8px;display:grid;place-items:center;width:34px;height:34px;border:2px solid #ab7a2e;border-radius:50%;background:#ffe28c;color:#735025;font-size:15px}
+.coin-arrived{animation:wallet-receipt-in .3s ease-out both}.coin-arrived .receipt-art>b{animation:wallet-coin-in .5s ease-out both}
+@keyframes wallet-receipt-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes wallet-coin-in{from{opacity:0;transform:translateY(-15px) scale(.75)}to{opacity:1;transform:none}}
+/* Keep camera below map, and support directly below terrain, without covering town totals. */
+@media(max-width:760px),(max-height:679px){
+ .sample-town.map-game .map-nav{display:grid;grid-template-columns:repeat(4,44px);width:194px;gap:6px}
+ .sample-town.map-game .map-nav>#map-home{grid-area:1 / 1 / 2 / 4;min-height:44px}
+ .sample-town.map-game .map-nav>.camera-controls{grid-area:2 / 1 / 3 / 4;width:144px}
+ .sample-town.map-game .map-nav>#show-projects{grid-area:3 / 1}
+ .sample-town.map-game .map-nav>#random-explore{grid-area:3 / 2}
+ .sample-town.map-game .map-nav>.sample-tour-picker{grid-area:1 / 4 / 2 / 5;position:static}
+ .sample-town.map-game .map-nav>#sample-invest{grid-area:2 / 4 / 3 / 5}
+ .sample-town.map-game .map-nav>.hud-button,.sample-town.map-game .sample-tour-picker>summary{min-width:44px;min-height:44px;padding:6px;justify-content:center}
+ .sample-town .sample-tour-options{top:calc(100% + 8px);left:0;width:min(300px,calc(100vw - 28px));max-height:calc(100dvh - 285px);overflow:auto;overscroll-behavior:contain}
+ .sample-town .sample-tour-picker>summary .control-hint{left:-150px}
+}
+@media(max-width:760px){
+ #investment-dialog{padding:21px}#investment-dialog h2{font-size:22px}
+ .demo-wallet-card{gap:16px;padding:16px}.demo-wallet-art{width:58px;flex-basis:58px}.demo-wallet-art>.ui-icon{width:58px;height:58px}.demo-wallet-art i .ui-icon{width:28px;height:28px}
+ .demo-wallet-card strong{font-size:16px}#connect-demo-wallet{font-size:12px;padding:7px}
+ #investment-dialog .mailbox-actions{gap:10px}.mailbox-actions .hud-button{font-size:13px;padding:8px 6px;gap:5px}.mailbox-actions .ui-icon{width:17px;height:17px;flex-basis:17px}
+ #demo-wallet-receipt{top:110px;right:14px;width:134px;padding:12px;gap:0}
+ #demo-wallet-receipt .receipt-art{position:absolute;top:8px;right:8px;width:25px;height:25px}
+ #demo-wallet-receipt .receipt-art>.ui-icon{display:none}
+ #demo-wallet-receipt .receipt-art>b{position:static;width:25px;height:25px;font-size:12px}
+ #demo-wallet-receipt small{padding-right:23px;font-size:10px}
+ #demo-wallet-project{font-size:14px}#demo-wallet-balance{font-size:11px}
+}
+@media(max-height:679px) and (min-width:761px){#demo-wallet-receipt{top:92px;right:14px;width:270px;padding:14px}}
+@media(prefers-reduced-motion:reduce){.coin-arrived,.coin-arrived .receipt-art>b{animation:none}}
