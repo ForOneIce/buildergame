@@ -4,6 +4,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## Human contributions
 
+- Required the optional wallet addition to preserve the accepted town interface. Codex diagnosed a pre-existing sample/non-sample HUD split and specified a shared arrangement without treating that diagnosis as the human's original explanation. [Scope and pending acceptance](../specs/0018-preserve-the-accepted-town-interface.md).
+
 - Authorized optional Privy developer support, creator-controlled adoption, direct personal/per-project recipients and test-chain-first delivery. Required unconfigured mailboxes to retain virtual coin feedback and existing 3D assets to remain locked.
 
 - Directed the submission narrative to connect the working demo with planned wallet-based developer support and community permissions. Codex revised the English copy and clearly labeled those integrations as roadmap work; no runtime Web3 feature was added in that revision.
@@ -16,6 +18,18 @@ Codex assisted with project planning, research, translations, specifications, im
 - Accepted and locked the five building appearances; specified flat, valley and cloud landscapes, map-style floating controls, player avatars/progress and project-card composition.
 
 ## AI contributions
+
+Session 0062: Codex recorded the [compact support-card requirement](../prompts/0062-compact-support-card.md) and scoped a secondary information dialog without weakening acknowledgment, wallet review or critical locking. Its visual acceptance remains pending; earlier fixture results concern their recorded UI revisions.
+
+Session 0061: Codex revised the product README, submission answers and optional-wallet guide to reflect the current development plan, locally pinned SDK evidence and scoped verification. The public demo/video remain identified as the earlier release. The copy presents direct builder support and longer-term community directions without claiming deployed wallet availability or a real receipt. [Instruction](../prompts/0061-update-product-and-submission-progress.md).
+
+Session 0059: Codex recorded [the creator/visitor notice and acknowledgment requirements](../prompts/0059-creator-and-visitor-wallet-notices.md), drafted concise English/Chinese creator copy and extended the acceptance scope/deployer guide. Corresponding UI work includes `src/support/setup-help.ts`, `setup-help.css`, `wallet-help.tsx` and main/panel integration. Creator-browser and four real-React/mock-SDK panel groups passed; the targeted transaction suite passed 28/28 and TypeScript passed. [Verification](../docs/verification.md#creator-and-visitor-notices-0059) states exact fixture boundaries and timing. Acknowledgment remains separate from wallet authorization. Final integrated visual/live checks remain pending; no legal assurance or actual transaction is claimed.
+
+Session 0058: Codex preserved the [dedicated receiving-wallet recommendation](../prompts/0058-dedicated-support-wallet-hint.md) and added its English/Chinese deployment copy. This does not change wallet creation, account policy or transaction behavior; in-app visual acceptance remains pending.
+
+Session 0057: Codex preserved [the locking/failure instructions](../prompts/0057-support-lock-and-failure-handling.md) and defined [the scoped acceptance plan](../specs/0017-support-lock-and-failure-handling.md). Critical-phase UI locking, Web Locks coordination and persistent public recovery are under implementation; no new passing tests or complete replay-attack protection are claimed at scope creation. This does not add a backend transfer service or broaden the authorized chain/payment scope.
+
+Session 0056: Codex preserved the [visitor-explanation requests](../prompts/0056-login-and-wallet-explanation.md) and added English/Chinese login-versus-wallet guidance, transaction-cost/finality explanations and a bounded maintenance assessment to [the optional deployment guide](../readme_web3.md#explain-login-and-wallets-to-visitors). This is copy clarification and assessment; no authentication/transaction behavior, private-key export interface, new maintenance feature or live verification is claimed by the documentation change. In-app help/risk copy visual review remains pending.
 
 Session 0055: Codex wrote [the optional wallet deployment guide](../readme_web3.md), linked it from the user README/deployment documentation, and preserved the [project instruction](../prompts/0055-optional-wallet-deployment-guide.md). This documentation work describes public configuration and implementation boundaries without publishing account-specific setup details or claiming live wallet verification.
 

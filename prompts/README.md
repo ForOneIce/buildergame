@@ -55,5 +55,12 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0053 — Add optional Privy support for builders](0053-optional-privy-support.md)
 - [0054 — Record the updated demo after functional testing](0054-record-updated-demo-after-testing.md)
 - [0055 — Document optional wallet deployment prerequisites](0055-optional-wallet-deployment-guide.md)
+- [0056 — Explain login and wallets to visitors](0056-login-and-wallet-explanation.md)
+- [0057 — Lock support submissions and explain failure states](0057-support-lock-and-failure-handling.md)
+- [0058 — Recommend a dedicated project support wallet](0058-dedicated-support-wallet-hint.md)
+- [0059 — Explain and acknowledge wallet notices](0059-creator-and-visitor-wallet-notices.md)
+- [0060 — Preserve the accepted town interface](0060-preserve-the-accepted-town-interface.md)
+- [0061 — Update product and submission progress](0061-update-product-and-submission-progress.md)
+- [0062 — Compact the support card](0062-compact-support-card.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

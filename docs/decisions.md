@@ -1,5 +1,18 @@
 # Decision log
 
+## D-040 — Share the accepted town HUD without a wallet-driven redesign
+
+- 2026-09-13 (UTC): the human required preservation of the accepted town interface when adding optional wallet support. [Requirement summary and separate AI diagnosis](../prompts/0060-preserve-the-accepted-town-interface.md).
+- Codex found an unchanged legacy sample/non-sample layout split and selected the accepted sample arrangement as the shared HUD. The human then explicitly confirmed that actual towns must match samples except for omitting landscape tours. Created towns therefore receive no replacement settings button; duplicate exploration and visitor Save town controls are removed. Optional-wallet entry remains conditional, and the sample controls, camera policy and locked models are preserved.
+- Retain continuation and backup in the planner's optional **Not ready yet?** section when an actual town is loaded. Reuse its configuration/history continuation behavior with terrain locked; simplifying visitor controls must not remove existing maintenance workflows.
+- This is a corrective implementation decision, not proof of completed visual acceptance. [Specification 0018](../specs/0018-preserve-the-accepted-town-interface.md) records the checks to perform.
+
+## D-039 — Protect an active support submission without changing the base town
+
+- 2026-09-13 (UTC): the human requested page locking and clear frontend wallet/transfer failure handling. [Instructions](../prompts/0057-support-lock-and-failure-handling.md).
+- Distinguish read-only review from critical approval/submission/receipt states. Keep the wallet portal usable while blocking unrelated game actions and repeat sends. Coordinate participating same-origin tabs and retain validated public pending context; decline new real sends if the required browser safeguards are unavailable.
+- Do not claim server idempotency, cross-origin exclusion or defense against maliciously modified clients. Ethereum nonce rules prevent repeat execution of the same signed payload, not separately signed transfers with different nonces. [Specification 0017](../specs/0017-support-lock-and-failure-handling.md); implementation/acceptance are pending.
+
 ## D-038 — Give optional wallet deployments a separate setup guide
 
 - 2026-09-13 (UTC): the human requested `readme_web3.md` with prerequisites and deployment steps for developers enabling wallet services. [Instruction](../prompts/0055-optional-wallet-deployment-guide.md).

@@ -12,7 +12,7 @@ Build a home for your public portfolio, or bring a whole hackathon community tog
 
 [Explore the idea](#a-town-you-can-explore) · [Make-it-yours workflow](#make-it-yours) · [Development status](#development-status) · [Hackathon review](hackathon/README.md)
 
-> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub when the deployment supports login. English and Chinese are supported.
+> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub to import your projects. English and Chinese are supported. The next release adds optional Privy developer support; its local implementation is ready for live Sepolia verification.
 
 ## Quick start
 
@@ -37,11 +37,11 @@ For GitHub connection and hosting, follow the [deployment guide](docs/deployment
 
 **Find your next stop.** Unfold the map, then orbit, zoom and move around the town. Pick a plot on the minimap or search the project directory. Cream visitor cards introduce each builder and project; opening a house reveals a doorway with a link to visit the project in a new tab.
 
-**Draw your own neighborhood.** Open a kraft-paper planning sheet, choose public repositories and a landscape, then capture your first snapshot. Wooden controls, paper cards and transparent teal panels connect the entrance, planning desk and town. On phones, exploration progress folds away to leave room for the world.
+**Draw your own neighborhood.** Open a kraft-paper planning sheet, choose public repositories and a landscape, then capture your first snapshot. Wooden controls, paper cards and transparent teal panels connect the entrance, planning desk and town. The current interface refinement gives sample and created towns the same controls, with landscape tours reserved for samples.
 
 **Keep track of your discoveries.** Opening project cards records which projects you have explored in this browser only. **Random explore** introduces an undiscovered project when one is available.
 
-**Leave a little encouragement.** Hover over a garden home's mailbox to turn your pointer into a coin. Unconfigured mailboxes keep their playful virtual deposit. Town creators can optionally configure receiving addresses and open a Privy support card from the mailbox, with confirmation before sending and coin feedback after a successful receipt. This first wallet extension uses Sepolia test ETH. [Configure optional support](readme_web3.md).
+**Leave a little encouragement.** Hover over a garden home's mailbox to turn your pointer into a coin. Keep it playful with virtual deposits, or let a town creator enable direct support for builders. The optional Privy extension offers email or wallet sign-in, a clear recipient/amount review and explicit confirmation; a successful receipt triggers the coin celebration. Its first release targets Sepolia test ETH, with live verification still pending. [Configure optional support](readme_web3.md).
 
 **Hear the little interactions.** Soft clicks, paper unfolding and a coin chime accompany controls after your first interaction. A gentle [planning-desk track](music/README.md) loops only while creating a town. The upper-right speaker button mutes music and effects together and remembers the setting on this device. Six small [Kenney CC0 clips](docs/ui-audio-research.md) provide the interface sounds; all audio is served locally.
 
@@ -77,11 +77,15 @@ Create a town in a few steps:
 4. **Record a moment.** Capture repository observations as a snapshot. Earlier snapshots keep their recorded appearance.
 5. **Share the town.** Self-host a fixed showcase, or publish new snapshots to keep the timeline growing.
 
-The experience works without wallets. Star and follow links take visitors to GitHub, where they choose whether to perform the action. **Builder support (optional)** lets a creator add one personal receiving address or per-project community recipients; see [wallet prerequisites and deployment](readme_web3.md) before enabling it.
+Star and follow links take visitors to GitHub, where they choose whether to perform the action. **Builder support (optional)** lets a creator add one personal receiving address or per-project community recipients. Each community decides how encouragement fits its town; ordinary discovery, snapshots and virtual coins remain independent. See [wallet prerequisites and deployment](readme_web3.md) before enabling it.
 
 After capture, select **Enter my town** to explore. Each new town starts with an all-stage-one founding view, followed by the first measured snapshot, so its growth can be played immediately. Export `<slug>.json` to `public/data/towns/` in your deployment repository and rebuild to publish `/towns/<name-and-timestamp>/`. Existing names and addresses are preserved across snapshots. **No GitHub repository writes happen automatically.**
 
+That repository-publication workflow currently applies to town data without populated support recipients. Keep recipient-containing backups local while the optional support publication workflow is finalized; see the [support configuration boundary](readme_web3.md#recipient-fields).
+
 Not ready to capture yet? Open **Not ready yet? → Save draft** in the planner to download `town.plan.json`, then use **Load a plan** to continue later. A draft can contain unfinished fields and has no snapshots. **Export deployment configuration** produces a complete `town.config.json` for configuration import or CLI capture; a draft cannot replace that input. Use [the example configuration](examples/hackathon.config.json) for file-based setup.
+
+To maintain a town already loaded in this browser, return to the planning sheet and open **Not ready yet? → Continue current town**. This resumes its existing configuration/history with the landscape locked; **Back up current town** exports its current snapshot data. These maintenance actions appear for actual towns, keeping the visitor interface focused on exploration. The continuation browser fixture passed; recipient-containing backups retain the local-only publication boundary above.
 
 Static deployments support token connection and manual captures directly in the browser. Unpublished towns use `?preview=<slug>` to support refresh in that browser; they become publicly shareable at `/towns/<slug>/` after their JSON is committed and redeployed. An optional Node deployment lets OAuth-authenticated builders publish their own towns immediately. Ordinary visitors need no account to explore published towns.
 
@@ -98,20 +102,30 @@ Static deployments support token connection and manual captures directly in the 
 | --- | --- |
 | Five building appearances | Accepted and locked; full and distant GLBs are checked by SHA-256 |
 | Flat, valley and cloud landscapes | Implemented; fixed for each town and generated from its initial collection |
-| Timeline, searchable directory, signs, cards and minimap | Implemented; current desktop/mobile browser checks passed |
+| Timeline, searchable directory, signs, cards and minimap | Implemented; shared sample/created-town controls passed desktop/mobile parity and map-browser checks |
 | Growth rules and snapshot backup/restore | Implemented; data/API tests passed |
 | Sample data and public GitHub capture | Implemented; real public-repository reads verified |
 | Personal and hackathon setup; English/Chinese | Implemented; both UI flows checked |
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
 | Mailbox Easter egg | Unconfigured mailboxes retain virtual coins independently of wallet support |
-| Optional Privy support | Sepolia test-ETH code implemented; 65 Node tests, scoped browser fixtures and production build passed. Hosted/live transfer verification pending |
+| Optional Privy support | Email/wallet login and direct Sepolia test-ETH flow implemented locally in `315f65d`; notices, explicit review, critical-state locking and pending recovery included. Live login/transfer and deployment remain pending |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
 | Hosted demo and broader device testing | Earlier demo/media publicly available; optional wallet deployment and broader device coverage need verification |
 
 The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
+
+The latest wallet checkpoint passed **77 Node tests**, scoped browser fixtures and a production build before the subsequent HUD-only correction. The published demo and videos still show the earlier town release. These checks validate local behavior; they do not stand in for an actual Privy session or confirmed transfer.
+
+### What comes next
+
+1. **Verify the experience.** Complete the combined release checks and exercise an actual Privy login, Sepolia receipt, cancellation and recovery without disrupting ordinary exploration.
+2. **Publish the verified revision.** Finalize support configuration delivery, deploy, and check the hosted town and code links.
+3. **Show the complete journey.** Record an updated demonstration from that verified build and refresh the submission materials.
+
+Longer term, wallet/ENS identity, community membership and management permissions, and recorded on-chain milestones could connect discovery with lasting participation. These are planned directions, not features enabled by the current testnet extension.
 
 ## For builders
 

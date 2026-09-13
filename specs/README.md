@@ -18,6 +18,10 @@ Current workflow increment: [0012 — Named towns and deliberate snapshot public
 
 Current optional support increment: [0016 — Optional Privy support for builders](0016-optional-privy-support.md), implemented for Ethereum Sepolia with 65 passing Node tests, scoped browser fixtures and a passing production build including the optional wallet bundle. Existing virtual mailbox interactions remain available without recipient configuration. Hosted and live-chain verification remain separate pending milestones; consult current verification before claiming a confirmed transfer.
 
+Subsequent support refinement: [0017 — Submission lock and failure handling](0017-support-lock-and-failure-handling.md), implemented locally with critical-phase interaction locks, same-origin send coordination, validated pending recovery and creator/visitor acknowledgment. The later 77-test/build checkpoint and scoped browser fixtures passed before the shared-HUD correction; final integrated and live acceptance remain pending. [Exact evidence](../docs/verification.md#support-submission-lock-and-failures-0057).
+
+Current interface correction: [0018 — Preserve the accepted town interface](0018-preserve-the-accepted-town-interface.md), sharing the established sample HUD with created towns while keeping optional-wallet entry and town-specific actions conditional. The source audit identified a pre-existing sample/non-sample layout split; corrective implementation and visual verification are separate from that diagnosis.
+
 Previous interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation. Scoped mailbox browser checks and the production build for that revision passed; human visual review remains pending.
 
 Current audio increment: [0014 — Game UI interaction sounds](0014-ui-interaction-sounds.md), covering six verified free local clips, user-gesture audio unlock, click/map/hover feedback and a remembered mute preference. Asset/scoped browser checks and the final combined build passed; human listening review remains pending.

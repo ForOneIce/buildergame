@@ -1,5 +1,47 @@
 # Human–AI collaboration log
 
+## 0062 — Compact the support card
+
+- 2026-09-13 (UTC): the human requested a shorter support window, a separate full-information dialog where needed and removal of the visually disruptive vertical scrollbar. [Original instruction and translation](../prompts/0062-compact-support-card.md).
+- Codex scoped a concise primary card and accessible secondary details while retaining unchecked acknowledgment, full-address review, current errors, explicit approval and critical-state locks/recovery. This visual increment's implementation and acceptance are pending; no screenshot contents or account-specific values are recorded.
+
+## 0061 — Update product and submission progress
+
+- 2026-09-13 (UTC): the human requested README and submission-sheet updates reflecting the development plan. [Original instruction and translation](../prompts/0061-update-product-and-submission-progress.md).
+- Codex updated the product README, [submission answers](../hackathon/summitinfo.md) and optional deployment guide: locally implemented Privy Email/Wallet support, direct Sepolia recipients, notice acknowledgment, address review, critical locks and receipt-only recovery; pending shared-HUD checks, actual login/receipt, publication and replacement recording. Product copy continues to connect project discovery with lasting community encouragement.
+- Source permalinks were checked against local wallet commit `315f65d` at wallet-panel lines 143/304 and transaction line 206. The 77-test/build checkpoint precedes the HUD-only edit; four wallet React/mock-SDK groups, four loading groups and three lock groups are scoped fixtures. No private recipient, App ID, account setup discussion or fabricated chain evidence is part of these documents. All 523 relative links across 18 checked documents resolved, the submission fields measured 93/2,657/3,525 characters, and scoped Git whitespace validation passed.
+
+## 0060 — Preserve the accepted town interface
+
+- 2026-09-13 (UTC): the human required the wallet extension to preserve the accepted town controls and layout, then explicitly confirmed that actual towns must match sample towns except for omitting landscape tours. [The prompt record](../prompts/0060-preserve-the-accepted-town-interface.md) distinguishes the initial summary from the original follow-up and its translation.
+- Codex compared baseline `8f8710d` with the wallet revision and inspected sample versus non-sample browser views. The shared layout function already had different town-type branches; layout styles and models had no diff. This diagnosis is distinct from the human requirement and does not attribute the old difference to new wallet CSS.
+- Codex defined [specification 0018](../specs/0018-preserve-the-accepted-town-interface.md): reuse the accepted sample control arrangement for created towns, omit actual-town landscape tours without a settings replacement, remove redundant visitor exploration/save controls and keep optional wallet entry conditional. Camera rules, physical assets and the existing sample arrangement remain in scope to preserve. Six desktop/mobile HUD parity variants and the map/support browser regressions passed after a sample-only mobile selector was corrected. [Exact evidence](../docs/verification.md#shared-town-interface-and-progress-documentation-00600061) distinguishes these local fixtures from human visual acceptance and live-chain verification.
+
+## 0059 — Explain and acknowledge wallet notices
+
+- 2026-09-13 (UTC): the human requested creator and visitor wallet notices, including address/deployment-change implications, and required an acknowledgment checkbox after reading. [Project instruction excerpts and translations](../prompts/0059-creator-and-visitor-wallet-notices.md).
+- Codex extended [specification 0017](../specs/0017-support-lock-and-failure-handling.md) and the deployer guide with concise creator/login/transfer notice requirements. Checkboxes are initially unchecked; a changed transfer context resets acknowledgment. The human clarified that notices belong only to configured wallet paths: opting out preserves basic creation, and unconfigured visitors see no wallet login/dialog/checkbox or SDK requirement. Notices do not replace authentication/signing, grant legal protection or guarantee recovery.
+- Subsequent creator-guide browser fixtures and four real-React/mock-SDK panel groups passed, including fresh acknowledgment, amount resets, disabled continuations, rejection release and read-only recovery. The targeted transaction suite passed 28/28 and TypeScript passed. [Exact evidence and boundaries](../docs/verification.md#creator-and-visitor-notices-0059) distinguish these later results from the earlier 75-test checkpoint; integrated HUD review and real chain verification remain pending.
+
+## 0058 — Recommend a dedicated project support wallet
+
+- 2026-09-13 (UTC): the human requested a project-setup recommendation to keep its receiving wallet separate from everyday personal use. [Project instruction excerpt and final English/Chinese copy](../prompts/0058-dedicated-support-wallet-hint.md).
+- Codex added the recommendation to the deployer guide for use beside the optional recipient field. This is explanatory copy, not a new ownership check or wallet-creation requirement. In-app placement and visual verification remain pending their review.
+
+## 0057 — Lock support submissions and explain failure states
+
+- 2026-09-13 (UTC): the human requested clear wallet/support error handling and a page lock after starting a transfer, including protection against repeated submission. [Original instructions and translation](../prompts/0057-support-lock-and-failure-handling.md).
+- Codex defined [specification 0017](../specs/0017-support-lock-and-failure-handling.md) before acceptance: separate read-only review from critical signing/receipt states, preserve Privy's portal while disabling background game controls, coordinate same-origin sends with Web Locks, validate a persistent public checkpoint and refuse new sends if the safeguards are unavailable. The scope explicitly distinguishes client-side duplicate prevention from malicious-client/cross-origin behavior and Ethereum nonce rules.
+- Implementation and new acceptance checks are pending. The earlier 65-test feature result is not claimed to verify these changes. Final lock/storage details and exact executed evidence will be recorded after implementation.
+- The implementation design now specifies an origin-wide Web Lock and version-2 localStorage envelope. A later refinement adds valid legacy-session migration with a passing controller fixture. A separately labeled deployment-continuity assessment requires no forced critical-phase reload, compatible pending formats and no silent deletion of unknown versions; it does not claim all legacy edge cases or completed hosted recovery verification. Three native/integrated browser-lock groups and four wrapper-loading groups passed within the fixture boundaries in [verification](../docs/verification.md#support-submission-lock-and-failures-0057).
+
+## 0056 — Explain login and wallets to visitors
+
+- 2026-09-13 (UTC): the human requested a concise visitor-facing explanation of login versus a wallet, official wallet-management guidance and visible transaction-risk information. [Project instruction excerpts and translations](../prompts/0056-login-and-wallet-explanation.md).
+- Codex added concise English/Chinese guidance to [the optional wallet guide](../readme_web3.md#explain-login-and-wallets-to-visitors), covering email authentication, an app-associated embedded wallet, optional external-wallet connection, separate balances and explicit transfer confirmation. It distinguishes the SDK's export capability from the current demo, which has no key-export control; existing external wallets can connect directly without submitting private keys. Authentication and transaction behavior are unchanged by this documentation edit.
+- The guide also distinguishes pre-broadcast cancellation, unconfirmed broadcasts, gas costs for on-chain failure and confirmed-transfer finality. A short maintenance assessment identifies stale recipients/configuration, incomplete tab-local history, provider availability, costs/dependencies and recovery/export gaps as considerations, not completed features or authorization for further implementation.
+- The corresponding concise in-app help and visible risk copy remain pending visual verification; this record does not claim a new live session, transaction, key-export feature or security guarantee.
+
 ## 0055 — Document optional wallet deployment prerequisites
 
 - 2026-09-13 (UTC): the human requested `readme_web3.md` for developers configuring wallet services. [Original project instruction and translation](../prompts/0055-optional-wallet-deployment-guide.md).
