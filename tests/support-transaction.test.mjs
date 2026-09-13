@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDonationFlow, donationIntent, estimateDonation, SUPPORT_CHAIN_HEX, validateAmount } from '../src/support/transaction.mjs';
+import { canConfirmDonation, createBrowserTransferGuard, createDonationFlow, createSupportActionGate, donationIntent, estimateDonation, SUPPORT_CHAIN_HEX, validateAmount } from '../src/support/transaction.mjs';
 
 const sender = '0x1111111111111111111111111111111111111111';
 const recipient = '0x2222222222222222222222222222222222222222';
@@ -149,4 +149,120 @@ test('route disposal suppresses late coin animation but saves a late wallet hash
 test('scene callback error cannot turn confirmed money into pending or failed', async () => {
   const f = fixture(), flow = makeFlow({ onConfirmed: () => { throw new Error('Scene unavailable'); } });
   await flow.prepare(input, f.adapter); await flow.send(); assert.equal(flow.getSnapshot().phase, 'confirmed'); flow.dispose();
+});
+
+test('cancelled read-only review releases immediately and ignores a late provider result', async () => {
+  const f = fixture(), flow = makeFlow();
+  let finish;
+  f.responses.eth_chainId = () => new Promise(resolve => { finish = resolve; });
+  const reviewing = flow.prepare(input, f.adapter);
+  while (!finish) await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(flow.cancelPreparation(), true); assert.equal(flow.getSnapshot().phase, 'idle');
+  finish(SUPPORT_CHAIN_HEX); await reviewing;
+  assert.equal(flow.getSnapshot().phase, 'idle'); assert.equal(f.sent.length, 0); flow.dispose();
+});
+
+test('support action gate cancels hung wallet setup, permits retry, and fences the old result', async () => {
+  const gate = createSupportActionGate(); let finish, oldCurrent;
+  const old = gate.run(async ({ isCurrent }) => { oldCurrent = isCurrent; await new Promise(resolve => { finish = resolve; }); return isCurrent(); });
+  await Promise.resolve(); assert.equal(gate.busy, true); gate.cancel();
+  assert.equal((await old).status, 'cancelled'); assert.equal(gate.busy, false);
+  const next = await gate.run(async () => 'new connection'); assert.deepEqual(next, { status: 'done', value: 'new connection' });
+  finish(); assert.equal(oldCurrent(), false); gate.dispose();
+});
+
+test('support action gate bounds timeout, rejects double-clicks, and does not let stale completion clear a new action', async () => {
+  const gate = createSupportActionGate(); let current;
+  const first = gate.run(async context => { current = context; return new Promise(() => {}); }, 5);
+  assert.equal((await gate.run(async () => 'duplicate')).status, 'busy');
+  const result = await first; assert.equal(result.status, 'error'); assert.equal(result.error.code, 'timeout'); assert.equal(current.isCurrent(), false);
+  assert.equal((await gate.run(async () => true)).status, 'done'); gate.dispose();
+});
+
+test('a stalled send becomes unknown without unlocking or retrying, then accepts its late real hash', async () => {
+  const f = fixture(), flow = makeFlow({ sendWaitMs: 5 }); let finish;
+  f.adapter.send = () => new Promise(resolve => { finish = resolve; });
+  await flow.prepare(input, f.adapter); assert.equal(flow.getSnapshot().critical, false);
+  const sending = flow.send(); assert.equal(flow.getSnapshot().critical, true);
+  await new Promise(resolve => setTimeout(resolve, 15));
+  assert.equal(flow.getSnapshot().phase, 'unknown'); assert.equal(flow.getSnapshot().critical, true);
+  assert.equal(flow.cancelPreparation(), false); assert.equal(flow.reset(), false);
+  finish({ hash }); await sending; assert.equal(flow.getSnapshot().phase, 'confirmed'); assert.equal(flow.getSnapshot().critical, false); flow.dispose();
+});
+
+test('provider request cancellation is an unknown broadcast outcome, not a safe user rejection', async () => {
+  const f = fixture(), flow = makeFlow(); f.adapter.send = async () => { throw new Error('Network request cancelled'); };
+  await flow.prepare(input, f.adapter); await flow.send();
+  assert.equal(flow.getSnapshot().phase, 'unknown'); assert.equal(flow.getSnapshot().critical, true); flow.dispose();
+});
+
+test('recovering an unrelated reverted hash cannot unlock an unresolved transfer', async () => {
+  const f = fixture({ eth_getTransactionReceipt: { status: '0x0', transactionHash: hash, from: other, to: recipient } }), flow = makeFlow();
+  flow.restore({ ...input, sender, phase: 'pending', hash }); await flow.recheck(f.adapter);
+  assert.equal(flow.getSnapshot().phase, 'pending'); assert.equal(flow.getSnapshot().critical, true); assert.equal(flow.getSnapshot().error, 'receipt'); flow.dispose();
+});
+
+function browserFixture() {
+  const records = new Map(); let held = false;
+  const storage = { getItem: key => records.get(key) || null, setItem: (key, value) => records.set(key, value), removeItem: key => records.delete(key) };
+  const locks = { async request(name, options, callback) { if (held) return callback(null); held = true; try { return await callback({ name }); } finally { held = false; } } };
+  let sequence = 0;
+  const guard = () => createBrowserTransferGuard({ eventId: 'test-town', storage, locks, randomId: () => `attempt-${++sequence}` });
+  return { records, storage, locks, guard };
+}
+
+test('same-origin browser lock rejects simultaneous tabs; persisted unresolved transfer blocks a new send after reload', async () => {
+  const browser = browserFixture(), f1 = fixture({ eth_getTransactionReceipt: null }), f2 = fixture();
+  const flow1 = makeFlow({ guard: browser.guard() }), flow2 = makeFlow({ guard: browser.guard() });
+  await flow1.prepare(input, f1.adapter); await flow1.send();
+  assert.equal(flow1.getSnapshot().phase, 'pending'); assert.equal(browser.records.size, 1);
+  await flow2.prepare(input, f2.adapter); await flow2.send();
+  assert.equal(flow2.getSnapshot().error, 'other_tab'); assert.equal(f2.sent.length, 0);
+  flow1.dispose(); await Promise.resolve(); await Promise.resolve();
+  await flow2.prepare(input, f2.adapter); await flow2.send();
+  assert.equal(flow2.getSnapshot().error, 'unfinished'); assert.equal(f2.sent.length, 0); flow2.dispose();
+  const recoveryGuard = browser.guard(), recovery = makeFlow({ guard: recoveryGuard });
+  recovery.restore(recoveryGuard.read()); await recovery.recheck(f2.adapter);
+  assert.equal(recovery.getSnapshot().phase, 'confirmed'); assert.equal(browser.records.size, 0); assert.equal(f2.sent.length, 0); recovery.dispose();
+});
+
+test('missing Web Locks or durable storage prevents send without disabling a read-only review', async () => {
+  for (const guard of [
+    createBrowserTransferGuard({ eventId: 'test-town', storage: browserFixture().storage, locks: null }),
+    createBrowserTransferGuard({ eventId: 'test-town', storage: { getItem() { throw new Error(); } }, locks: browserFixture().locks }),
+  ]) {
+    const f = fixture(), flow = makeFlow({ guard });
+    await flow.prepare(input, f.adapter); assert.equal(flow.getSnapshot().phase, 'ready');
+    await flow.send(); assert.equal(flow.getSnapshot().phase, 'error'); assert.equal(flow.getSnapshot().critical, false); assert.equal(f.sent.length, 0); flow.dispose();
+  }
+});
+
+test('unknown checkpoint version is preserved and fails closed instead of clearing recovery data', async () => {
+  const browser = browserFixture(), raw = JSON.stringify({ version: 99, hash });
+  browser.records.set('buildergame.support.pending.v2', raw);
+  const f = fixture(), flow = makeFlow({ guard: browser.guard() });
+  await flow.prepare(input, f.adapter); await flow.send();
+  assert.equal(flow.getSnapshot().error, 'storage'); assert.equal(browser.records.get('buildergame.support.pending.v2'), raw); assert.equal(f.sent.length, 0); flow.dispose();
+});
+
+test('legacy checkpoint migration preserves the original intent and never sends', async () => {
+  const browser = browserFixture(), guard = browser.guard();
+  await guard.migrate({ ...input, sender, phase: 'pending', hash });
+  const saved = guard.read(); assert.equal(saved.hash, hash); assert.equal(saved.recipient, recipient); assert.equal(saved.eventId, 'test-town');
+  const flow = makeFlow({ guard }), f = fixture(); flow.restore(saved); await flow.recheck(f.adapter);
+  assert.equal(flow.getSnapshot().phase, 'confirmed'); assert.equal(f.sent.length, 0); assert.equal(browser.records.size, 0); flow.dispose();
+});
+
+test('confirmation requires acknowledgement, current sender, authentication and a fresh ready quote', async () => {
+  const f = fixture(), flow = makeFlow(); await flow.prepare(input, f.adapter);
+  const checked = { state: flow.getSnapshot(), walletAddress: sender, authenticated: true, ready: true, acknowledged: true };
+  assert.equal(canConfirmDonation(checked), true);
+  for (const change of [{ acknowledged: false }, { authenticated: false }, { ready: false }, { walletAddress: other }, { state: { ...checked.state, critical: true } }, { state: { ...checked.state, phase: 'pending' } }]) assert.equal(canConfirmDonation({ ...checked, ...change }), false);
+  assert.equal(f.sent.length, 0); flow.dispose();
+});
+
+test('closing before a queued wallet setup starts never opens a late wallet prompt', async () => {
+  const gate = createSupportActionGate(); let starts = 0;
+  const queued = gate.run(async () => { starts++; }); gate.cancel(); await queued;
+  assert.equal(starts, 0); assert.equal(gate.busy, false); gate.dispose();
 });

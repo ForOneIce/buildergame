@@ -21,6 +21,14 @@ async function ready(page) {
   await page.locator('#scene[data-town-ready="true"]').waitFor({ timeout: 60000 });
   await page.locator('#map-transition').waitFor({ state: 'hidden', timeout: 60000 });
 }
+async function acknowledgeCreatorNotice(page) {
+  await page.locator('.support-setup-guide[open]').waitFor();
+  assert.equal(await page.locator('[data-guide-ack]').isChecked(), false, 'Each notice opens with a fresh acknowledgment');
+  assert.equal(await page.locator('[data-guide-continue]').isDisabled(), true);
+  await page.locator('[data-guide-ack]').check();
+  await page.locator('[data-guide-continue]').click();
+  await page.locator('.support-setup-guide').waitFor({ state: 'detached' });
+}
 
 (async () => {
   const { sampleTown } = await import('../src/sample.mjs');
@@ -59,9 +67,32 @@ async function ready(page) {
     await page.locator('#town-name').fill('Support browser fixture');
     await page.locator('#repositories').fill('https://github.com/example/one\nhttps://github.com/example/two');
     await page.locator('.support-settings > summary').click();
-    await page.locator('#support-recipients').fill(`example/one = ${recipient}`);
+    await page.locator('.support-setup-guide[open]').waitFor();
+    assert.equal(await page.locator('#support-recipients').isDisabled(), true);
+    assert.equal(await page.locator('[data-guide-continue]').isDisabled(), true);
+    assert.match(await page.locator('.support-setup-guide').innerText(), /does not connect a wallet or authorize a transfer/);
+    await page.keyboard.press('Escape');
+    await page.locator('.support-setup-guide').waitFor({ state: 'detached' });
+    assert.equal(await page.locator('.support-settings').evaluate(element => element.open), false);
+    assert.equal(await page.locator('#support-recipients').isDisabled(), true);
     const backup = page.locator('.config-backup').filter({ has: page.locator('#export-config') });
     await backup.locator(':scope > summary').click();
+    const withoutSupport = await downloadJson(page, '#export-config');
+    assert.equal(Object.hasOwn(withoutSupport, 'support'), false, 'Cancelling the optional notice still permits the original town configuration');
+    assert.equal(requests.some(url => /support\/(panel|wallet-panel)/.test(url)), false);
+    assert.equal(await page.evaluate(() => window.__supportProviderCalls), 0);
+    await page.locator('.support-settings > summary').click();
+    await acknowledgeCreatorNotice(page);
+    assert.equal(await page.locator('#support-recipients').isDisabled(), false);
+    await page.locator('#support-recipients').fill(`example/one = ${recipient}`);
+    await page.locator('.support-settings > summary').click();
+    await page.locator('.support-settings > summary').click();
+    assert.equal(await page.locator('.support-setup-guide').count(), 0, 'Acknowledged same-page edits do not reopen the gate');
+    await page.locator('[data-support-guide]').click();
+    await page.locator('.support-setup-guide[open]').waitFor();
+    assert.equal(await page.locator('[data-guide-ack]').isChecked(), false);
+    await page.locator('[data-guide-cancel]').click();
+    assert.equal(await page.locator('#support-recipients').isDisabled(), false);
     const configuration = await downloadJson(page, '#export-config');
     assert.deepEqual(configuration.support, { version: 1, chainId: 11155111, projectRecipients: { 'example/one': recipient } });
     const draft = await downloadJson(page, '#save-draft');
@@ -108,8 +139,36 @@ async function ready(page) {
     await page.locator('#show-projects').click(); await page.locator('[data-project]').first().click();
     assert.equal(await page.locator('[data-support-project]').count(), 0);
     assert.equal(await page.evaluate(() => window.__supportProviderCalls), 0);
+    assert.equal(await page.locator('.support-setup-guide, .support-card').count(), 0, 'A legacy town does not show any wallet notice');
+    await page.locator('#close').click();
+    await page.locator('#sample-invest').click();
+    assert.doesNotMatch(await page.locator('#investment-dialog').innerText(), /wallet|connect|coming later/i);
+    await page.keyboard.press('Escape');
+    // A fresh document does not reuse acknowledgment from another creator session.
+    await page.goto(baseUrl);
+    await page.locator('[data-create]').click();
+    await importJson(page, configuration);
+    await page.locator('.support-setup-guide[open]').waitFor();
+    assert.equal(await page.locator('#support-recipients').inputValue(), draft.supportRecipientsText);
+    assert.equal(await page.locator('#support-recipients').isDisabled(), true);
+    await page.locator('[data-guide-cancel]').click();
+    await backup.locator(':scope > summary').click();
+    await page.locator('#export-config').click();
+    assert.match(await page.locator('#notice').innerText(), /Read and acknowledge/);
+    await page.locator('.support-settings > summary').click();
+    await acknowledgeCreatorNotice(page);
+    // The translated notice has the same unchecked gate and harmless cancellation.
+    await page.locator('#language').click();
+    await page.locator('[data-support-guide]').click();
+    await page.locator('.support-setup-guide[open]').waitFor();
+    assert.match(await page.locator('.support-setup-guide').innerText(), /不启用也能正常使用小镇/);
+    assert.match(await page.locator('.support-setup-guide').innerText(), /不会连接钱包或授权转账/);
+    assert.equal(await page.locator('[data-guide-ack]').isChecked(), false);
+    assert.equal(await page.locator('[data-guide-continue]').isDisabled(), true);
+    await page.locator('[data-guide-cancel]').click();
+    assert.equal(await page.evaluate(() => window.__supportProviderCalls), 0);
     assert.deepEqual(external, []);
     assert.deepEqual(errors, []);
-    console.log('Support planner/export/import/capture, mixed recipients, missing SDK, lazy loading and legacy town checks passed. No real Privy session or transfer is claimed.');
+    console.log('Bilingual creator notice/cancel/acknowledgment, imported-address gate, planner/export/import/capture, mixed recipients, missing SDK, lazy loading and legacy no-wallet checks passed. No real Privy session or transfer is claimed.');
   } finally { await context.close(); await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

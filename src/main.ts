@@ -19,6 +19,8 @@ import { sampleTown } from './sample.mjs';
 import { planningDraft } from './planning-draft.mjs';
 import { cleanSupport, hasSupport, recipientForProject, SUPPORT_CHAIN_ID } from './support-config.mjs';
 import type { mountSupportPanel } from './support/panel';
+import { createTownInteractionLock } from './support/town-lock';
+import { bindSupportSetupHelp } from './support/setup-help';
 import type { Bundle, TownEvent, Project, Landscape, Snapshot } from './types';
 import { projectDestination } from './links';
 import './map-ui.css';
@@ -27,6 +29,8 @@ import './ui/audio-control.css';
 
 declare const __DEPLOYED_AT__: string;
 const app = document.querySelector<HTMLDivElement>('#app')!;
+const supportInteractionLock = createTownInteractionLock(app);
+let deferredSupportNavigation = false;
 const interfaceAudio = createInterfaceAudio(app);
 const plannerMusic = createPlannerMusic(app, interfaceAudio.enabled);
 const audioControls = {
@@ -62,6 +66,7 @@ let mailboxUI:ReturnType<typeof mountMailboxUI>|undefined;
 let supportPanel:ReturnType<typeof mountSupportPanel>|undefined;
 let supportPanelLoading:Promise<void>|undefined, supportGeneration=0;
 let supportRecipient='', supportRecipientsText='';
+let creatorWalletAcknowledged=false;
 const paidCoinAnimations=new Set<string>();
 let planTurn:'forward'|'backward'|undefined;
 let publishDraft:boolean|undefined;
@@ -93,6 +98,8 @@ function download(value: unknown, name: string) { const blob=new Blob([JSON.stri
 function exportTown() { const slug=bundle.event.deployment?.slug;download(publicBundle(bundle),slug?`${slug}.json`:'town.json');notice(slug?t(`Backup downloaded. Add ${slug}.json to public/data/towns/ in your GitHub deployment repository.`,`备份已下载。将 ${slug}.json 添加到 GitHub 部署仓库的 public/data/towns/。`):t('Backup downloaded. Add town.json to public/data/ in your deployment repository, then rebuild.','备份已下载。将 town.json 放入部署仓库的 public/data/，然后重新构建。')); }
 function stop() { if(timer)clearInterval(timer);timer=undefined; }
 function navigate(to: typeof screen) {
+  if(supportInteractionLock.locked)return;
+  startGeneration++;
   stop();screen=to;
   const target=to==='town'&&bundle.event.deployment?(published?townUrl:previewUrl)(bundle.event.deployment.slug):siteUrl();
   if(location.href!==target)history.pushState(null,'',target);
@@ -112,7 +119,12 @@ async function openBuilderSupport(project?:Project) {
     try {
       const {mountSupportPanel}=await import('./support/panel');
       if(generation!==supportGeneration||screen!=='town'||bundle.event!==event)return;
-      supportPanel=mountSupportPanel(app,{event,t,onConfirmed:(id)=>{
+      supportPanel=mountSupportPanel(app,{event,t,onLockChange:(locked)=>{
+        if(generation!==supportGeneration)return;
+        supportInteractionLock.set(locked);
+        if(locked)stop();
+        else if(deferredSupportNavigation){deferredSupportNavigation=false;queueMicrotask(()=>{if(!supportInteractionLock.locked)void start();});}
+      },onConfirmed:(id)=>{
         if(generation!==supportGeneration||screen!=='town'||bundle.event!==event)return;
         // A chain receipt authorizes the visual celebration, never the reverse.
         paidCoinAnimations.add(id);
@@ -140,6 +152,7 @@ function connectGitHub(){
 }
 
 function render() {
+  if(supportInteractionLock.locked)return;
   plannerMusic.setActive(screen === 'setup');
   reposRequest?.abort();reposRequest=undefined;reposGeneration++;
   mailboxUI?.dispose();mailboxUI=undefined;
@@ -230,7 +243,7 @@ function setup() {
         <details class="growth" open><summary>${t('House growth settings','房屋成长设置')}</summary><p class="helper">${t('Your town, your values. These weights shape the buildings.','你的小镇，你的价值取向。用权重决定建筑的成长。')}</p><div class="weight-fields">${(['commits','stars','forks'] as const).map((key,i)=>`<label>${[t('Commits','累计提交'),t('Stars','星标'),t('Forks','分叉')][i]}<input data-weight="${key}" type="number" min="0" step="0.1" value="${weights[key]??0}"></label>`).join('')}</div>${imported?.rule.mode==='custom'?`<p class="helper">${t('Your custom scores are retained. Editing weights switches to weighted growth.','保留已导入的自定义评分；修改权重将切换为加权成长。')}</p>`:''}</details>
         <label>${t('Snapshot occasion (optional)','快照纪念名称（可选）')}<input id="snapshot-label" maxlength="100" placeholder="${t('e.g. Demo day · First release','例如：演示日 · 首次发布')}" value="${escape(snapshotLabel)}"></label>
         <p class="helper">${t('Capture this moment. Recorded data stays unchanged until you create another snapshot.','记录此刻。已保存的数据保持不变，直到你主动创建下一张快照。')}</p>
-        <details class="config-backup support-settings" ${supportRecipient||supportRecipientsText?'open':''}><summary>${t('Builder support (optional)','开发者赞赏（可选）')}</summary><p class="helper">${t('Ethereum Sepolia · Test ETH only. Leave this empty to keep playful mailbox coins without wallet prompts.','Ethereum Sepolia · 仅测试 ETH。留空时保留投币彩蛋，不显示钱包提示。')}</p>${collection==='personal'?`<label>${t('Your public receiving address','公开收款地址')}<input id="support-recipient" maxlength="100" autocomplete="off" spellcheck="false" placeholder="0x…" value="${escape(supportRecipient)}"></label>`:`<label>${t('Project receiving addresses','项目收款地址')}<textarea id="support-recipients" rows="3" maxlength="30000" spellcheck="false" placeholder="owner/repository = 0x…">${escape(supportRecipientsText)}</textarea></label><p class="helper">${t('One owner/repository = address per line. Projects without an address keep virtual mailbox coins.','每行填写 owner/repository = 地址。未配置地址的项目保留虚拟投币。')}</p>`}<p class="helper">${t('Use an address designated by the builder. It will be public in the exported town. Never enter a private key or recovery phrase.','请填写开发者指定的地址；地址会随小镇配置公开。不要填写私钥或助记词。')}</p></details>
+        <details class="config-backup support-settings" ${supportRecipient||supportRecipientsText?'open':''}><summary>${t('Builder support (optional)','开发者赞赏（可选）')}</summary><p class="helper">${t('Ethereum Sepolia · Test ETH only. Leave this empty to keep playful mailbox coins without wallet prompts.','Ethereum Sepolia · 仅测试 ETH。留空时保留投币彩蛋，不显示钱包提示。')}</p><p id="support-recipient-advice" class="helper">${t('Use a dedicated project support wallet, separate from your everyday wallet. Receiving addresses and on-chain transactions are publicly viewable.','建议使用项目专用赞赏钱包，与日常个人钱包分开。收款地址及链上交易可公开查询。')}</p>${collection==='personal'?`<label>${t('Your public receiving address','公开收款地址')}<input id="support-recipient" maxlength="100" autocomplete="off" spellcheck="false" aria-describedby="support-recipient-advice support-recipient-privacy" placeholder="0x…" value="${escape(supportRecipient)}"></label>`:`<label>${t('Project receiving addresses','项目收款地址')}<textarea id="support-recipients" rows="3" maxlength="30000" spellcheck="false" aria-describedby="support-recipient-advice support-recipient-privacy" placeholder="owner/repository = 0x…">${escape(supportRecipientsText)}</textarea></label><p class="helper">${t('One owner/repository = address per line. Projects without an address keep virtual mailbox coins.','每行填写 owner/repository = 地址。未配置地址的项目保留虚拟投币。')}</p>`}<p id="support-recipient-privacy" class="helper">${t('Use an address designated by the builder. It will be public in the exported town. Never enter a private key or recovery phrase.','请填写开发者指定的地址；地址会随小镇配置公开。不要填写私钥或助记词。')}</p></details>
         <label class="publish-option"><input type="checkbox" id="publish" ${canPublishHere()?'checked':'disabled'}> ${t('Publish for everyone to explore','发布小镇，供所有人探索')}</label>
         <p class="helper publish-hint">${canPublishHere()?t('Saved at its own address. Your other towns stay available.','保存到独立地址，其他小镇仍可访问。'):t('Create in your browser, then commit the exported snapshot to your deployment repository to share its address.','在浏览器中创建后，将导出的快照提交至部署仓库，即可分享小镇地址。')}</p>
         <div class="capture-actions"><button class="button primary" id="capture">${captureLabel()}</button></div>
@@ -271,6 +284,7 @@ function updateTerrainThumbnail(){
   thumbnail.alt=t({flat:'Flat town preview',valley:'Valley town preview',clouds:'Cloud town preview'}[landscape],{flat:'平地城镇缩略图',valley:'山谷城镇缩略图',clouds:'云端城镇缩略图'}[landscape]);
 }
 function withSupportConfiguration(event:TownEvent):TownEvent {
+  if((collection==='personal'?supportRecipient:supportRecipientsText).trim()&&!creatorWalletAcknowledged)throw Error(t('Read and acknowledge the wallet support notice before adding a receiving address.','添加收款地址前，请阅读并确认钱包赞赏使用须知。'));
   let support:unknown;
   if(collection==='personal'){
     if(supportRecipient.trim())support={version:1,chainId:SUPPORT_CHAIN_ID,recipient:supportRecipient.trim()};
@@ -300,6 +314,7 @@ function currentConfiguration(): TownEvent {
   event.projects.forEach(p=>{const source=repositories.find(r=>r.repository===p.repository);if(source)p.builder=source.builder;});return withSupportConfiguration(event);
 }
 function bindSetup() {
+  bindSupportSetupHelp($<HTMLDetailsElement>('.support-settings'),t,creatorWalletAcknowledged,()=>{creatorWalletAcknowledged=true;});
   landscape=imported ? imported.landscape||'flat' : landscape;
   const picker=document.createElement('div');picker.className='landscape-picker';
   picker.innerHTML='<label for="landscape">'+t('Town landscape','城镇地形')+'</label><select id="landscape" '+(usePrevious?'disabled':'')+'>'+(['flat','valley','clouds'] as Landscape[]).map((mode,i)=>'<option value="'+mode+'" '+(landscape===mode?'selected':'')+'>'+[t('Flat · concrete roads','平地 · 水泥路面'),t('Valley · slopes, gravel & water','山谷 · 缓坡、碎石与水流'),t('Clouds · floating districts & steps','云端 · 漂浮片区与云朵阶梯')][i]+'</option>').join('')+'</select><p class="helper">'+t('Chosen once for this town. Future snapshots keep the same landscape.','建镇时确定，之后的快照保持同一地形。')+'</p>';
@@ -488,17 +503,20 @@ function markVisited(id:string){
 }
 let startGeneration=0;
 async function start() {
+  if(supportInteractionLock.locked){deferredSupportNavigation=true;return;}
   const generation=++startGeneration,slug=requestedTown(),query=new URLSearchParams(location.search);
-  startupError='';published=false;serverAvailable=false;screen='welcome';
-  try{const remoteSession=await api('session');if(sessionSource!=='token'){session=remoteSession;sessionSource=session.authenticated?'server':'guest';}serverAvailable=true;}catch{/* Static hosting remains usable without authentication. */}
+  // Keep in-flight navigation separate from the town used by an open wallet panel.
+  let nextError='',nextPublished=false,nextServerAvailable=false,remoteSession:typeof session|undefined;
+  let nextDirectory:typeof townDirectory=[];
+  try{remoteSession=await api('session');nextServerAvailable=true;}catch{/* Static hosting remains usable without authentication. */}
   let loaded:Bundle|undefined,restoredDraft=false;
   try{
-    if(serverAvailable){const remote=await api(slug===null?'town':'towns/'+encodeURIComponent(slug));if(remote)loaded=publicBundle(remote) as Bundle;}
+    if(nextServerAvailable){const remote=await api(slug===null?'town':'towns/'+encodeURIComponent(slug));if(remote)loaded=publicBundle(remote) as Bundle;}
     if(!loaded){const response=await fetch(siteUrl(slug===null?'data/town.json':'data/towns/'+encodeURIComponent(slug)+'.json'),{cache:'no-cache'});if(response.ok)loaded=publicBundle(await response.json()) as Bundle;}
-    if(loaded)published=!loaded.event.sampleData;
+    if(loaded)nextPublished=!loaded.event.sampleData;
   }catch{/* Fall back only to a matching local town, never a different public town. */}
   if(generation!==startGeneration)return;
-  if(slug!==null&&loaded?.event.deployment?.slug!==slug){loaded=undefined;published=false;}
+  if(slug!==null&&loaded?.event.deployment?.slug!==slug){loaded=undefined;nextPublished=false;}
   const cachedSlug=slug??loaded?.event.deployment?.slug;
   try{
     const saved=localRead(cachedSlug?'bg-town:'+cachedSlug:'bg-town-backup')||(cachedSlug?localRead('bg-town-backup'):null);
@@ -506,25 +524,28 @@ async function start() {
       const candidate=publicBundle(JSON.parse(saved)) as Bundle;
       const matchingAddress=slug===null||candidate.event.deployment?.slug===slug;
       if(matchingAddress){
-        if(!loaded||loaded.event.sampleData){loaded=candidate;published=false;}
+        if(!loaded||loaded.event.sampleData){loaded=candidate;nextPublished=false;}
         else if(candidate.event.id===loaded.event.id&&candidate.history.snapshots.length>loaded.history.snapshots.length){
           // Preserve a newer local draft only when it extends this exact public town's recorded history.
-          assertAppend(loaded,candidate);loaded=candidate;published=false;restoredDraft=true;
+          assertAppend(loaded,candidate);loaded=candidate;nextPublished=false;restoredDraft=true;
         }
       }
     }
   }catch{/* Unrelated, stale or rewritten local data never replaces a valid public town. */}
   if(slug!==null&&(!loaded||loaded.event.deployment?.slug!==slug)){
-    loaded=undefined;published=false;startupError=t('This town address is unavailable. Check the link or import its backup.','此小镇地址暂不可用。请检查链接，或导入它的备份。');
+    loaded=undefined;nextPublished=false;nextError=t('This town address is unavailable. Check the link or import its backup.','此小镇地址暂不可用。请检查链接，或导入它的备份。');
   }
+  try{const directory=nextServerAvailable?await api('towns'):await(await fetch(siteUrl('data/towns/index.json'),{cache:'no-cache'})).json();nextDirectory=Array.isArray(directory.towns)?directory.towns:[];}catch{/* An unavailable directory does not replace the displayed town early. */}
+  if(generation!==startGeneration)return;
+  if(supportInteractionLock.locked){deferredSupportNavigation=true;return;}
+  startupError=nextError;published=nextPublished;serverAvailable=nextServerAvailable;townDirectory=nextDirectory;screen='welcome';
+  if(remoteSession&&sessionSource!=='token'){session=remoteSession;sessionSource=session.authenticated?'server':'guest';}
   bundle=loaded||sampleTown() as Bundle;snapshotIndex=timelineSnapshots().length-1;
   if(slug!==null&&loaded)screen='town';
   if(query.get('town')==='1')screen='town';
   if(query.get('setup')==='personal'){screen='setup';collection='personal';username=session.login||'';title=username?username+"'s town":'';imported=null;usePrevious=false;supportRecipient='';supportRecipientsText='';}
   if(screen==='town'&&loaded?.event.deployment)history.replaceState(null,'',(published?townUrl:previewUrl)(loaded.event.deployment.slug));
   else if(query.has('town')||query.has('setup'))history.replaceState(null,'',location.pathname);
-  try{const directory=serverAvailable?await api('towns'):await(await fetch(siteUrl('data/towns/index.json'),{cache:'no-cache'})).json();townDirectory=Array.isArray(directory.towns)?directory.towns:[];}catch{townDirectory=[];}
-  if(generation!==startGeneration)return;
   render();
   if(startupError)notice(startupError,true);
   else if(restoredDraft)notice(t('Your newer local snapshot is restored. Export its backup to publish it.','已恢复较新的本地快照。导出备份后即可部署发布。'));
