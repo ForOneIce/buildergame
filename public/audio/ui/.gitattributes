@@ -1,0 +1,4 @@
+# Preserve the original archive bytes, including license line endings.
+*.ogg -text
+# Vendor licenses retain their original CRLF and whitespace verbatim.
+licenses/*.txt -text -whitespace

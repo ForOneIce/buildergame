@@ -1,0 +1,133 @@
+{
+  "schema": "buildergame-ui-audio/v1",
+  "retrievedDate": "2026-09-13",
+  "description": "Six small self-hosted UI sounds for the wood, paper and sea-glass interface.",
+  "modifications": "Audio files and license files are byte-for-byte originals from official archives. Audio files are renamed only. Playback gain is an application setting, not an asset modification.",
+  "totalAudioBytes": 49420.0,
+  "verification": [
+    "Official source pages and downloaded archive license text inspected.",
+    "ffprobe measured codec, sample rate, channels, bytes and duration; ffmpeg decoded every selected sound and measured mean/peak volume.",
+    "No listening or human auditory approval is claimed.",
+    "bookClose peaks at 0 dBFS and needs substantially lower playback gain than bookOpen or handleCoins2."
+  ],
+  "packs": [
+    {
+      "licenseSha256": "4f88ab3c885c87874834441a0d009cea8942f57461d7b870be65cf4e31362073",
+      "versionSource": "Official product page; archive license names UI SFX Set without a version.",
+      "archiveSha256": "946fc23a63d535d693eb31b2eabb80c8c28d6351e2186b344ceb71b2cb1d5eb6",
+      "id": "ui-audio",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "UI Audio",
+      "creator": "Kenney Vleugels (Kenney.nl)",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/ui-audio/490d233f68-1677590494/kenney_ui-audio.zip",
+      "version": "1.0",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/Kenney-UI-Audio-License.txt",
+      "licenseOriginalPath": "License.txt",
+      "archiveBytes": 411949,
+      "pageUrl": "https://kenney.nl/assets/ui-audio"
+    },
+    {
+      "licenseSha256": "5735dfd72cb64cbbceda4ebc00c380c41ca680edb82ff153aa7c9ab97614c539",
+      "versionSource": "Official product page; archive license names RPG Audio without a version.",
+      "archiveSha256": "6dbeaf8544da958d8f2adcb4a4a4b76c1ade34a05f8ab9edccd327da7375f38b",
+      "id": "rpg-audio",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "RPG Audio",
+      "creator": "Kenney Vleugels (Kenney.nl)",
+      "archiveUrl": "https://kenney.nl/media/pages/assets/rpg-audio/8e99002d76-1677590336/kenney_rpg-audio.zip",
+      "version": "1.0",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/Kenney-RPG-Audio-License.txt",
+      "licenseOriginalPath": "License.txt",
+      "archiveBytes": 964837,
+      "pageUrl": "https://kenney.nl/assets/rpg-audio"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 4983,
+      "sampleRate": 44100,
+      "channels": 2,
+      "peakDbfs": -1.5,
+      "meanDbfs": -24.0,
+      "target": "click.ogg",
+      "codec": "vorbis",
+      "pack": "ui-audio",
+      "source": "Audio/click1.ogg",
+      "usage": "Activated wooden control",
+      "sha256": "59175ac17cd49a68dd736285738441287636112a84a6f7ce0d89921bda5a5360",
+      "durationSeconds": 0.093832
+    },
+    {
+      "bytes": 4701,
+      "sampleRate": 44100,
+      "channels": 2,
+      "peakDbfs": -1.8,
+      "meanDbfs": -24.5,
+      "target": "hover.ogg",
+      "codec": "vorbis",
+      "pack": "ui-audio",
+      "source": "Audio/rollover2.ogg",
+      "usage": "Optional throttled pointer hover",
+      "sha256": "d0bc0fcba496d73df1da8c145e5330df75f87ab5a4f33a9b71461b006b5c338e",
+      "durationSeconds": 0.057324
+    },
+    {
+      "bytes": 9077,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peakDbfs": -4.6,
+      "meanDbfs": -32.1,
+      "target": "map-open.ogg",
+      "codec": "vorbis",
+      "pack": "rpg-audio",
+      "source": "Audio/bookFlip3.ogg",
+      "usage": "Open town map or paper directory",
+      "sha256": "c85db5dceb3f1df073e960630277eaa88a5afda0477c1ddd68dad707621767be",
+      "durationSeconds": 0.230604
+    },
+    {
+      "bytes": 8273,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peakDbfs": -11.5,
+      "meanDbfs": -33.6,
+      "target": "panel-open.ogg",
+      "codec": "vorbis",
+      "pack": "rpg-audio",
+      "source": "Audio/bookOpen.ogg",
+      "usage": "Open a paper panel or dialog",
+      "sha256": "953390534377222bee89ac8cd9e60a58fdc037c71a4d7c18c43cd647c7f34ba8",
+      "durationSeconds": 0.153729
+    },
+    {
+      "bytes": 9292,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peakDbfs": 0.0,
+      "meanDbfs": -18.8,
+      "target": "panel-close.ogg",
+      "codec": "vorbis",
+      "pack": "rpg-audio",
+      "source": "Audio/bookClose.ogg",
+      "usage": "Close a panel at reduced playback gain",
+      "sha256": "81e976532565f4372abd14e83d2684195fa548d0a28d345de221e56052454f32",
+      "durationSeconds": 0.230604
+    },
+    {
+      "bytes": 13094,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peakDbfs": -10.7,
+      "meanDbfs": -34.0,
+      "target": "success.ogg",
+      "codec": "vorbis",
+      "pack": "rpg-audio",
+      "source": "Audio/handleCoins2.ogg",
+      "usage": "Optional one-shot success or virtual coin receipt",
+      "sha256": "4b857968d64f9ac9336a10ffac6694d7547e1f01566ad6857b30bc8db3ee6c32",
+      "durationSeconds": 0.338208
+    }
+  ]
+}

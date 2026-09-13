@@ -9,6 +9,8 @@ Separate licenses and existing dedications are preserved:
 - Vite: MIT; TypeScript: Apache-2.0; other dependencies retain their licenses.
 - Kenney Adventure UI and Cursor Pack: CC0-1.0. Original license files and
   source manifests are in public/ui/kenney/.
+- Kenney UI Audio and RPG Audio: CC0-1.0. Six unchanged sound effects,
+  original licenses and a source/hash manifest are in public/audio/ui/.
 - Original building assets previously declared CC0-1.0 retain that dedication;
   see public/models/README.md and public/models/buildings.lock.json, and collaboration/house-prototype.md,
   collaboration/town-visuals.md, and collaboration/baseline.md.
