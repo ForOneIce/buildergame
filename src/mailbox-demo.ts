@@ -9,7 +9,8 @@ export function createMailboxDemo(scene: THREE.Scene, camera: THREE.PerspectiveC
   // Locked stage_details.py: Blender (x,y,z) becomes Three (x,z,-y).
   // Mailbox body (.15,-3.35,1.13); front slot (.15,-3.58,1.15).
   const body = new THREE.Vector3(.15, 1.17, 3.4), slot = new THREE.Vector3(.15, 1.15, 3.59);
-  const proxyGeometry = new THREE.BoxGeometry(.68, .62, .68);
+  // A centered sphere makes the small mailbox easier to select from every view.
+  const proxyGeometry = new THREE.SphereGeometry(.82, 20, 12);
   const proxyMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const boxes = new Map<string, Mailbox>();
   for (const plot of plots) {
@@ -70,6 +71,7 @@ export function createMailboxDemo(scene: THREE.Scene, camera: THREE.PerspectiveC
     if (current.elapsed >= duration) clear();
   }
   return {
+    get activeId() { return flight?.id; },
     hitTargets: [...boxes.values()].map(box => box.proxy),
     target(id: string) { return target(id)?.center.clone(); },
     available(id: string, available: boolean) {

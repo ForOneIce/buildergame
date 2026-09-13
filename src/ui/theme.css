@@ -255,7 +255,7 @@ button:disabled, [aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
   [data-cursor="grab"], .cursor-grab { cursor: var(--bg-cursor-open) 16 15, grab; }
   [data-cursor="grabbing"], .cursor-grabbing { cursor: var(--bg-cursor-closed) 16 16, grabbing; }
   [data-cursor="visit"], .cursor-visit { cursor: var(--bg-cursor-open) 16 15, pointer; }
-  [data-cursor="coin"] { cursor: url('/ui/cursors/coin.svg') 3 2, pointer; }
+  [data-cursor="coin"] { cursor: url('/ui/cursors/coin.svg') 5 3, pointer; }
   input, textarea { cursor: text; }
   input[type="checkbox"], input[type="radio"], input[type="range"] { cursor: var(--bg-cursor-point) 9 3, pointer; }
   button:disabled, [aria-disabled="true"] { cursor: not-allowed; }

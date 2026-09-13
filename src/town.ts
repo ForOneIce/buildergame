@@ -81,33 +81,48 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   if (mailboxes) hitTargets.push(...mailboxes.hitTargets);
   const ring = new THREE.Mesh(new THREE.RingGeometry(6.6, 6.72, 4), new THREE.MeshBasicMaterial({ color: '#fff4c2', side: THREE.DoubleSide }));
   ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); ring.position.y = -.025; ring.visible = false; scene.add(ring);
-  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down: { x: number; y: number; pointerId: number; button: number } | undefined, dragged = false;
+  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(); let down: { x: number; y: number; pointerId: number; button: number; mailboxId?: string } | undefined, dragged = false;
   const greeting=document.createElement('span');greeting.className='scene-greeting';greeting.textContent=t('Say hi','打个招呼');greeting.hidden=true;greeting.setAttribute('aria-hidden','true');host.append(greeting);
   renderer.domElement.dataset.cursor='walk';
-  let hovered = '';
-  function clearHover() { greeting.hidden = true; renderer.domElement.dataset.cursor = 'walk'; hovered = ''; }
-  function tossCoin(id: string) { clearHover(); return mailboxes?.toss(id) ?? false; }
+  let hovered = '', lastPointer: PointerEvent | undefined;
+  function clearHover() { greeting.hidden = true; renderer.domElement.dataset.cursor = 'walk'; hovered = ''; lastPointer = undefined; }
+  function setCursor(hit?: { action?: string }, pressed = false) {
+    const dragging = pressed && (dragged || down?.button !== 0 || !down?.mailboxId);
+    renderer.domElement.dataset.cursor = dragging ? 'grabbing' : mailboxes?.activeId || (pressed && down?.mailboxId) || hit?.action === 'mailbox' ? 'coin' : hit?.action === 'visit' ? 'visit' : hit ? 'grab' : 'walk';
+  }
+  function tossCoin(id: string) {
+    const accepted = mailboxes?.toss(id) ?? false;
+    greeting.hidden = true; hovered = '';
+    if (accepted || mailboxes?.activeId) renderer.domElement.dataset.cursor = 'coin';
+    else clearHover();
+    return accepted;
+  }
   const pick = (e: PointerEvent) => {
     const bounds = renderer.domElement.getBoundingClientRect(); pointer.set((e.clientX - bounds.left) / bounds.width * 2 - 1, -(e.clientY - bounds.top) / bounds.height * 2 + 1);
     camera.updateMatrixWorld(); ray.setFromCamera(pointer, camera); return ray.intersectObjects(hitTargets.filter(o => o.visible), false)[0]?.object.userData;
   };
-  renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, button: e.button }; dragged = false;renderer.domElement.dataset.cursor='grabbing';greeting.hidden=true; });
+  renderer.domElement.addEventListener('pointerdown', e => {
+    const hit = pick(e); lastPointer = e;
+    down = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, button: e.button, mailboxId: hit?.action === 'mailbox' ? hit.id : undefined };
+    dragged = false; setCursor(hit, true); greeting.hidden = true;
+  });
   renderer.domElement.addEventListener('pointermove', e => {
+    lastPointer = e;
     if(e.buttons&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)dragged=true;
-    const hit=pick(e), mailbox=hit?.action==='mailbox';renderer.domElement.dataset.cursor=e.buttons?'grabbing':mailbox?'coin':hit?.action==='visit'?'visit':hit?'grab':'walk';
+    const hit=pick(e), mailbox=hit?.action==='mailbox';setCursor(hit, !!e.buttons);
     const nextHover=!e.buttons&&hit?`${hit.id}:${hit.action}`:'';
     if(nextHover&&nextHover!==hovered&&e.isTrusted&&e.pointerType==='mouse'&&matchMedia('(hover: hover) and (pointer: fine)').matches)options.onHover?.();
     hovered=nextHover;
     greeting.hidden=!!e.buttons||(!mailbox&&hit?.action!=='visit')||e.pointerType==='touch';
-    greeting.textContent=mailbox?t('Drop a demo coin','投一枚演示金币'):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
+    greeting.textContent=mailbox?(mailboxes?.activeId?t('Delivering a demo coin…','正在投递演示金币…'):t('Drop a demo coin','投一枚演示金币')):t('Say hi','打个招呼');greeting.classList.toggle('mailbox-greeting',mailbox);
     if(!greeting.hidden){const bounds=host.getBoundingClientRect(),margin=greeting.offsetWidth/2+8;greeting.style.left=Math.min(Math.max(margin,e.clientX-bounds.left),Math.max(margin,bounds.width-margin))+'px';greeting.style.top=Math.max(44,e.clientY-bounds.top-18)+'px';}
   });
-  renderer.domElement.addEventListener('pointerleave',clearHover);
+  renderer.domElement.addEventListener('pointerleave',()=>{down=undefined;dragged=false;clearHover();});
   renderer.domElement.addEventListener('pointercancel',()=>{down=undefined;dragged=false;clearHover();});
   renderer.domElement.addEventListener('pointerup', e => {
-    const press=down;down=undefined;clearHover();
-    if (!press || press.pointerId!==e.pointerId || press.button!==0 || dragged || e.button!==0 || Math.hypot(e.clientX-press.x,e.clientY-press.y)>6) return;
-    const hit=pick(e);if(hit?.action==='mailbox'){tossCoin(hit.id);return;}if(hit)select(hit.id,hit.action==='visit');
+    const press=down;down=undefined;lastPointer=e;greeting.hidden=true;
+    if (!press || press.pointerId!==e.pointerId || press.button!==0 || dragged || e.button!==0 || Math.hypot(e.clientX-press.x,e.clientY-press.y)>6) { clearHover(); return; }
+    const hit=pick(e);if(hit?.action==='mailbox'){tossCoin(hit.id);return;}setCursor(hit);if(hit)select(hit.id,hit.action==='visit');
   });
 
   function reset() {
@@ -162,9 +177,13 @@ export function createTown(host: HTMLElement, projects: Project[], select: (id: 
   }
   renderer.setAnimationLoop(now => {
     const delta = Math.min((now - last) / 1000, .06); last = now; if (document.hidden) return;
+    const activeMailbox = mailboxes?.activeId;
     for (const b of buildings.values()) if (b.progress < 1) { b.progress = Math.min(1, b.progress + delta * 2); dirty = true; }
     controls.update(); if (dirty && now - lastBatch > 80) { batches(); lastBatch = now; }
     mailboxes?.update(delta);
+    if (activeMailbox && !mailboxes?.activeId && !down) {
+      if (lastPointer) setCursor(pick(lastPointer)); else clearHover();
+    }
     renderer.info.autoReset = false; renderer.info.reset(); composer.render();
     host.dataset.drawCalls = String(renderer.info.render.calls); host.dataset.triangles = String(renderer.info.render.triangles);
     if(preview){const done=preview;preview=undefined;const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const side=Math.min(renderer.domElement.width,renderer.domElement.height)*.67;canvas.getContext('2d')!.drawImage(renderer.domElement,(renderer.domElement.width-side)/2,(renderer.domElement.height-side)/2,side,side,0,0,256,256);done(canvas.toDataURL('image/png'));}
