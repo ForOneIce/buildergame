@@ -1,5 +1,12 @@
 # Human–AI collaboration log
 
+## Hosted wallet activation and login observation
+
+- 2026-09-13 (UTC), phase: deployed integration verification. Codex observed the production homepage, imported an existing complete town backup with real GitHub data through Create town → Load a plan, and opened the wallet-enabled town's header support entry. The backup remained browser-local. The actual compact React card and real Privy login modal with standard wallet selection rendered, establishing hosted activation and login-entry availability.
+- The human completed live login; Codex observed the sending-wallet state and selected Review test transfer at the default 0.001 Sepolia test ETH. Real account/network/balance checks reached the insufficient-funds guard at the balance stage, with explicit no-submission/no-network-fee feedback. Source inspection confirmed the read order; no exact balance is inferred.
+- Codex reconciled the current status in `README.md`, `hackathon/summitinfo.md`, `docs/verification.md`, this log and `collaboration/AI_USAGE.md`. Earlier configuration-gap observations are preserved as historical evidence. This update changes documentation only; the latest automated counts remain 82 Node tests, including 33 transaction fixtures, and 21 compact-wallet scenarios.
+- Funded review, fee estimation, transfer approval, an actual Sepolia transfer/receipt, live recovery and human acceptance of the complete flow remain pending. No transaction was sent. [Observation and limits](../docs/verification.md#hosted-wallet-activation-and-login-observed-on-2026-09-13-utc).
+
 ## 0066 — Capture the town engineering showcase
 
 - 2026-09-13 (UTC): the human requested a screenshot of the most technically or visually demanding screen for updated submission images. [Original instruction and translation](../prompts/0066-capture-town-engineering-showcase.md).
