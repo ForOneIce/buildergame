@@ -12,7 +12,7 @@ Build a home for your public portfolio, or bring a whole hackathon community tog
 
 [Explore the idea](#a-town-you-can-explore) · [Make-it-yours workflow](#make-it-yours) · [Development status](#development-status) · [Hackathon review](hackathon/README.md)
 
-> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub to import your projects. English and Chinese are supported. The next release adds optional Privy developer support; its local implementation is ready for live Sepolia verification.
+> **Playable Demo.** Explore a flat town, valley or cloud neighborhood, create a town from public repositories, and carry its history in a JSON backup. Play as a guest or connect GitHub to import your projects. English and Chinese are supported. The published source also includes optional Privy developer support; hosted wallet activation and live Sepolia verification are in progress.
 
 ## Quick start
 
@@ -109,20 +109,20 @@ Static deployments support token connection and manual captures directly in the 
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
 | Mailbox Easter egg | Unconfigured mailboxes retain virtual coins independently of wallet support |
-| Optional Privy support | Email/wallet login and direct Sepolia test-ETH flow implemented locally; notices, explicit review, critical-state locking and pending recovery included. Live login/transfer and deployment remain pending |
+| Optional Privy support | Published Email/wallet integration and direct Sepolia test-ETH flow, with notices, explicit review, critical-state locking and pending recovery. Hosted wallet activation and live login/transfer verification remain pending |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
-| Hosted demo and broader device testing | Earlier demo/media publicly available; optional wallet deployment and broader device coverage need verification |
+| Hosted demo and broader device testing | Current town release deployed and home/sample checked; activating its wallet SDK and broader device coverage need verification. Existing videos show the earlier release |
 
 The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
 
-The latest local suite passed **82 Node tests**, with scoped browser fixtures covering the wallet flow and shared town controls. Prior production compilation passed; the final release build is tracked in [verification](docs/verification.md). The published demo and videos still show the earlier town release. These checks validate local behavior; they do not stand in for a fresh Privy login or confirmed transfer.
+The latest local suite passed **82 Node tests**, with scoped browser fixtures covering the wallet flow and shared town controls, plus **21 compact-wallet scenarios**. The final combined production build passed, and release `3bf2596` was deployed on Vercel with its home/sample checked. The hosted wallet path still needs its public App ID configured and a rebuild; live receipt verification remains pending. Existing videos show the earlier town release. [Evidence and boundaries](docs/verification.md).
 
 ### What comes next
 
-1. **Verify the experience.** Complete the combined release checks and exercise an actual Privy login, Sepolia receipt, cancellation and recovery without disrupting ordinary exploration.
-2. **Publish the verified revision.** Finalize support configuration delivery, deploy, and check the hosted town and code links.
+1. **Activate the hosted wallet path.** Configure the public Privy App ID in the host's build environment and rebuild. The code and town release are already published.
+2. **Verify the complete experience.** Create a wallet-enabled town and exercise an actual Privy login, Sepolia receipt, cancellation and recovery without disrupting ordinary exploration.
 3. **Show the complete journey.** Record an updated demonstration from that verified build and refresh the submission materials.
 
 Longer term, wallet/ENS identity, community membership and management permissions, and recorded on-chain milestones could connect discovery with lasting participation. These are planned directions, not features enabled by the current testnet extension.

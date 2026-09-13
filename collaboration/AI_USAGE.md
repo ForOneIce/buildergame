@@ -19,6 +19,10 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
+Session 0065: Codex updated the existing English demo plan and submission checklist to follow the human's [sample-to-real-town sequence](../prompts/0065-record-sample-to-supported-town.md), including actual GitHub capture, optional support, human-confirmed Sepolia flow, receipt evidence and transparent privacy cuts. These are planning artifacts and optional human narration lines, not generated media, AI voiceover or proof of a successful transaction. Recording remains pending actual verification.
+
+Session 0064: Codex clarified the English/Chinese investment note in `src/mailbox-ui.ts` following the [human's wording correction](../prompts/0064-clarify-virtual-and-wallet-support.md). It separates sample animation from explicitly confirmed Sepolia support in a configured town. TypeScript and scoped whitespace checks passed; this introduces no new transaction behavior, asset, dependency or live-chain evidence.
+
 Session 0062: Codex recorded the [compact support-card requirement](../prompts/0062-compact-support-card.md), implemented the main card and `src/support/detail-dialog.tsx`, and refined notice pagination, focus and checkbox layout. The final 21/21 real-React/mock-SDK browser scenarios passed with actual global styles in English/Chinese at 1280×720 and 390×844, preserving acknowledgment, address review, critical locks and receipt-only recovery. TypeScript passed. This is local synthetic-account verification; no actual SDK login/chain/external requests, final human visual acceptance or new external artwork are claimed.
 
 Session 0061: Codex revised the product README, submission answers and optional-wallet guide to reflect the current development plan, locally pinned SDK evidence and scoped verification. The public demo/video remain identified as the earlier release. The copy presents direct builder support and longer-term community directions without claiming deployed wallet availability or a real receipt. [Instruction](../prompts/0061-update-product-and-submission-progress.md).

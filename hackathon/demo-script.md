@@ -1,40 +1,41 @@
-# Optional live-demo script
+# Final feature-demo plan and optional live script
 
-This English script is a backup for a live presentation and preparation for optional English narration in an updated feature demo. The human directed replacement recording to follow functional tests, retaining native interface effects and no added background music. The published initial video has no narration. Recorded event guidance prohibits TTS/AI voiceover; if this script is used, a team member can present it in their own voice. [Latest recording instruction](../prompts/0054-record-updated-demo-after-testing.md).
+The final recording follows one complete journey: **explore the sample → create an actual town from public GitHub repositories with wallet support → explore the new town → explicitly confirm a Sepolia transfer and verify its receipt**. [Latest instruction](../prompts/0065-record-sample-to-supported-town.md).
 
-Target speaking time: about three minutes, leaving space for transitions within a four-minute live demo. This proposed sequence is not a claim that every step appears in the recorded submission. The [recorded finalist format](rules.md) is a four-minute demo and three-minute Q&A.
+This is a plan, not a completed video or proof of a transfer. Begin recording only after the actual application workflow, Privy interaction and a successful Sepolia receipt have been verified. The published videos remain the earlier release. Target about **3:20**, within **2–4 minutes** at **720p or higher**, with original site effects and **no background music**, including the planner track. Also prepare a completely silent export. The English lines below are optional for a team member's own narration or a later live presentation; do not generate AI/TTS competition voiceover. A script does not make added narration mandatory for the feature video. The [recorded finalist format](rules.md) remains a four-minute demo and three-minute Q&A.
 
 | Time | Show | Optional English narration |
 | --- | --- | --- |
-| 0:00–0:25 | Homepage and building stages | "After a hackathon, projects can become another link in a repository list. Buildergame gives them a place people can explore and revisit. Every public GitHub repository becomes a house, and the town keeps a visible record of its growth." |
-| 0:25–0:55 | Create town; personal/community modes | "Developers can build a portfolio town. Communities can bring many builders together. This planning sheet collects the name, repositories and landscape. The owner decides what shapes the houses: cumulative commits, stars, a weighted mix, or an existing score table." |
-| 0:55–1:20 | Sample town and minimap | "Here is a neighborhood with fictional projects. Flat streets, a valley and cloud districts share the same exploration tools. Visitors move around the map, zoom into buildings, or use the minimap. A real town keeps its chosen landscape throughout its history." |
-| 1:20–1:45 | Timeline | "Each repository keeps its plot while snapshots change the buildings. The founding view begins with green plots, so even one captured snapshot can show a transition. These are recorded observations, not an invented reconstruction of GitHub history. Taking a break does not erase cumulative construction." |
-| 1:45–2:10 | Sign/card, directory, random exploration | "A wooden sign introduces the project and builder. Visitors can open its website or repository, search the directory, or discover a random project. Exploration progress stays in this browser, and visiting requires no wallet or login." |
-| 2:10–2:30 | Unconfigured sample mailbox | "These sample mailboxes offer a playful virtual coin interaction. We are extending that idea into optional developer support through Privy. Town creators choose whether to add receiving addresses, while the original town experience stays available to everyone." |
-| 2:30–3:00 | Overview or homepage | "Buildergame uses Three.js, Blender-authored buildings, TypeScript and GitHub snapshots. Portable JSON lets owners publish a static town from a repository without a database. Our next step is to test whether this helps people discover real projects and return to follow their progress." |
+| 0:00–0:10 | Homepage and growing building | "Buildergame gives GitHub projects a home people can explore and return to, long after demo day." |
+| 0:10–0:45 | Explore sample, sign/card, timeline/minimap and one virtual coin | "Each repository has a fixed plot, and snapshots make progress visible. This sample uses fictional projects. Its coin animation does not trigger a wallet transaction." |
+| 0:45–1:20 | Create a named personal town; choose an actual public repository, landscape and growth rule. Open optional support and read its creator notice | "Now we will create a town from real GitHub data. The creator chooses its landscape and growth rules, and can enable direct support by configuring a receiving wallet." |
+| Planned cut | Complete sensitive account/recipient input outside capture. Resume the same draft with wallet settings collapsed; label it **Account and recipient setup completed off-camera** | "The recipient is configured. Its complete backup stays local for this test." |
+| 1:20–1:50 | Perform real GitHub capture, show success, enter the new town and inspect its project/founding/measured snapshots | "These buildings reflect the captured repositories. The founding view and first observation begin this town's history." |
+| 1:50–2:20 | Open new project's support card from its mailbox or project card; show shortened recipient, Sepolia, amount and read-only review | "Support goes directly to the configured builder. We use Sepolia test ETH, with no monetary value. Review checks the sending wallet, balance and network fee." |
+| 2:20–2:55 | Read/check acknowledgment; human confirms in the app and actual wallet; show genuine pending state | "The visitor decides whether to approve. Unrelated controls are locked while the request is unresolved. Pending is not shown as received." |
+| 2:55–3:20 | Matching successful receipt and resulting coin feedback, then return to the new town | "Only a successful matching receipt triggers the celebration. We want discovery to become encouragement that helps builders keep building." |
 
-## Presentation notes
+## Recording prerequisites
 
-- Disable background music throughout the submitted video, including the planner.
-- Show the real interface at normal speed. Waiting may be removed; do not speed up actions.
-- Capture only the project viewport, with no token entry, account secrets or unrelated windows.
-- Keep sample-data and fictional-coin disclosures visible when those features appear.
-- Rehearse public GitHub capture without displaying a token. Do not promise live authentication that has not been verified.
-- Static town URLs become public after committing the exported JSON and redeploying. A browser preview alone is not a hosted town.
+- Verify the exact build, real public GitHub capture and configured Privy flow before recording. A mock provider or preloaded/imported town cannot replace actual creation in this final sequence.
+- Use a funded sending wallet on Ethereum Sepolia, with enough test ETH for amount plus fee, and a separate recipient as required by the current self-transfer check. No mainnet transfer is part of this plan.
+- Complete a human-confirmed test and privately verify the actual receipt's network, sender, recipient, value and success. A login, returned hash or prerecorded animation alone is insufficient.
+- Prefer one real repository and one landscape to fit the complete journey. Keep actual metrics and building stages. If the new project lacks a stage-five mailbox, use its configured **Support this builder** project-card action; do not inflate scores for the video.
+- Keep the full test recipient and account-specific configuration out of GitHub/public footage. Local backup import is useful for separate tests, but the final film must show the actual capture creating its featured town.
 
-## Optional support segment for the verified revision
+## Privacy and honest editing
 
-This is a proposed replacement segment, **not evidence of a recorded or confirmed transfer**. Rehearse/record it only after the implementation and a live Privy Sepolia flow have passed. Replace part of the landscape tour and closing overview to keep the full video within 2–4 minutes; do not append it without timing the result.
+Capture only the project viewport. Exclude GitHub tokens, email addresses, passwords, one-time codes, private keys, recovery phrases and the full test recipient. Keep address details collapsed; do not open backup JSON or a full-address explorer page in the recorded viewport. If the actual wallet prompt reveals these details, the human can approve outside capture. Resume at the same request's authentic pending/confirmed state with **Wallet approval completed off-camera** displayed briefly.
 
-| Show | Optional English narration after verification |
-| --- | --- |
-| Creator's optional recipient setting | "A creator can now choose to enable developer support. A personal town uses one receiving wallet. In a community, each project can have its own recipient. Projects without an address keep the familiar virtual mailbox." |
-| Configured mailbox and confirmation card | "Clicking this mailbox opens a review card. It shows the project, receiving address, network and amount before any transfer. This demonstration uses test ETH on Ethereum Sepolia; the test coins have no monetary value." |
-| Privy connection and explicit wallet approval | "Privy provides the wallet interaction. The transfer goes directly to the configured developer address. We first check the selected network and the balance needed for the amount and network fee." |
-| Actual pending state, then successful receipt and animation | "Buildergame waits for the chain receipt. A pending request is not shown as received. Once the transaction succeeds, the coin lands in the mailbox, and this link lets us inspect the confirmed transaction." |
-| Unconfigured project or town overview | "Support is optional. GitHub capture, town history and exploration still work on their own. The goal is to help discovery become encouragement, without making every visit a wallet interaction." |
+Normal cuts may omit sensitive setup or waiting. Label removed confirmation waiting **Waiting for confirmation — cut**, retaining the same town, reviewed intent and transaction. Do not speed up actions, substitute another transaction's success, use synthetic receipts or imply an omitted action was shown. Verify the explorer privately; publish identifying chain evidence only when separately authorized. The genuine shortened-address confirmation card can show the result without exposing the full receiver.
 
-Use the actual transaction outcome in the take. If the request is rejected or remains unconfirmed, show that outcome or record a later successful take; do not insert a fictional success state. Exclude passwords, verification codes and private account data; resume on the project's review/pending state after any sensitive authentication.
+If a request is rejected, fails or remains unconfirmed, preserve that outcome. Resolve and verify it before a later take; do not start another send merely to fill the timeline. The sample's virtual coin must never stand in for the created town's transfer.
 
-中文简注：先验证功能，再录制。英文稿可供真人旁白或现场演示使用；只保留站点交互音效，不加入背景音乐。
+## Export and review
+
+- Use the existing music-free capture/export workflow. Check the planner specifically: the shared speaker controls both music and effects, so retained interface sounds alone do not prove music is absent.
+- Measure both exports: 2–4 minutes, at least 720p, normal-speed footage; no music in the main file and no audio stream in the silent alternative.
+- Review the complete footage for private information, transparent cuts, real town identity, sample/transaction distinction, readable network/amount and genuine confirmation. Review audio separately.
+- Keep existing public videos identified as the earlier release until replacement files and links are verified. Record actual build/capture/receipt evidence separately; this plan does not change deployment or submission status.
+
+中文简注：依次展示示例探索、真实建镇、进入新镇及真人确认的 Sepolia 测试交易。先验证成功再录；敏感输入可明确剪切省略，不能伪造成功或加速。仅保留界面音效，不加音乐或 AI 配音。

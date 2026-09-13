@@ -20,7 +20,7 @@ export function mountMailboxUI({ host, projects, snapshot, scene, stopHistory, t
   layer.innerHTML = `<dialog id="investment-dialog" class="paper-panel" aria-labelledby="investment-title" aria-describedby="investment-note">
     <div class="panel-title"><h2 id="investment-title">${t('Support builders', '投资建设')}</h2><button type="button" id="close-investment" class="hud-button icon-button" aria-label="${t('Close', '关闭')}">${icon('x')}</button></div>
     <div class="demo-wallet-card"><span class="demo-wallet-art" aria-hidden="true">${icon('house')}<i>${icon('coin')}</i></span><div><span class="demo-tag">${t('PLAYFUL COINS', '投币彩蛋')}</span><strong>${t('A little encouragement', '给建设者一点鼓励')}</strong></div></div>
-    <p id="investment-note">${t('Drop a coin into a garden-house mailbox and watch it arrive. Virtual coins have no monetary value and stay in this visit only.', '向花园屋的邮箱投一枚金币，看看落入邮箱的效果。虚拟金币没有货币价值，仅保留在本次游览中。')}</p>
+    <p id="investment-note">${t('This coin demo only plays an animation; it sends no wallet transaction. Create a town with receiving addresses to enable wallet-confirmed support. Currently, transfers use Sepolia test ETH only.', '这里的投币仅演示动画，不会触发真实钱包交易。创建小镇并配置收款地址后，可通过钱包确认发起链上赞赏。当前仅支持 Sepolia 测试 ETH。')}</p>
     <label class="mailbox-picker" for="mailbox-project">${t('Choose a garden-house mailbox', '选择花园屋的邮箱')}<select id="mailbox-project"></select></label>
     <p id="mailbox-status" class="mailbox-status" role="status"></p>
     <div class="paired-actions mailbox-actions"><button type="button" id="find-mailbox" class="hud-button">${icon('compass')}${t('Find mailbox', '找到邮箱')}</button><button type="button" id="try-demo-coin" class="hud-button">${icon('coin')}${t('Try a demo coin', '试投金币')}</button></div>

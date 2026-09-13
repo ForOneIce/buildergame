@@ -1,5 +1,17 @@
 # Human–AI collaboration log
 
+## 0065 — Show real creation after sample exploration
+
+- 2026-09-13 (UTC): the human requested that the final recording actually create a wallet-enabled town after exploring the sample. [Original instruction and translation](../prompts/0065-record-sample-to-supported-town.md).
+- Codex revised the existing [demo script](../hackathon/demo-script.md) and checklist into a roughly 3:20 feature journey: sample, real public-GitHub capture with creator support opt-in, the new town, explicit human Sepolia approval, actual pending state and verified receipt. An earlier-stage project uses the accessible support action instead of altering captured metrics to obtain a mailbox.
+- Recording remains gated on successful actual testing. Sensitive setup can be omitted through clearly labeled normal cuts without changing the transaction or fabricating success. The plan retains the 2–4 minute/720p minimum, original UI effects without music, a silent alternative and no AI/TTS competition narration or accelerated footage. No recording, live transfer, new media link or deployment status is claimed by this documentation change.
+
+## 0064 — Clarify virtual coins and wallet support
+
+- 2026-09-13 (UTC): the human identified ambiguous mailbox wording and requested an explicit distinction between sample animation and configured-town wallet transactions. [Original instruction and translation](../prompts/0064-clarify-virtual-and-wallet-support.md).
+- Codex revised the bilingual investment note: the demonstration does not trigger a wallet transaction; a created town with a recipient supports explicit wallet-confirmed chain support, currently limited to Sepolia test ETH. This is a copy-only clarification, preserving existing virtual coins and transaction safeguards.
+- The parent agent reported TypeScript and scoped whitespace checks passing. No new behavioral test, mainnet support, real wallet availability or successful live transfer is claimed by this wording change.
+
 ## Sepolia review and deployment preparation
 
 - 2026-09-13 (UTC): Codex corrected SDK-wrapped insufficient-balance classification, checked balance before gas estimation, and limited diagnostics to the failed review stage rather than raw provider bodies. Legacy pending records now prevent new sends until resolved; cleanup must match the original migrated intent and cannot erase another town's context. The implementing agent reported 33 transaction fixtures and five real-React/mock-SDK browser groups passing; the parent agent's full suite passed 82/82. These checks do not establish actual RPC or chain success.

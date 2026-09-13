@@ -44,5 +44,7 @@ Check items only with evidence. Final submission status has not been verified.
 - [ ] Complete an actual user-confirmed Ethereum Sepolia transfer through Privy and verify its successful receipt. Mocked hashes do not satisfy this item.
 - [ ] Add the actual committed/pushed provider and transfer code permalinks and authorized public chain evidence to [summitinfo.md](summitinfo.md).
 - [ ] Verify the deployed App ID/origin configuration and test the exact hosted town used in the demonstration.
-- [ ] Record the updated competition feature video after testing: original site UI sound is permitted; no added background music. Keep any English script separate from a claim of recorded narration.
+- [ ] Record the updated competition feature video only after successful functional/live-flow testing: sample exploration → actual public-GitHub town creation with support enabled → new-town exploration → human-confirmed Sepolia transfer and matching successful receipt. Follow the [updated recording plan](demo-script.md).
+- [ ] Keep sensitive setup and full test recipients out of public footage, using clearly labeled normal cuts where needed; preserve actual metrics, the same transaction and genuine pending/confirmed states. No AI/TTS voiceover, fabricated success or accelerated footage.
+- [ ] Verify the replacement is 2–4 minutes at 720p or higher, with original site effects and no background music; export the identical footage without an audio stream as well. Existing published videos remain the previous revision until replacement links are verified.
 - [ ] Reconcile technology selections, prize answers, rating and feedback with demonstrated functionality; remove any integration still represented only by a roadmap.

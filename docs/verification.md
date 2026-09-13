@@ -1,6 +1,16 @@
 # Demo verification
 
-Updated: 2026-09-13 (UTC). These results concern the local implementation, not real user adoption or a production deployment. Historical results below apply to their recorded revisions.
+Updated: 2026-09-13 (UTC). Local fixture results and hosted observations are recorded separately. They do not establish real user adoption. Historical results below apply to their recorded revisions.
+
+## Published Sepolia extension checkpoint
+
+Release `3bf259670170fe6bdb1fa37aed63eae437fcb3e5` was pushed to GitHub main. Vercel reported successful production deployment, and the home and sample-town controls loaded on the public domain. The exact wallet-panel and transaction source files were fetched successfully from GitHub; submission permalinks now reference that published commit.
+
+The current hosted main asset does not contain the configured public Privy App ID or a wallet-panel chunk reference. The host's Production build environment still needs `VITE_PRIVY_APP_ID` and a rebuild before the optional SDK can be tested online. This is a deployment-configuration gap, not evidence of a failed chain transaction. No actual transfer was submitted during these hosted checks. The subsequent demo-copy change passed TypeScript and whitespace checks; final recording remains deferred until actual wallet verification.
+
+## Mailbox explanation 0064
+
+The bilingual investment note now explicitly states that the demonstration is an animation without a wallet transaction, while a created town with a receiving address can offer explicitly confirmed chain support using Sepolia test ETH. Only explanatory text in `src/mailbox-ui.ts` changed. The parent agent reported `tsc --noEmit` and scoped Git whitespace validation passing. No additional behavior test was needed for this copy-only edit; it does not itself establish deployed wallet availability or a successful live transfer.
 
 ## Optional Privy support 0053 and post-test recording plan 0054
 
