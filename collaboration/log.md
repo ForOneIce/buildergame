@@ -1,11 +1,18 @@
 # Human–AI collaboration log
 
+## 0052 — Connect the submission story to the Web3 roadmap
+
+- 2026-09-13 (UTC): the human requested a vision-led description that leaves room for planned developer support and permission management.
+- Codex rewrote the submission descriptions to connect the working town demo and mailbox interaction prototype with planned wallet appreciation, wallet/ENS identity and community permissions. Implemented technology selections remain separate from the roadmap. No runtime feature or integration was added by this copy revision. [Project excerpt](../prompts/0052-submission-vision-and-web3-roadmap.md).
+- Revised field lengths are 93 / 2,127 / 2,712 characters, within the supplied short-description maximum and long-field minimums. The repository's public homepage URL returned HTTP 200 with a Buildergame title; this read did not establish that the latest local revision was deployed.
+
 ## 0050–0051 — Prepare final submission materials and music-free video
 
 - 2026-09-13 (UTC): the human requested completed submission information, a feature video and an additional completely silent export. The human supplied the 2–4 minute, minimum-720p, "Audio without music" requirements, and clarified that a live-presentation script should be kept for possible later use rather than added as mandatory narration to this initial recording.
 - Codex completed [the English submission sheet](../hackathon/summitinfo.md), [optional live script](../hackathon/demo-script.md), prompt records, reviewer guide/checklist and source-aware video-rule corrections. Answers describe the actual Web2 demo, fictional sample data and mailbox, direct browser GitHub capture, static deployment boundaries, deferred Web3 and actual AI/reuse contributions. Unverified deployment/upload links remain clearly identified.
 - Codex prepared a 512×512 logo, 1280×720 cover and three actual application screenshots, then inspected their visual output. [Media provenance](../hackathon/media/README.md) identifies the empty guest-session fixtures, unsubmitted planning example and fictional sample card. Capture checks observed no page errors, HTTP writes or external requests. Exact video/export metadata, audio provenance and playback inspection are recorded separately in [verification](../docs/verification.md); this entry does not claim an external upload or completed submission.
 - Original project excerpts and separately labeled translations are in [0050](../prompts/0050-submission-preparation.md) and [0051](../prompts/0051-demo-video-audio-versions.md). The initial no-music feature demonstration and optional later live script are distinct; no AI voiceover or accelerated footage is authorized.
+- Final local exports are 187.04 seconds at 1280×720 and 25 fps. One version mixes the six CC0 clips at 72 recorded native UI cue timings/gains; the other copies the same video stream and removes audio. Codex inspected decoded frames, checked complete decoding and matching demuxed video hashes. The footage includes real public-repository capture through the local Node API and a two-project JSON backup, with a single normal cut between captured segments. [Verification](../docs/verification.md) records capture boundaries, no-music provenance and limits.
 - Documentation checks: submission fields contain 81 characters (short description), 2,023 (description) and 2,525 (how it is made), meeting the supplied limits. All 417 local links across 18 affected documents resolved, and the scoped Git whitespace check passed. These checks do not establish video metadata, final upload or eligibility.
 
 ## 0049 — Add the supplied planning-desk soundtrack

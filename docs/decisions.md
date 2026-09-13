@@ -1,5 +1,10 @@
 # Decision log
 
+## D-036 — Present the demo as a foundation for Buildergame's broader vision
+
+- 2026-09-13 (UTC): the human requested that submission copy include planned developer support and permissions instead of defining the project by unfinished integrations.
+- Lead with belonging, project discovery and continuing community support. Describe the current mailbox as an interaction prototype and wallet-based appreciation, wallet/ENS identity and community permissions as planned extensions. Keep implemented technology selections factual. [Instruction](../prompts/0052-submission-vision-and-web3-roadmap.md), [submission sheet](../hackathon/summitinfo.md).
+
 ## D-035 — Prepare a feature demo with no background music
 
 - 2026-09-13 (UTC): the human requested completed submission materials, quoted a 2–4 minute, minimum-720p, "Audio without music" video requirement and asked for an extra export with no audio stream. The human clarified that the initial video should demonstrate features, with an optional script reserved for a later live presentation.

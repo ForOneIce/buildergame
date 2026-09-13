@@ -51,5 +51,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0049 — Loop supplied Suno music only in the planner](0049-planner-suno-music.md)
 - [0050 — Prepare the project submission information](0050-submission-preparation.md)
 - [0051 — Prepare music-free and silent demo-video versions](0051-demo-video-audio-versions.md)
+- [0052 — Present the product vision and planned Web3 extensions](0052-submission-vision-and-web3-roadmap.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

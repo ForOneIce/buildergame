@@ -4,6 +4,8 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## Human contributions
 
+- Directed the submission narrative to connect the working demo with planned wallet-based developer support and community permissions. Codex revised the English copy and clearly labeled those integrations as roadmap work; no runtime Web3 feature was added in that revision.
+
 - Originated the hackathon town concept and the problem of projects losing visibility after events.
 - Specified organizer deployments, event branding, permanent plots and whole-town history navigation.
 - Defined organizer authority over growth, cumulative commits without inactivity decay, and complete custom score imports.

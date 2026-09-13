@@ -4,19 +4,19 @@ Prepared for ETHOnline 2026. Copy the answers below into the form. Upload, submi
 
 ## Short description
 
-Turn GitHub projects into a cozy 3D town and explore how builders grow over time.
+A living 3D home for GitHub builders to showcase projects, share progress, and grow together.
 
 ## Description
 
-Hackathon projects often lose visibility after demo day, and a growing list of repositories can make a builder's work difficult to discover. Buildergame gives those projects a place people can explore and revisit: a cozy 3D town where every public GitHub repository becomes a house.
+Buildergame gives builders and their projects a place to belong. It transforms public GitHub repositories into a cozy, explorable 3D town, making a portfolio or hackathon community feel like a neighborhood people want to visit again. The idea begins with a simple problem: after demo day, promising projects are easily buried in repository lists. What if following their progress felt like returning to a familiar little town?
 
-Individual developers can create portfolio towns, while hackathon organizers and communities can bring many builders into one neighborhood. Visitors move around the scenery, zoom into a building, open its wooden sign, meet the creator, and follow links to the website or repository. A searchable directory, minimap and random exploration action help visitors find their next project. Exploration progress stays in the browser. Viewing requires neither a wallet nor a login.
+Every repository has a permanent plot. Five building appearances grow from green land into a furnished garden home, while recorded snapshots let visitors travel through the town's history and see what has changed. Town owners choose the growth values that matter to their community: cumulative commits, stars, a weighted combination of commits/stars/forks, or their own score table. Builders keep the progress they have already earned.
 
-Each project keeps the same plot across recorded snapshots. Five building appearances turn a green plot into a foundation, timber frame, blue-roof shell and furnished garden home. The owner chooses how cumulative commits, stars, a weighted mix of commits/stars/forks, or a complete custom score table map to growth. These express the owner's priorities, not a universal judgment of project quality. A pause in development does not reduce a house under an unchanged cumulative-commit rule.
+Individual developers can create a home for their public projects; hackathon organizers and communities can bring many builders together. Visitors explore flat streets, a valley or cloud neighborhoods, open wooden signs to meet creators, discover projects through the directory and minimap, and follow links to the work itself. Personal and community planning, GitHub data capture, snapshot playback, portable JSON backups, static deployment, and English/Chinese interfaces form the working demo.
 
-The planner supports personal and community collections, configuration files, public GitHub data capture and portable JSON backups. Flat streets, a valley with water and gravel paths, and cloud neighborhoods give towns different identities. A founding snapshot starts every project at the first stage, so even the first captured snapshot has a visible transition. Repository-backed static deployment gives published towns their own addresses without a database.
+The broader vision is to turn discovery into lasting participation. Our planned Web3 extensions include wallet-based appreciation through project mailboxes, wallet/ENS identity, and permissions for community membership and town management. A personal town could direct support to its builder, while a community town could route it to individual projects. The mailbox coin interaction in this demo is the first prototype of that support experience. Future on-chain records could also preserve the connection between an event, its projects and meaningful milestones.
 
-English and Chinese are supported. A sample-only mailbox coin animation imagines encouragement for builders; it has no wallet connection, transaction or funding balance. Web3 integration is deferred. Sample projects and metrics are fictional, and real adoption or post-event retention has not yet been measured.
+Buildergame starts by making creation visible and inviting. It aims to grow into a place where attention, encouragement and community support help builders keep building long after a hackathon ends.
 
 ## How it's made
 
@@ -24,13 +24,15 @@ Buildergame uses TypeScript, Three.js 0.180.0, Vite 7.3.6 and Node.js. HTML, CSS
 
 The five accepted building appearances were authored with reproducible Blender Python scripts and exported as GLB files. Each has a full-detail and a distant model. The renderer combines instanced distant assets with a bounded number of detailed nearby buildings. Deterministic layout code generates terrain, roads, water and cloud districts from the town's initial roster. All ten building files are protected by SHA-256 checks. Six scoring labels remain for schema compatibility, with the last two sharing the final visual appearance.
 
-Repository capture is separate from rendering. Shared GitHub REST transport gathers public repository and builder data, handles pagination, cancellation, timeouts, rate limits and unavailable observations, then stores deliberate snapshots in validated JSON. Personal-access-token connection runs directly in the browser without a backend; the token stays in page memory and is excluded from URLs, backups and persistent storage. An optional Node service supports OAuth and owner-checked publication. Real token/OAuth login has not been verified with production credentials.
+Repository capture is separate from rendering. Shared GitHub REST transport gathers public repository and builder data, handles pagination, cancellation, timeouts, rate limits and unavailable observations, then stores deliberate snapshots in validated JSON. Personal-access-token connection runs directly in the browser; the token stays in page memory and is excluded from URLs, backups and persistent storage. An optional Node service supports OAuth and owner-checked publication.
 
-Town JSON committed to `public/data/towns/` produces physical `/towns/<name-and-timestamp>/` pages during the build, supporting static hosting such as Vercel. Before publication, a local preview works only in the browser that holds it. GitHub reads never automatically write to a repository. Browser storage keeps visitor exploration progress; no database or automatic live refresh is required.
+Town JSON committed to `public/data/towns/` produces physical `/towns/<name-and-timestamp>/` pages during the build, supporting static hosting such as Vercel. This keeps snapshot history portable and lets organizers manage it through their own repository. Browser storage remembers exploration progress, and an all-land founding snapshot makes the first measured version replayable.
 
-Native Web Audio plays six locally hosted Kenney CC0 interface effects. A single lazy HTMLAudioElement loops a supplied Suno track quietly on the planner only, shares the mute control, pauses in hidden tabs and resets on exit. The submission recording excludes that music. A separate Three.js mailbox target and temporary coin effect provide the sample Easter egg without changing the building models or integrating payments.
+Native Web Audio plays six locally hosted Kenney CC0 interface effects. A single lazy HTMLAudioElement loops a supplied Suno track quietly on the planner only and shares the mute control. The submission recording excludes background music. The mailbox prototype combines a Three.js raycast target, contextual coin cursor, animated delivery and a demo receipt to make builder support tangible within the town.
 
-Codex assisted with specifications, research, implementation, Blender authoring scripts, tests and documentation. The human supplied the concept, growth policy, visual references, acceptance of the five building stages and successive interaction revisions. No partner SDK, Ethereum tool, blockchain network or smart contract is integrated in this version.
+The current implementation establishes the visualization, data and interaction foundation. Planned Web3 work adds wallet-based support, wallet/ENS identity and community permissions around the same projects and town experience. These are the next development layer; the mailbox currently demonstrates its intended interaction. Partner technology choices will follow the requirements of those integrations.
+
+Codex assisted with specifications, research, implementation, Blender authoring scripts, tests and documentation. The human supplied the concept, growth policy, visual references, acceptance of the five building stages and successive interaction revisions.
 
 ## Technology selections
 
@@ -44,7 +46,7 @@ Codex assisted with specifications, research, implementation, Blender authoring 
 | Design tools | Blender; human-supplied reference artwork |
 | Other technologies | Three.js, GitHub REST API, Node.js, GLB/glTF, Web Audio API, Git, Playwright, FFmpeg |
 
-Use the closest available form labels. Researching a technology does not mean it is integrated.
+This table describes the implemented stack. The Web3 roadmap in the project description is separate from technologies already used in the build.
 
 ## AI tools disclosure
 
@@ -56,7 +58,7 @@ See [AI disclosure](../collaboration/AI_USAGE.md), [human–AI log](../collabora
 
 ## Partner prizes
 
-No partner prize is selected for the current build. ENS and optional wallet support were researched, then deferred. The mailbox is a visual simulation and is not evidence of a partner integration. General/Finalist eligibility and the Classic or Continuity route must be checked in the Dashboard; no qualifying blockchain use is claimed.
+Partner selection is still open. Wallet-based developer support and wallet/ENS identity for community permissions are the planned integration directions. Complete prize selections against the technologies actually integrated in the submitted revision and the relevant partner criteria; the roadmap can explain where Buildergame goes next. Confirm the Classic/Continuity route and prize choices in the Dashboard.
 
 ## Links and images
 
@@ -64,8 +66,8 @@ No partner prize is selected for the current build. ENS and optional wallet supp
 | --- | --- |
 | Project name | Buildergame |
 | Repository | https://github.com/ForOneIce/buildergame |
-| Live project URL | Add the actual public deployment URL after checking it in a signed-out browser |
-| Video | Upload the delivered music-free MP4; add its real upload URL if required |
+| Live project URL | [buildergame-two.vercel.app](https://buildergame-two.vercel.app/), as listed in the repository's public metadata; HTTP 200 and Buildergame title checked |
+| Video | `buildergame-demo-no-music.mp4` — 3:07, 1280×720, interface audio without music; upload and add its real URL if required |
 | Silent alternative | Separate export with no audio stream; additional option, not the default for an "Audio without music" field |
 | Square logo | [buildergame-logo.png](media/buildergame-logo.png), 512×512; [SVG source](media/buildergame-logo.svg) |
 | Cover | [buildergame-cover.png](media/buildergame-cover.png), 1280×720, composed from an actual house capture |
@@ -73,7 +75,7 @@ No partner prize is selected for the current build. ENS and optional wallet supp
 | Screenshot 2 | [Town planning](media/02-town-planning.png), 1920×1508; an unsubmitted example draft |
 | Screenshot 3 | [Sample town and project card](media/03-sample-town-project.png), 1920×1080; fictional sample project |
 
-These still images are prepared and visually inspected locally; upload remains pending. [Media provenance](media/README.md) records capture boundaries and guest fixtures. Do not paste localhost URLs or links to ignored capture files into the submission. Local artifacts and public upload URLs are different deliverables.
+Images and both video exports are prepared locally; upload remains pending. [Media provenance](media/README.md) and [verification](../docs/verification.md) record capture and export checks. The existing public site has not been checked against the latest local commit; deploy the final revision before submitting that link. Use public upload URLs in the form.
 
 ## Video requirements
 
