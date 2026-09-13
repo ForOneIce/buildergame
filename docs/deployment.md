@@ -20,13 +20,15 @@ Each request has a 20-second deadline. Invalid/expired tokens, network failures,
 4. Capture. A new town stores a **Town founded** view with every project at stage one, followed by its first measured snapshot. Playback runs from **0 / 1** to **1 / 1**. The baseline has no GitHub measurements and is labeled as a visual starting point.
 5. Enter the town, explore projects and export a backup. Each capture-generated town has `event.deployment {slug, createdAt}`; its URL is `/towns/<name-and-timestamp>/` and its backup is `<slug>.json`.
 
-Older single-snapshot backups get a display-only starting view for playback. Their stored history is not rewritten. **Town settings** opens the same town for an explicit new capture. A changed repository collection creates a different town. There is no periodic GitHub data refresh or automatic snapshot polling in this version, including for older files marked live.
+Older single-snapshot backups get a display-only starting view for playback. Their stored history is not rewritten. With an actual town loaded, open **Create town → Not ready yet? → Continue current town** to prepare an explicit new capture with its identity, terrain and history retained. **Back up current town** exports the complete current bundle. A changed repository collection creates a different town. There is no periodic GitHub data refresh or automatic snapshot polling in this version, including for older files marked live.
 
 Exploration progress is only stored in the current browser, separately for each town. Signing in does not upload it or make it available on another device. If storage is unavailable, visits last for the current page session and the interface reports that limitation.
 
 ## Publish from GitHub files: lowest-maintenance option
 
 A browser capture is initially a **local preview** at `/?preview=<slug>` (under the deployment's base path). Refreshing that address restores the town from this browser's saved data; it is not yet a public page for other visitors. If a newer saved draft extends a published town's exact history, it is restored as an unpublished preview until its JSON is deployed.
+
+Use the following publication steps only for reviewed town data intended to be public. A wallet-enabled backup includes its receiving addresses; export does not silently remove them. Keep test-recipient backups local and out of GitHub. To exercise one on an already deployed site, use the browser-import workflow below instead of publishing the JSON.
 
 1. Export the town's `<slug>.json` backup.
 2. In your Buildergame deployment repository, add it to `public/data/towns/<slug>.json`. The filename must match `event.deployment.slug`.
@@ -39,6 +41,15 @@ Each town keeps its own file. To add a snapshot, replace that file with the comp
 The original `public/data/town.json` remains a compatible default-town source. A non-sample default also gets a generated address. The shared Vite relative asset base and generated HTML base tags support both a Vercel domain and a GitHub Pages repository subpath.
 
 The app does not push files into GitHub automatically. Only public town bundles belong under `public/data/`; never copy an OAuth session or a private server ownership envelope there. [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) provides static hosting from a repository; public repositories can use GitHub Free. See the [Vercel guide](vercel.md) for its free-plan conditions and deployment details.
+
+### Test a local backup on a deployed site
+
+1. Keep the complete test bundle in an ignored local folder such as `private/`; do not add it to `public/data/`, Git, screenshots or public logs.
+2. Deploy the application source with `VITE_PRIVY_APP_ID` supplied by the host's build environment and the actual site origin allowed in Privy. The identifier stays out of Git, but is public in the built client as required by the SDK.
+3. On that site, open **Create town → Not ready yet? → Load a plan** and select the complete backup JSON. This input also accepts full town bundles; it restores the snapshots locally without another GitHub capture.
+4. Explore the restored town and verify the optional wallet flow. Import stores data in this browser/origin; it does not upload the file, publish a shared town route or modify the repository. Another browser must import its own copy. A preview link alone does not share the data.
+
+Receiving addresses can still be inspected in runtime wallet data and on-chain transactions. Keeping the file out of GitHub avoids repository publication; it is not blockchain anonymity. An actual signing or transfer remains a separate explicit wallet action.
 
 ## Plans, configuration and command-line capture
 
@@ -73,7 +84,7 @@ This is a single-process local-disk implementation. Vercel Functions have epheme
 
 Follow the dedicated [optional wallet prerequisites and deployment guide](../readme_web3.md) for Privy onboarding, exact allowed origins, ignored `.env.local`, Vercel build-time settings, recipient setup and a real test-transfer checklist. The base deployment requires no Privy account or wallet.
 
-The optional extension is implemented, with 65 passing Node tests, scoped browser checks and a passing production build including the wallet bundle. Hosted configuration and an actual Privy Sepolia transaction still require live verification. The existing application can be deployed without this extension. [Scope and acceptance](../specs/0016-optional-privy-support.md) distinguish fixture results from a signed Sepolia transaction; see [verification](verification.md) for the current revision's evidence.
+The optional extension is implemented. The latest local suite passed 82 Node tests, including 33 transaction fixtures, and the final compact-card browser run passed 21 serial real-React/mock-SDK scenarios in English/Chinese at desktop/mobile sizes. Previous wallet-enabled compilation passed; final combined release compilation is tracked separately. Hosted configuration, fresh Privy authentication and a confirmed Sepolia transaction remain separate verification milestones. [Scope and acceptance](../specs/0016-optional-privy-support.md) distinguish fixtures from a signed transaction; see [verification](verification.md) for exact timing.
 
 Town creators decide whether to offer wallet support. A personal town has one optional recipient; a community town maps recipients to specific repositories. Unconfigured projects retain the existing virtual mailbox interaction, and old town/configuration files need no new fields. Only towns with a valid configured recipient show the wallet control. Existing building models, GitHub capture, snapshots and exploration remain independent.
 
@@ -83,7 +94,7 @@ To prepare an opted-in deployment:
 2. Add the exact local/deployed origins that will use the app to its allowed-origin settings. Configure the final Vercel domain and each intentional preview origin; do not assume a new preview domain is already permitted.
 3. Set the application's **public App ID** as `VITE_PRIVY_APP_ID` in ignored local `.env.local` or the host's build environment. Vite embeds `VITE_` values in browser code: do not put a Privy App Secret, GitHub token, wallet private key or seed phrase there. The public App ID is an identifier, not a secret.
 4. Rebuild/redeploy after changing build-time configuration. A build without an App ID may tree-shake the wallet SDK; adding a host runtime variable without rebuilding cannot enable that previous build. This client integration does not require a Privy App Secret or an application payment backend.
-5. During town creation, optionally enter the public receiving address for the personal builder or each participating community project. The recipient mapping belongs in public exported configuration. Verify the address separately before publishing; Buildergame does not verify control or developer identity.
+5. During town creation, optionally enter the public receiving address for the personal builder or each participating community project. The complete export retains this mapping. For private testing on the deployed app, keep that JSON local and import it through **Load a plan**; no GitHub publication is required. Verify addresses separately before any deliberate public sharing; Buildergame does not verify control or developer identity.
 6. Complete a test with a funded Sepolia wallet. Review the project, recipient, network and test-ETH amount; confirm in the wallet; verify the receipt through the displayed explorer link. A connected wallet or returned transaction hash alone is not proof of receipt.
 
 The panel configures standard email and wallet login. Leave Custom authentication and Custom OAuth disabled for this demo. It creates an embedded Ethereum wallet for users without a wallet; the explicit create-wallet action supports existing-wallet users who also want an embedded wallet. The interface prefers the embedded wallet when available. Privy SDK confirmation is retained for its transfers, while a connected external wallet uses its own provider. Test the embedded-wallet path itself when collecting Privy integration evidence. Check current pricing and production activation/billing prerequisites before hosting for a community, even when choosing a Free plan.
@@ -99,7 +110,7 @@ For file-based configuration, the optional `support` object belongs to the event
 
 Omit `support` to retain the ordinary experience. Do not combine the personal address and project map. Unlisted repositories, duplicate normalized names, wrong chains and invalid/zero addresses are rejected. Use the actual recipients agreed by the builders; no example address in documentation should be treated as a destination.
 
-Network rejection, unavailable RPC, missing app settings or a failed SDK load should affect the optional panel alone. If a broadcast transaction is still unconfirmed, use its explorer/status check rather than resubmitting automatically. A tab-local `sessionStorage` checkpoint preserves public pending details and a known hash when storage is available; it contains no key, signature or login token and is excluded from town backups. Returning permits a receipt recheck and never automatically sends again. Closing the page cannot cancel a transaction already sent to the network. Confirm the real reconnect/reload behavior before presenting a town as ready for real support.
+Network rejection, unavailable RPC, missing app settings or a failed SDK load should affect the optional panel alone. If a broadcast transaction is still unconfirmed, use its explorer/status check rather than resubmitting automatically. The current guard uses an origin-wide Web Lock (`buildergame.support.transfer.v2`) and a public `localStorage` pending record (`buildergame.support.pending.v2`); it contains no key, signature or login token and is excluded from town backups. Compatible legacy tab checkpoints can migrate without sending; malformed or unresolved records must not authorize a new transfer. Returning permits receipt-only recovery. Clearing storage or moving to another domain/device loses this app's coordination context, and the guard cannot constrain modified clients. Closing the page cannot cancel a transaction already sent to the network. Real hosted reconnect/reload behavior still needs verification.
 
 ## Verification and license
 

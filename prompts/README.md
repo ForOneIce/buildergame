@@ -62,5 +62,6 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0060 — Preserve the accepted town interface](0060-preserve-the-accepted-town-interface.md)
 - [0061 — Update product and submission progress](0061-update-product-and-submission-progress.md)
 - [0062 — Compact the support card](0062-compact-support-card.md)
+- [0063 — Verify Sepolia support on the deployed application](0063-deployed-sepolia-verification.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.

@@ -1,6 +1,6 @@
 # Buildergame — final submission sheet
 
-Prepared for ETHOnline 2026. The optional Privy extension is implemented locally in `315f65d`, with 77 passing Node tests, scoped browser fixtures and a production build completed before the subsequent shared-town HUD correction. The wallet revision is not yet pushed or deployed; real Privy login and a confirmed Sepolia transfer remain pending. The copy below describes implemented code and identifies the remaining verification milestones. Use the answers matching the revision actually submitted.
+Prepared for ETHOnline 2026. The optional Privy SDK integration and notice/recovery baseline are recorded in `315f65d`, with later interface and review refinements prepared for release. The latest suite passed 82 Node tests, including 33 transaction fixtures; 21 compact-wallet browser scenarios and the final production build also passed. The new deployment, fresh Privy login and a confirmed Sepolia transfer still require verification. The copy below describes implemented code and identifies the remaining verification milestones. Use the answers matching the revision actually submitted.
 
 ## Short description
 
@@ -84,9 +84,9 @@ Implementation locations for review: [Privy provider and wallet panel](../src/su
 | --- | --- |
 | Scope and lifecycle acceptance | [Optional Privy specification](../specs/0016-optional-privy-support.md) |
 | Implementation commit and line links | Local wallet commit `315f65d`; exact links prepared above, remote push/reachability pending |
-| Automated behavior / compatibility / failure tests | 77/77 Node tests including 28 transaction fixtures; four React/mock-SDK panel groups, four loading-wrapper groups and three page-lock groups passed. Production build passed before the later HUD-only edit. [Exact evidence and timing](../docs/verification.md#creator-and-visitor-notices-0059) |
+| Automated behavior / compatibility / failure tests | Latest 82/82 Node suite includes 33 transaction fixtures; final compact-card run passed 21 real-React/mock-SDK browser scenarios in English/Chinese at desktop/mobile sizes. Four loading-wrapper and three page-lock groups also passed. Earlier production compilation passed; final release compilation remains separate. [Exact evidence and timing](../docs/verification.md#creator-and-visitor-notices-0059) |
 | Shared sample/actual-town interface | Six desktop/mobile sample/actual/configured variants passed layout parity, followed by map and support browser regressions. Actual towns omit landscape tours; camera rules and locked models are preserved |
-| Hosted opted-in town | Pending deployed configuration and verification |
+| Hosted optional-wallet test | Planned via browser import of a local complete town bundle after configured deployment; no recipient-containing public test data is required |
 | Live Privy session and Sepolia receipt | Pending; add the real explorer link only after confirmation |
 | Updated no-music competition demo | Record after functionality and live-flow checks; current published videos predate this extension |
 

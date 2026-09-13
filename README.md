@@ -109,7 +109,7 @@ Static deployments support token connection and manual captures directly in the 
 | Deployer GitHub OAuth and public publishing | Implemented and tested with mocked OAuth; real app credentials required |
 | Direct GitHub token connection, avatar and manual capture | Implemented without a backend; token stays in page memory |
 | Mailbox Easter egg | Unconfigured mailboxes retain virtual coins independently of wallet support |
-| Optional Privy support | Email/wallet login and direct Sepolia test-ETH flow implemented locally in `315f65d`; notices, explicit review, critical-state locking and pending recovery included. Live login/transfer and deployment remain pending |
+| Optional Privy support | Email/wallet login and direct Sepolia test-ETH flow implemented locally; notices, explicit review, critical-state locking and pending recovery included. Live login/transfer and deployment remain pending |
 | Guest and signed-in exploration progress | Browser-only storage; no server synchronization |
 | Independent town URLs and repository-backed static deployment | Implemented; JSON backups produce physical town pages on build |
 | Walking, building interiors, list sorting and resident world map | Deferred |
@@ -117,7 +117,7 @@ Static deployments support token connection and manual captures directly in the 
 
 The three sample towns use fictional projects and metrics. Static hosts support direct GitHub token connection, manual captures, viewing and local progress. OAuth and immediate server publication use the optional Node service. There is no automatic live-data refresh in this version. Changing a collection starts a new town rather than rewriting its old roster. See [verification and limitations](docs/verification.md) and [deployment setup](docs/deployment.md).
 
-The latest wallet checkpoint passed **77 Node tests**, scoped browser fixtures and a production build before the subsequent HUD-only correction. The published demo and videos still show the earlier town release. These checks validate local behavior; they do not stand in for an actual Privy session or confirmed transfer.
+The latest local suite passed **82 Node tests**, with scoped browser fixtures covering the wallet flow and shared town controls. Prior production compilation passed; the final release build is tracked in [verification](docs/verification.md). The published demo and videos still show the earlier town release. These checks validate local behavior; they do not stand in for a fresh Privy login or confirmed transfer.
 
 ### What comes next
 

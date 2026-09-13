@@ -66,6 +66,22 @@ The [notice requirement](../prompts/0059-creator-and-visitor-wallet-notices.md) 
 
 The origin-wide guard now uses `buildergame.support.transfer.v2` and public `localStorage` metadata under `buildergame.support.pending.v2`. A valid earlier session checkpoint has a migration path that does not overwrite a current v2 record. This controller result is distinct from full legacy-data edge-case review, real browser-authentication recovery and live-chain verification. The no-hash unknown state remains locked until the original hash can be checked; it is not silently marked failed.
 
+#### Balance classification and legacy recovery follow-up
+
+The later transaction refinement checks the selected wallet's balance before estimating gas and classifies a bounded provider-error cause chain. An SDK-wrapped insufficient-funds result must remain an insufficient-funds message rather than a generic network failure. Diagnostic copy identifies the failed review stage without displaying raw provider response bodies.
+
+Recovery now refuses a new send while any unresolved legacy record for the current town remains, including malformed or unfamiliar versions. Terminal cleanup requires the matching migrated town, intent, sender, recipient, amount and hash; confirming another town's v2 record must not erase the current town's unrelated legacy record.
+
+The implementing agent reported **33/33 transaction fixtures** and **five real-React/mock-SDK Chrome groups** passing after these corrections, including the unrelated-town receipt case. The parent agent then executed the full suite and reported **82/82 Node tests passed**. These are later executed checkpoints, not sums inferred from earlier results. Actual Privy RPC classification and a chain transfer were not exercised by those fixtures. The subsequent compact-card results appear below; final combined compilation remains a separate checkpoint.
+
+#### Compact support card 0062
+
+The final `node tests/support-wallet-panel-check.cjs` handoff passed **21/21 serial browser scenarios** using the actual React panel and global application styles with a mock SDK. English/Chinese views at **1280×720** and **390×844** showed no vertical/horizontal scrolling or clipped main actions. Secondary wallet/login/recipient details and the two-page risk notices fit their dialogs. Focus trapping, pagination focus and checkbox alignment passed after the final corrections.
+
+The scenarios preserve login and per-transfer acknowledgment, shortened addresses with complete review, critical locks, receipt-only pending recovery and community recipient selection. `tsc --noEmit` passed after the UI handoff; a separate TypeScript run also passed after the export-guidance-only change in `main.ts`. Real SDK loading, authentication, chain transfers and external requests were all zero; accounts and receipt data are synthetic fixtures. Screenshots remain in ignored QA output. These tests do not establish human visual acceptance or actual wallet service availability.
+
+The final combined `npm run build`, invoked through the installed npm CLI after the paging-focus fix and export-guidance change, passed TypeScript, sample validation, all ten unchanged building fingerprints, Vite compilation and static-town generation. The default sample emitted zero named routes as expected. The enabled lazy wallet chunk is 2,498.00 kB (730.32 kB gzip); existing third-party and chunk-size warnings remain. This build includes the optional SDK but does not verify hosted configuration or a real chain transaction.
+
 Subsequent integrated HUD/browser checks are recorded below. Final human visual review, real Privy login/signing, cross-device/domain behavior and a confirmed Sepolia receipt remain unverified. The fixtures do not establish a real user acknowledgment or transaction.
 
 ### Shared-town interface and progress documentation 0060–0061
@@ -85,6 +101,16 @@ A subsequent workflow review found that removing the visitor settings action als
 The README and [submission sheet](../hackathon/summitinfo.md) now reflect local wallet commit `315f65dc39a67c8dcf3f4f2274abb6946af25696`. `git show` confirmed the prepared source anchors at `wallet-panel.tsx` lines 143 (SDK send) and 304 (Provider), and `transaction.mjs` line 206 (receipt validation). These are local code references; the commit has not yet been pushed and their remote reachability is not claimed. Current video links still refer to the earlier release. Actual Privy authentication, confirmed Sepolia evidence, hosted configuration and a replacement recording remain later milestones.
 
 Documentation checks resolved **523 relative links across 18 affected files**. The three submission fields contain **93 / 2,657 / 3,525 characters**, meeting the supplied short-description maximum and long-field minimums. Scoped `git diff --check` passed; Git's configured LF/CRLF normalization advisories were not whitespace errors. These are document checks, not remote-link, chain or deployment verification.
+
+### Sepolia verification on the deployed application
+
+The current plan is to deploy the verified source with a host-provided public Privy App ID, then import an ignored local full-town bundle through the deployed application's planner. The import restores browser-local snapshot data; it does not publish the file, create a shared route or modify GitHub. The latest remote/deployment metadata check still identified the published revision as `8f8710d`; production environment configuration and the new wallet deployment remain unverified.
+
+Verify the ordinary town first, then the real Privy login, funded Sepolia review, explicit approval, matching receipt and recovery behavior. Provider fixtures and a previously authenticated UI state do not establish a fresh live login or a confirmed transfer. No real transfer or receipt is claimed here. Record the deployed revision and permitted actual chain evidence only after observation; the existing published video remains the earlier demo.
+
+Deployment guidance and the configured-town export/success copy now distinguish a complete local backup from deliberate publication. They do not silently strip recipient mappings. Their code/wording change still requires the next combined build and relevant UI check; data-export identity was established by the earlier maintenance fixture, not by this copy edit.
+
+The later documentation check resolved **542 relative links across 21 files**; the submission field lengths remained **93 / 2,657 / 3,525 characters**. Scoped whitespace and TypeScript checks passed. Account-specific local configuration was compared against tracked text and reachable text history without printing the values; no exact matches were found. This text audit does not inspect binary media for visual disclosure or establish remote configuration.
 
 ## Mailbox targeting, planning music and submission preparation 0048–0051
 

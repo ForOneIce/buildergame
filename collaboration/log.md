@@ -1,9 +1,15 @@
 # Human–AI collaboration log
 
+## Sepolia review and deployment preparation
+
+- 2026-09-13 (UTC): Codex corrected SDK-wrapped insufficient-balance classification, checked balance before gas estimation, and limited diagnostics to the failed review stage rather than raw provider bodies. Legacy pending records now prevent new sends until resolved; cleanup must match the original migrated intent and cannot erase another town's context. The implementing agent reported 33 transaction fixtures and five real-React/mock-SDK browser groups passing; the parent agent's full suite passed 82/82. These checks do not establish actual RPC or chain success.
+- Codex clarified complete-backup handling in the application and deployment guides: configured exports retain recipients, can be kept locally and imported on a deployed site without committing the JSON, and require deliberate review before publication. The existing static build configuration remains unchanged. This supports the planned deployed-origin Sepolia verification while preserving full snapshot data.
+- Remote/deployment metadata identified the earlier `8f8710d` release before the planned update. The final combined build passed after all compact-card and export-guidance edits, including ten unchanged building fingerprints and static generation. The human authorized deployed-origin Sepolia verification in [0063](../prompts/0063-deployed-sepolia-verification.md); configured deployment, real authentication/transfer evidence and replacement recording remain separate milestones. [Verification](../docs/verification.md#sepolia-verification-on-the-deployed-application).
+
 ## 0062 — Compact the support card
 
 - 2026-09-13 (UTC): the human requested a shorter support window, a separate full-information dialog where needed and removal of the visually disruptive vertical scrollbar. [Original instruction and translation](../prompts/0062-compact-support-card.md).
-- Codex scoped a concise primary card and accessible secondary details while retaining unchecked acknowledgment, full-address review, current errors, explicit approval and critical-state locks/recovery. This visual increment's implementation and acceptance are pending; no screenshot contents or account-specific values are recorded.
+- Codex implemented a concise primary card and accessible secondary details while retaining unchecked acknowledgment, full-address review, current errors, explicit approval and critical-state locks/recovery. The final 21/21 serial real-React/mock-SDK browser scenarios passed with actual global styles in English/Chinese at 1280×720 and 390×844. Main controls and secondary detail/risk pages fit without overflow or clipped actions; focus trapping and pagination passed after a focus correction. TypeScript passed. These local fixtures used synthetic accounts and zero real SDK/authentication/chain/external requests; no account-specific values or live transaction are recorded. Final combined compilation remains separate.
 
 ## 0061 — Update product and submission progress
 

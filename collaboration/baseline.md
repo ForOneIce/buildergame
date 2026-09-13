@@ -4,6 +4,8 @@ Recorded on 2026-09-11. This is a workspace baseline, not the official event sta
 
 ## Current baseline
 
+Session 0062 reuses the existing paper-panel styling, React/Privy dependencies and support controller. Codex authored the compact card, secondary information dialog and bounded browser scenarios without a new asset or dependency. The final 21-scenario local UI run and TypeScript check passed; service/chain verification remains separate. Existing model, interface-asset and dependency licenses retain their recorded scope.
+
 Session 0060's interface correction reuses the existing sample-town HUD markup, styles, icons and models. The source audit against `8f8710d` found a pre-existing sample/non-sample layout split. Sharing the accepted arrangement introduces no new asset, dependency or license scope; corrective verification remains pending. [Scope](../specs/0018-preserve-the-accepted-town-interface.md).
 
 Session 0053 adds an optional Privy support extension. The code, final 65-test Node suite, scoped browser fixtures and production build are complete; hosted/live transaction verification remains pending. The following direct dependencies were installed and their package metadata inspected on 2026-09-13 (UTC); exact dependency resolution is in `package-lock.json`. Installation and a passing build do not establish a successful chain transaction.

@@ -1,6 +1,6 @@
 # Support submission lock and failure handling
 
-Status: **implementing; acceptance not yet verified**. Defined 2026-09-13 (UTC), following [instruction 0057](../prompts/0057-support-lock-and-failure-handling.md). This refines the [optional Privy support extension](0016-optional-privy-support.md); earlier passing tests/builds do not automatically cover this later change.
+Status: **implemented; scoped controller and browser checks passed**. Final combined release compilation and real hosted authentication/chain verification remain separate milestones. Defined 2026-09-13 (UTC), following [instruction 0057](../prompts/0057-support-lock-and-failure-handling.md). This refines the [optional Privy support extension](0016-optional-privy-support.md); earlier passing tests/builds do not automatically cover later changes.
 
 ## Purpose and boundaries
 
@@ -46,6 +46,8 @@ Use concise English/Chinese states for connection/login refusal, wrong chain, ch
 
 Risk copy remains visible near the amount/confirmation: no on-chain gas for a request stopped before broadcast; a transaction that fails on chain can consume gas; pending is not failure; Buildergame cannot reverse a confirmed direct transfer. Sepolia test ETH has no monetary value. Never label an unknown send as safely cancelled or invite a blind resend.
 
+The subsequent review correction must preserve an SDK-wrapped insufficient-funds classification, read balance before gas estimation, and expose only a concise failure stage rather than raw provider bodies. Retained legacy recovery records, including unknown/malformed versions, prevent new sends; terminal cleanup must match the original migrated context and cannot erase an unrelated town's record. The later 33-test/five-panel-group and 82-test full-suite checkpoints are recorded in verification, separately from the compact-card and live-provider acceptance.
+
 ## Observable acceptance
 
 ### Creator and visitor notices (0059)
@@ -61,7 +63,7 @@ The [subsequent notice requirement](../prompts/0059-creator-and-visitor-wallet-n
 
 ### Transfer behavior
 
-The later [compact-card requirement 0062](../prompts/0062-compact-support-card.md) moves extended explanations to a secondary dialog and reduces the main panel's vertical density. Preserve the unchecked acknowledgment, complete address-review path, current failure/pending status, explicit wallet action and critical lock. Secondary details need keyboard/touch access and focus restoration. Verify the revised primary panel at desktop/mobile sizes without clipping essential controls; this new visual acceptance remains pending.
+The later [compact-card requirement 0062](../prompts/0062-compact-support-card.md) moves extended explanations to a secondary dialog and reduces the main panel's vertical density. Preserve the unchecked acknowledgment, complete address-review path, current failure/pending status, explicit wallet action and critical lock. Secondary details need keyboard/touch access and focus restoration. The final 21-scenario real-React/mock-SDK run passed at English/Chinese 1280×720 and 390×844 with actual global styles: no main-panel scrolling or clipped actions, reachable secondary details and two-page risk notices, correct focus and preserved acknowledgment/lock/recovery behavior. These scoped results do not establish real authentication or chain success.
 
 1. Read-only review never invokes send; leaving/reopening a review cannot cause a late request to sign.
 2. One explicit confirmation produces at most one adapter/SDK send under repeated click, Enter, callback and rerender attempts.

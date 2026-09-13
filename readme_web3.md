@@ -2,7 +2,7 @@
 
 Buildergame's base town experience works without Privy, a wallet or a blockchain account. Enable this extension only when a town creator wants visitors to try direct support for its builders. Ordinary GitHub capture, snapshots, exploration and virtual mailbox coins remain available on their own.
 
-**Current scope: native test ETH on Ethereum Sepolia (chain ID 11155111).** Test coins have no monetary value. The wallet implementation and notice/recovery refinement are recorded locally in `315f65d`, not yet pushed or deployed. The latest checkpoint passed 77 Node tests, scoped browser fixtures and production compilation before the subsequent HUD-only correction. Real Privy login and a confirmed transfer remain pending. See [current evidence](docs/verification.md#creator-and-visitor-notices-0059).
+**Current scope: native test ETH on Ethereum Sepolia (chain ID 11155111).** Test coins have no monetary value. The SDK integration and notice/recovery baseline are recorded locally in `315f65d`, with further review and interface refinements prepared for release. The latest suite passed 82 Node tests, including 33 transaction fixtures; prior production compilation and scoped browser checks passed at their recorded revisions. Final release compilation, new deployment, fresh Privy login and a confirmed transfer remain pending. See [current evidence](docs/verification.md#creator-and-visitor-notices-0059).
 
 ## Before you start
 
@@ -108,7 +108,7 @@ The creator notice appears only when choosing the optional wallet settings or re
 - Pending recovery depends on the same browser and site origin with its data retained. Check the transaction before trying again; changing device/domain or clearing storage can remove the app's recovery context.
 - Senders pay network fees. Review Privy's current limits and deployment billing in the setup guide. This extension uses Sepolia test ETH with no monetary value.
 
-Visitor login and each final transfer review also receive relevant acknowledgment controls. A changed amount, recipient, sending wallet or review resets the transfer acknowledgment. Checking a box is **not wallet authorization**; the separate action and wallet approval still apply. Local creator and React-panel browser fixtures have passed; final integrated visual and live-wallet verification remain pending.
+Visitor login and each final transfer review also receive relevant acknowledgment controls. A changed amount, recipient, sending wallet or review resets the transfer acknowledgment. Checking a box is **not wallet authorization**; the separate action and wallet approval still apply. Local creator checks and 21 compact React-panel browser scenarios passed, including English/Chinese desktop/mobile layouts and secondary detail/notice pages. Final release compilation, human visual review and live-wallet verification remain separate.
 
 An unconfigured town keeps its original visitor experience: no wallet dialog, wallet login, acknowledgment checkbox or SDK requirement. Unconfigured projects in mixed towns also retain their virtual mailbox interaction. These notices belong only to the optional wallet flow, not ordinary GitHub capture or town exploration.
 
@@ -121,7 +121,7 @@ An unconfigured town keeps its original visitor experience: no wallet dialog, wa
 
 Leave these fields empty to retain virtual mailbox coins. A town with at least one valid recipient shows the upper-right wallet icon. A configured project's mailbox opens the support review card; its project card also provides an accessible action, including at early building stages. A project without a recipient keeps its existing virtual mailbox behavior and receives no wallet-setup prompt.
 
-The current configuration/JSON export can contain the receiving address. Keep backups with actual recipient values local and out of GitHub; the repository-safe publication workflow is being revised and is not yet documented as implemented. Do not treat the base town's ordinary JSON-to-Git workflow as approval to commit a populated support mapping. Addresses used by the running wallet interface and blockchain transactions are still publicly observable.
+The complete configuration/JSON export retains receiving addresses. Keep test-recipient backups local and out of GitHub. To test on a deployed site, open **Create town → Not ready yet? → Load a plan** and select the full bundle: it restores in that browser without publishing the JSON. The App ID belongs in the host's build environment, not a committed account-specific configuration. A broadly shared recipient-enabled town still needs deliberate configuration publication; local import does not create that shared route. Addresses used by the running wallet interface and blockchain transactions remain publicly observable. [Import and deployment details](docs/deployment.md#test-a-local-backup-on-a-deployed-site).
 
 Buildergame checks the address format and checksum, not who controls the wallet or whether it belongs to the repository's developer. Agree on the recipient with the builder before using it. Do not label the destination GitHub-verified.
 

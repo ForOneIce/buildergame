@@ -19,7 +19,7 @@ Codex assisted with project planning, research, translations, specifications, im
 
 ## AI contributions
 
-Session 0062: Codex recorded the [compact support-card requirement](../prompts/0062-compact-support-card.md) and scoped a secondary information dialog without weakening acknowledgment, wallet review or critical locking. Its visual acceptance remains pending; earlier fixture results concern their recorded UI revisions.
+Session 0062: Codex recorded the [compact support-card requirement](../prompts/0062-compact-support-card.md), implemented the main card and `src/support/detail-dialog.tsx`, and refined notice pagination, focus and checkbox layout. The final 21/21 real-React/mock-SDK browser scenarios passed with actual global styles in English/Chinese at 1280×720 and 390×844, preserving acknowledgment, address review, critical locks and receipt-only recovery. TypeScript passed. This is local synthetic-account verification; no actual SDK login/chain/external requests, final human visual acceptance or new external artwork are claimed.
 
 Session 0061: Codex revised the product README, submission answers and optional-wallet guide to reflect the current development plan, locally pinned SDK evidence and scoped verification. The public demo/video remain identified as the earlier release. The copy presents direct builder support and longer-term community directions without claiming deployed wallet availability or a real receipt. [Instruction](../prompts/0061-update-product-and-submission-progress.md).
 
