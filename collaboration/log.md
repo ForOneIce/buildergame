@@ -1,5 +1,10 @@
 # Human–AI collaboration log
 
+## 0043 — Discuss optional Web3 support
+
+- 2026-09-13 (UTC): the human proposed optional mailbox tipping and requested comparison with easy-to-demonstrate partner/community tools before development. Codex reread official prize pages and ENS/Privy documentation, compared recipients, wallet friction, costs and track requirements, and recorded [options and evidence](../docs/ideation/0043-web3-support-options.md).
+- This is research only. No application code, SDK, contract, wallet, payment, external message or deployment was created. No partner or implementation was approved; tests were not needed for this discussion record.
+
 ## 0042 — Add direct GitHub access from static clients
 
 - 2026-09-12 (UTC): the human clarified that token-based GitHub identity/data requests can run directly in the browser and require network/timeout handling. Codex preserved the [exact instruction and translation](../prompts/0042-browser-github-token-access.md) and updated the architecture/specification to distinguish this option from the existing confidential OAuth server.
