@@ -16,7 +16,9 @@ Preserve actual specs, plans, and important revisions. Acceptance targets are no
 
 Current workflow increment: [0012 — Named towns and deliberate snapshot publication](0012-named-towns-and-static-snapshots.md), including browser-only exploration, persistent town addresses and static deployment boundaries.
 
-Current interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation; real Web3 work remains paused. Scoped mailbox browser checks and the final production build passed; human visual review remains pending.
+Current optional support increment: [0016 — Optional Privy support for builders](0016-optional-privy-support.md), authorized for implementation with Ethereum Sepolia. Existing virtual mailbox interactions remain available without recipient configuration. Code, fixture and live-chain verification are separate milestones; consult current verification before claiming a completed integration.
+
+Previous interaction increment: [0013 — Sample-town mailbox coins](0013-sample-mailbox-coins.md), an implemented visual Easter egg with a future-support explanation. Scoped mailbox browser checks and the production build for that revision passed; human visual review remains pending.
 
 Current audio increment: [0014 — Game UI interaction sounds](0014-ui-interaction-sounds.md), covering six verified free local clips, user-gesture audio unlock, click/map/hover feedback and a remembered mute preference. Asset/scoped browser checks and the final combined build passed; human listening review remains pending.
 

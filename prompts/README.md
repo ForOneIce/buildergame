@@ -52,5 +52,7 @@ This directory contains instructions used to define and develop Buildergame. Adm
 - [0050 — Prepare the project submission information](0050-submission-preparation.md)
 - [0051 — Prepare music-free and silent demo-video versions](0051-demo-video-audio-versions.md)
 - [0052 — Present the product vision and planned Web3 extensions](0052-submission-vision-and-web3-roadmap.md)
+- [0053 — Add optional Privy support for builders](0053-optional-privy-support.md)
+- [0054 — Record the updated demo after functional testing](0054-record-updated-demo-after-testing.md)
 
 Preserve project instructions in their original language with separately labeled English translations. Identify excerpts and redactions explicitly. Record AI tools, actual outputs, specifications and verification; do not invent history or publish unrelated conversations.
